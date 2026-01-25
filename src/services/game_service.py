@@ -6,10 +6,10 @@ from domain.stat import Stat
 
 
 class PokemonRepository(Protocol):
-    def get_random_pokemon(self) -> Pokemon:
+    async def get_random_pokemon(self) -> Pokemon:
         ...
 
-    def get_by_name(self, name: str) -> Pokemon:
+    async def get_by_name(self, name: str) -> Pokemon:
         ...
 
 
@@ -19,10 +19,10 @@ class RandomStatSelector(Protocol):
 
 
 class GameRepository(Protocol):
-    def save(self, game: Game) -> Game:
+    async def save(self, game: Game) -> Game:
         ...
 
-    def get(self, game_id: str) -> Game:
+    async def get(self, game_id: str) -> Game:
         ...
 
 
@@ -37,15 +37,15 @@ class GameService:
         self.stat_selector = stat_selector
         self.game_repository = game_repository
 
-    def start_game(self) -> Game:
-        pokemon = self.pokemon_repository.get_random_pokemon()
+    async def start_game(self) -> Game:
+        pokemon = await self.pokemon_repository.get_random_pokemon()
         game = Game(pokemon=pokemon)
         random_stat = self.stat_selector.select()
         game.add_stat_hint(random_stat)
-        return self.game_repository.save(game)
+        return await self.game_repository.save(game)
 
-    def guess(self, game_id: str, pokemon_name: str) -> Game:
-        game = self.game_repository.get(game_id)
-        pokemon = self.pokemon_repository.get_by_name(pokemon_name)
+    async def guess(self, game_id: str, pokemon_name: str) -> Game:
+        game = await self.game_repository.get(game_id)
+        pokemon = await self.pokemon_repository.get_by_name(pokemon_name)
         game.guess(pokemon)
-        return self.game_repository.save(game)
+        return await self.game_repository.save(game)
