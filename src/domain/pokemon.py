@@ -15,4 +15,5 @@ class Pokemon:
     speed: int
 
     def get_stat(self, stat: Stat) -> int:
-        return getattr(self, stat.value)
+        value: int = getattr(self, stat.value)
+        return value

@@ -25,3 +25,6 @@ jobs:
 
       - name: Run tests
         run: pytest
+
+      - name: Run type checking
+        run: mypy src
