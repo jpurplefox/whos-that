@@ -30,6 +30,7 @@ class ComparisonHint(Hint):
 @dataclass
 class Game:
     pokemon: Pokemon
+    id: str | None = None
     max_attempts: int = 4
     hints: list[Hint] = field(default_factory=list)
     attempts: list[Pokemon] = field(default_factory=list)
