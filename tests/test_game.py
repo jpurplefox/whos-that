@@ -1,6 +1,6 @@
 import pytest
 
-from domain.game import Game, Hint
+from domain.game import Comparison, ComparisonHint, Game, StatHint
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 
@@ -15,21 +15,21 @@ def test_add_hint_returns_hint_with_stat_and_value():
     pokemon = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45)
     game = Game(pokemon=pokemon)
 
-    hint = game.add_hint(Stat.HP)
+    hint = game.add_stat_hint(Stat.HP)
 
-    assert hint == Hint(stat=Stat.HP, value=45)
+    assert hint == StatHint(stat=Stat.HP, value=45)
 
 
 def test_add_hint_appends_to_hints_list():
     pokemon = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45)
     game = Game(pokemon=pokemon)
 
-    game.add_hint(Stat.HP)
-    game.add_hint(Stat.ATTACK)
+    game.add_stat_hint(Stat.HP)
+    game.add_stat_hint(Stat.ATTACK)
 
     assert len(game.hints) == 2
-    assert game.hints[0] == Hint(stat=Stat.HP, value=45)
-    assert game.hints[1] == Hint(stat=Stat.ATTACK, value=49)
+    assert game.hints[0] == StatHint(stat=Stat.HP, value=45)
+    assert game.hints[1] == StatHint(stat=Stat.ATTACK, value=49)
 
 
 def test_guess_returns_true_when_correct():
@@ -39,6 +39,7 @@ def test_guess_returns_true_when_correct():
     result = game.guess(bulbasaur)
 
     assert result is True
+    assert len(game.hints) == 0
 
 
 def test_guess_returns_false_when_incorrect():
@@ -71,3 +72,22 @@ def test_guess_raises_when_no_attempts_remaining():
 
     with pytest.raises(ValueError, match="No attempts remaining"):
         game.guess(charmander)
+
+
+def test_guess_adds_comparison_hint():
+    bulbasaur = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45)
+    charmander = Pokemon(id=4, name="Charmander", hp=39, attack=52, defense=43, sp_attack=60, sp_defense=50, speed=65)
+    game = Game(pokemon=bulbasaur)
+
+    game.guess(charmander)
+
+    assert len(game.hints) == 1
+    hint = game.hints[0]
+    assert isinstance(hint, ComparisonHint)
+    assert hint.pokemon == charmander
+    assert hint.comparisons[Stat.HP] == Comparison.HIGHER
+    assert hint.comparisons[Stat.ATTACK] == Comparison.LOWER
+    assert hint.comparisons[Stat.DEFENSE] == Comparison.HIGHER
+    assert hint.comparisons[Stat.SP_ATTACK] == Comparison.HIGHER
+    assert hint.comparisons[Stat.SP_DEFENSE] == Comparison.HIGHER
+    assert hint.comparisons[Stat.SPEED] == Comparison.LOWER

@@ -24,5 +24,5 @@ class GameService:
         pokemon = self.pokemon_repository.get_random_pokemon()
         game = Game(pokemon=pokemon)
         random_stat = self.stat_selector.select()
-        game.add_hint(random_stat)
+        game.add_stat_hint(random_stat)
         return game

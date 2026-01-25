@@ -1,4 +1,4 @@
-from domain.game import Hint
+from domain.game import StatHint
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 from services.game_service import GameService
@@ -40,4 +40,4 @@ def test_start_game_adds_first_hint_with_selected_stat():
     game = service.start_game()
 
     assert len(game.hints) == 1
-    assert game.hints[0] == Hint(stat=Stat.SPEED, value=90)
+    assert game.hints[0] == StatHint(stat=Stat.SPEED, value=90)

@@ -1,13 +1,30 @@
 from dataclasses import dataclass, field
+from enum import Enum
 
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 
 
-@dataclass
 class Hint:
+    pass
+
+
+@dataclass
+class StatHint(Hint):
     stat: Stat
     value: int
+
+
+class Comparison(Enum):
+    HIGHER = "higher"
+    LOWER = "lower"
+    EQUAL = "equal"
+
+
+@dataclass
+class ComparisonHint(Hint):
+    pokemon: Pokemon
+    comparisons: dict[Stat, Comparison]
 
 
 @dataclass
@@ -17,9 +34,25 @@ class Game:
     hints: list[Hint] = field(default_factory=list)
     attempts: list[Pokemon] = field(default_factory=list)
 
-    def add_hint(self, stat: Stat) -> Hint:
+    def add_stat_hint(self, stat: Stat) -> StatHint:
         value = self.pokemon.get_stat(stat)
-        hint = Hint(stat=stat, value=value)
+        hint = StatHint(stat=stat, value=value)
+        self.hints.append(hint)
+        return hint
+
+    def add_comparison_hint(self, pokemon: Pokemon) -> ComparisonHint:
+        comparisons: dict[Stat, Comparison] = {}
+        for stat in Stat:
+            target_value = self.pokemon.get_stat(stat)
+            guess_value = pokemon.get_stat(stat)
+            if target_value > guess_value:
+                comparisons[stat] = Comparison.HIGHER
+            elif target_value < guess_value:
+                comparisons[stat] = Comparison.LOWER
+            else:
+                comparisons[stat] = Comparison.EQUAL
+
+        hint = ComparisonHint(pokemon=pokemon, comparisons=comparisons)
         self.hints.append(hint)
         return hint
 
@@ -27,4 +60,7 @@ class Game:
         if len(self.attempts) >= self.max_attempts:
             raise ValueError("No attempts remaining")
         self.attempts.append(pokemon)
-        return pokemon.id == self.pokemon.id
+        is_correct = pokemon.id == self.pokemon.id
+        if not is_correct:
+            self.add_comparison_hint(pokemon)
+        return is_correct
