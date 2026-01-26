@@ -2,7 +2,7 @@ import pytest
 from starlette.testclient import TestClient
 
 from api.app import app, container
-from domain.exceptions import NoAttemptsRemaining, PokemonNotFound
+from domain.exceptions import GameNotFound, NoAttemptsRemaining, PokemonNotFound
 from domain.game import Game
 from domain.pokemon import Pokemon
 from domain.stat import Stat
@@ -160,3 +160,20 @@ def test_guess_returns_422_when_pokemon_name_is_invalid():
 
     assert response.status_code == 422
     assert "errors" in response.json()
+
+
+class FakeGuessGameNotFound:
+    async def execute(self, game_id: str, pokemon_name: str) -> Game:
+        raise GameNotFound()
+
+
+def test_guess_returns_404_when_game_not_found():
+    with container.guess.override(FakeGuessGameNotFound()):
+        client = TestClient(app, raise_server_exceptions=False)
+        response = client.post(
+            "/games/nonexistent/guess",
+            json={"pokemon_name": "pikachu"},
+        )
+
+    assert response.status_code == 404
+    assert response.json() == {"error": "Game not found"}

@@ -5,7 +5,7 @@ from starlette.responses import JSONResponse
 
 from api.containers import Container
 from api.schemas import GameResponse, GuessRequest
-from domain.exceptions import NoAttemptsRemaining, PokemonNotFound
+from domain.exceptions import GameNotFound, NoAttemptsRemaining, PokemonNotFound
 from services.guess import Guess
 from services.start_game import StartGame
 
@@ -34,6 +34,8 @@ async def guess(
 
     try:
         game = await guess_use_case.execute(game_id, guess_request.pokemon_name)
+    except GameNotFound:
+        return JSONResponse({"error": "Game not found"}, status_code=404)
     except NoAttemptsRemaining:
         return JSONResponse({"error": "No attempts remaining"}, status_code=422)
     except PokemonNotFound:

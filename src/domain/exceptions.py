@@ -4,3 +4,7 @@ class NoAttemptsRemaining(Exception):
 
 class PokemonNotFound(Exception):
     pass
+
+
+class GameNotFound(Exception):
+    pass

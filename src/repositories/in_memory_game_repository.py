@@ -1,6 +1,7 @@
 import uuid
 from copy import deepcopy
 
+from domain.exceptions import GameNotFound
 from domain.game import Game
 
 
@@ -15,4 +16,6 @@ class InMemoryGameRepository:
         return game
 
     async def get(self, game_id: str) -> Game:
+        if game_id not in self.games:
+            raise GameNotFound(f"Game '{game_id}' not found")
         return deepcopy(self.games[game_id])
