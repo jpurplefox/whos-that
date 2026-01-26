@@ -1,10 +1,14 @@
-class NoAttemptsRemaining(Exception):
+class DomainException(Exception):
     pass
 
 
-class PokemonNotFound(Exception):
+class NoAttemptsRemaining(DomainException):
     pass
 
 
-class GameNotFound(Exception):
+class PokemonNotFound(DomainException):
+    pass
+
+
+class GameNotFound(DomainException):
     pass
