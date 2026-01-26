@@ -149,3 +149,14 @@ def test_guess_returns_422_when_pokemon_not_found():
 
     assert response.status_code == 422
     assert response.json() == {"error": "Pokemon not found"}
+
+
+def test_guess_returns_422_when_pokemon_name_is_invalid():
+    client = TestClient(app, raise_server_exceptions=False)
+    response = client.post(
+        "/games/game-1/guess",
+        json={"pokemon_name": "../pikachu"},
+    )
+
+    assert response.status_code == 422
+    assert "errors" in response.json()

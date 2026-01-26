@@ -1,6 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from domain.game import ComparisonHint, Game, StatHint
+
+
+class GuessRequest(BaseModel):
+    pokemon_name: str = Field(pattern=r"^[a-zA-Z0-9-]+$", max_length=50)
 
 
 class StatHintResponse(BaseModel):

@@ -1,9 +1,10 @@
 from dependency_injector.wiring import inject, Provide
+from pydantic import ValidationError
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from api.containers import Container
-from api.schemas import GameResponse
+from api.schemas import GameResponse, GuessRequest
 from domain.exceptions import NoAttemptsRemaining, PokemonNotFound
 from services.guess import Guess
 from services.start_game import StartGame
@@ -25,10 +26,14 @@ async def guess(
 ) -> JSONResponse:
     game_id = request.path_params["game_id"]
     body = await request.json()
-    pokemon_name = body["pokemon_name"]
 
     try:
-        game = await guess_use_case.execute(game_id, pokemon_name)
+        guess_request = GuessRequest(**body)
+    except ValidationError as e:
+        return JSONResponse({"errors": e.errors()}, status_code=422)
+
+    try:
+        game = await guess_use_case.execute(game_id, guess_request.pokemon_name)
     except NoAttemptsRemaining:
         return JSONResponse({"error": "No attempts remaining"}, status_code=422)
     except PokemonNotFound:
