@@ -70,7 +70,6 @@ class Game:
         if len(self.attempts) >= self.max_attempts:
             raise NoAttemptsRemaining()
         self.attempts.append(pokemon)
-        is_correct = pokemon.id == self.pokemon.id
-        if not is_correct:
+        if not self.is_won:
             self.add_comparison_hint(pokemon)
-        return is_correct
+        return self.is_won
