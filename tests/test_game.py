@@ -1,6 +1,6 @@
 import pytest
 
-from domain.game import Comparison, ComparisonHint, Game, StatHint
+from domain.game import Comparison, ComparisonHint, Game, NoAttemptsRemainingError, StatHint
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 
@@ -70,7 +70,7 @@ def test_guess_raises_when_no_attempts_remaining():
 
     game.guess(charmander)
 
-    with pytest.raises(ValueError, match="No attempts remaining"):
+    with pytest.raises(NoAttemptsRemainingError):
         game.guess(charmander)
 
 

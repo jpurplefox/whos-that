@@ -2,7 +2,7 @@ import pytest
 from starlette.testclient import TestClient
 
 from api.app import app, container
-from domain.game import Game
+from domain.game import Game, NoAttemptsRemainingError
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 
@@ -109,3 +109,23 @@ def test_guess_incorrect_pokemon_returns_comparison_hint(
     assert data["hints"][1]["type"] == "comparison"
     assert data["hints"][1]["pokemon"] == "bulbasaur"
     assert data["hints"][1]["comparisons"]["speed"] == "higher"
+
+
+class FakeGameServiceNoAttempts:
+    async def start_game(self) -> Game:
+        raise NotImplementedError()
+
+    async def guess(self, game_id: str, pokemon_name: str) -> Game:
+        raise NoAttemptsRemainingError()
+
+
+def test_guess_returns_422_when_no_attempts_remaining():
+    with container.game_service.override(FakeGameServiceNoAttempts()):
+        client = TestClient(app, raise_server_exceptions=False)
+        response = client.post(
+            "/games/game-1/guess",
+            json={"pokemon_name": "pikachu"},
+        )
+
+    assert response.status_code == 422
+    assert response.json() == {"error": "No attempts remaining"}

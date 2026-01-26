@@ -6,7 +6,18 @@ from starlette.routing import Route
 
 from api.containers import Container
 from api.schemas import GameResponse
+from domain.game import NoAttemptsRemainingError
 from services.game_service import GameService
+
+
+async def no_attempts_remaining_handler(
+    request: Request,
+    exc: NoAttemptsRemainingError,
+) -> JSONResponse:
+    return JSONResponse(
+        {"error": "No attempts remaining"},
+        status_code=422,
+    )
 
 
 @inject
@@ -39,4 +50,8 @@ routes = [
 container = Container()
 container.wire(modules=[__name__])
 
-app = Starlette(routes=routes)
+exception_handlers = {
+    NoAttemptsRemainingError: no_attempts_remaining_handler,
+}
+
+app = Starlette(routes=routes, exception_handlers=exception_handlers)  # type: ignore[arg-type]
