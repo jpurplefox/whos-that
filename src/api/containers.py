@@ -1,3 +1,5 @@
+from collections.abc import AsyncIterator
+
 import httpx
 from dependency_injector import containers, providers
 
@@ -11,13 +13,19 @@ from services.guess import Guess
 from services.start_game import StartGame
 
 
+async def init_http_client(timeout: float) -> AsyncIterator[httpx.AsyncClient]:
+    client = httpx.AsyncClient(timeout=timeout)
+    yield client
+    await client.aclose()
+
+
 class Container(containers.DeclarativeContainer):
     settings = providers.Singleton(Settings)
 
     random_generator = providers.Singleton(SystemRandomGenerator)
 
-    http_client = providers.Singleton(
-        httpx.AsyncClient,
+    http_client = providers.Resource(
+        init_http_client,
         timeout=settings.provided.http_timeout,
     )
 

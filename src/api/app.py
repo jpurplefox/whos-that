@@ -1,3 +1,7 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+from typing import Any
+
 from dependency_injector.wiring import inject, Provide
 from starlette.applications import Starlette
 from starlette.requests import Request
@@ -9,6 +13,16 @@ from api.schemas import GameResponse
 from domain.exceptions import NoAttemptsRemaining, PokemonNotFound
 from services.guess import Guess
 from services.start_game import StartGame
+
+
+container = Container()
+
+
+@asynccontextmanager
+async def lifespan(app: Starlette) -> AsyncIterator[None]:
+    await container.init_resources()  # type: ignore[misc]
+    yield
+    await container.shutdown_resources()  # type: ignore[misc]
 
 
 @inject
@@ -44,7 +58,5 @@ routes = [
     Route("/games/{game_id}/guess", guess, methods=["POST"]),
 ]
 
-container = Container()
 container.wire(modules=[__name__])
-
-app = Starlette(routes=routes)
+app = Starlette(routes=routes, lifespan=lifespan)
