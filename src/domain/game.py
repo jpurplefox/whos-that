@@ -57,6 +57,14 @@ class Game:
         self.hints.append(hint)
         return hint
 
+    @property
+    def is_won(self) -> bool:
+        return len(self.attempts) > 0 and self.attempts[-1].id == self.pokemon.id
+
+    @property
+    def attempts_remaining(self) -> int:
+        return self.max_attempts - len(self.attempts)
+
     def guess(self, pokemon: Pokemon) -> bool:
         if len(self.attempts) >= self.max_attempts:
             raise ValueError("No attempts remaining")

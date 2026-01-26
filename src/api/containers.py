@@ -1,0 +1,34 @@
+import httpx
+from dependency_injector import containers, providers
+
+from infrastructure.random_generator import SystemRandomGenerator
+from infrastructure.random_stat_selector import RandomStatSelector
+from repositories.in_memory_game_repository import InMemoryGameRepository
+from repositories.pokeapi_pokemon_repository import PokeApiPokemonRepository
+from services.game_service import GameService
+
+
+class Container(containers.DeclarativeContainer):
+    random_generator = providers.Singleton(SystemRandomGenerator)
+
+    http_client = providers.Singleton(httpx.AsyncClient)
+
+    pokemon_repository = providers.Singleton(
+        PokeApiPokemonRepository,
+        client=http_client,
+        random_generator=random_generator,
+    )
+
+    stat_selector = providers.Singleton(
+        RandomStatSelector,
+        random_generator=random_generator,
+    )
+
+    game_repository = providers.Singleton(InMemoryGameRepository)
+
+    game_service = providers.Singleton(
+        GameService,
+        pokemon_repository=pokemon_repository,
+        stat_selector=stat_selector,
+        game_repository=game_repository,
+    )

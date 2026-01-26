@@ -7,3 +7,7 @@ mypy==1.15.0
 httpx==0.28.1
 pytest-asyncio==0.25.3
 respx==0.22.0
+dependency-injector==4.46.0
+pydantic==2.11.2
+starlette==0.46.2
+uvicorn==0.34.3

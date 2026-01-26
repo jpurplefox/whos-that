@@ -1,13 +1,9 @@
-from typing import Any, Protocol
+from typing import Any
 
 import httpx
 
 from domain.pokemon import Pokemon
-
-
-class RandomGenerator(Protocol):
-    def randint(self, min_value: int, max_value: int) -> int:
-        ...
+from infrastructure.random_generator import RandomGenerator
 
 
 class PokeApiPokemonRepository:
