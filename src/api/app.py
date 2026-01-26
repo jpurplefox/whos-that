@@ -7,29 +7,30 @@ from starlette.routing import Route
 from api.containers import Container
 from api.schemas import GameResponse
 from domain.exceptions import NoAttemptsRemaining, PokemonNotFound
-from services.game_service import GameService
+from services.guess import Guess
+from services.start_game import StartGame
 
 
 @inject
 async def create_game(
     request: Request,
-    game_service: GameService = Provide[Container.game_service],
+    start_game: StartGame = Provide[Container.start_game],
 ) -> JSONResponse:
-    game = await game_service.start_game()
+    game = await start_game.execute()
     return JSONResponse(GameResponse.from_game(game).model_dump())
 
 
 @inject
 async def guess(
     request: Request,
-    game_service: GameService = Provide[Container.game_service],
+    guess_use_case: Guess = Provide[Container.guess],
 ) -> JSONResponse:
     game_id = request.path_params["game_id"]
     body = await request.json()
     pokemon_name = body["pokemon_name"]
 
     try:
-        game = await game_service.guess(game_id, pokemon_name)
+        game = await guess_use_case.execute(game_id, pokemon_name)
     except NoAttemptsRemaining:
         return JSONResponse({"error": "No attempts remaining"}, status_code=422)
     except PokemonNotFound:

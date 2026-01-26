@@ -6,7 +6,8 @@ from infrastructure.random_pokemon_selector import RandomPokemonSelector
 from infrastructure.random_stat_selector import RandomStatSelector
 from repositories.in_memory_game_repository import InMemoryGameRepository
 from repositories.pokeapi_pokemon_repository import PokeApiPokemonRepository
-from services.game_service import GameService
+from services.guess import Guess
+from services.start_game import StartGame
 
 
 class Container(containers.DeclarativeContainer):
@@ -32,10 +33,15 @@ class Container(containers.DeclarativeContainer):
 
     game_repository = providers.Singleton(InMemoryGameRepository)
 
-    game_service = providers.Singleton(
-        GameService,
-        pokemon_repository=pokemon_repository,
+    start_game = providers.Singleton(
+        StartGame,
+        pokemon_selector=pokemon_selector,
         stat_selector=stat_selector,
         game_repository=game_repository,
-        pokemon_selector=pokemon_selector,
+    )
+
+    guess = providers.Singleton(
+        Guess,
+        pokemon_repository=pokemon_repository,
+        game_repository=game_repository,
     )

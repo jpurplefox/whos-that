@@ -36,14 +36,19 @@ def bulbasaur():
     )
 
 
-class FakeGameService:
+class FakeStartGame:
     def __init__(self, game: Game):
         self.game = game
 
-    async def start_game(self) -> Game:
+    async def execute(self) -> Game:
         return self.game
 
-    async def guess(self, game_id: str, pokemon_name: str) -> Game:
+
+class FakeGuess:
+    def __init__(self, game: Game):
+        self.game = game
+
+    async def execute(self, game_id: str, pokemon_name: str) -> Game:
         return self.game
 
 
@@ -51,7 +56,7 @@ def test_create_game_returns_game_with_hint(pikachu: Pokemon):
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
 
-    with container.game_service.override(FakeGameService(game)):
+    with container.start_game.override(FakeStartGame(game)):
         client = TestClient(app)
         response = client.post("/games")
 
@@ -72,7 +77,7 @@ def test_guess_correct_pokemon(pikachu: Pokemon):
     game.add_stat_hint(Stat.SPEED)
     game.guess(pikachu)
 
-    with container.game_service.override(FakeGameService(game)):
+    with container.guess.override(FakeGuess(game)):
         client = TestClient(app)
         response = client.post(
             "/games/game-1/guess",
@@ -94,7 +99,7 @@ def test_guess_incorrect_pokemon_returns_comparison_hint(
     game.add_stat_hint(Stat.SPEED)
     game.guess(bulbasaur)
 
-    with container.game_service.override(FakeGameService(game)):
+    with container.guess.override(FakeGuess(game)):
         client = TestClient(app)
         response = client.post(
             "/games/game-1/guess",
@@ -112,16 +117,13 @@ def test_guess_incorrect_pokemon_returns_comparison_hint(
     assert data["hints"][1]["comparisons"]["speed"] == "higher"
 
 
-class FakeGameServiceNoAttempts:
-    async def start_game(self) -> Game:
-        raise NotImplementedError()
-
-    async def guess(self, game_id: str, pokemon_name: str) -> Game:
+class FakeGuessNoAttempts:
+    async def execute(self, game_id: str, pokemon_name: str) -> Game:
         raise NoAttemptsRemaining()
 
 
 def test_guess_returns_422_when_no_attempts_remaining():
-    with container.game_service.override(FakeGameServiceNoAttempts()):
+    with container.guess.override(FakeGuessNoAttempts()):
         client = TestClient(app, raise_server_exceptions=False)
         response = client.post(
             "/games/game-1/guess",
@@ -132,16 +134,13 @@ def test_guess_returns_422_when_no_attempts_remaining():
     assert response.json() == {"error": "No attempts remaining"}
 
 
-class FakeGameServicePokemonNotFound:
-    async def start_game(self) -> Game:
-        raise NotImplementedError()
-
-    async def guess(self, game_id: str, pokemon_name: str) -> Game:
+class FakeGuessPokemonNotFound:
+    async def execute(self, game_id: str, pokemon_name: str) -> Game:
         raise PokemonNotFound()
 
 
 def test_guess_returns_422_when_pokemon_not_found():
-    with container.game_service.override(FakeGameServicePokemonNotFound()):
+    with container.guess.override(FakeGuessPokemonNotFound()):
         client = TestClient(app, raise_server_exceptions=False)
         response = client.post(
             "/games/game-1/guess",
