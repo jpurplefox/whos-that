@@ -1,6 +1,5 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import Any
 
 from dependency_injector.wiring import inject, Provide
 from starlette.applications import Starlette
