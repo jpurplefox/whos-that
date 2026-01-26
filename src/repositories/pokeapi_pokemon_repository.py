@@ -2,6 +2,7 @@ from typing import Any
 
 import httpx
 
+from domain.exceptions import PokemonNotFound
 from domain.pokemon import Pokemon
 from infrastructure.random_generator import RandomGenerator
 
@@ -23,6 +24,8 @@ class PokeApiPokemonRepository:
 
     async def _fetch_pokemon(self, identifier: str) -> Pokemon:
         response = await self.client.get(f"{self.BASE_URL}/{identifier}")
+        if response.status_code == 404:
+            raise PokemonNotFound(f"Pokemon '{identifier}' not found")
         response.raise_for_status()
         data = response.json()
         return self._parse_pokemon(data)

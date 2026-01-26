@@ -1,12 +1,9 @@
 from dataclasses import dataclass, field
 from enum import Enum
 
+from domain.exceptions import NoAttemptsRemaining
 from domain.pokemon import Pokemon
 from domain.stat import Stat
-
-
-class NoAttemptsRemainingError(Exception):
-    pass
 
 
 class Hint:
@@ -71,7 +68,7 @@ class Game:
 
     def guess(self, pokemon: Pokemon) -> bool:
         if len(self.attempts) >= self.max_attempts:
-            raise NoAttemptsRemainingError()
+            raise NoAttemptsRemaining()
         self.attempts.append(pokemon)
         is_correct = pokemon.id == self.pokemon.id
         if not is_correct:

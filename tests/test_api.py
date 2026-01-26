@@ -2,7 +2,8 @@ import pytest
 from starlette.testclient import TestClient
 
 from api.app import app, container
-from domain.game import Game, NoAttemptsRemainingError
+from domain.exceptions import NoAttemptsRemaining, PokemonNotFound
+from domain.game import Game
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 
@@ -116,7 +117,7 @@ class FakeGameServiceNoAttempts:
         raise NotImplementedError()
 
     async def guess(self, game_id: str, pokemon_name: str) -> Game:
-        raise NoAttemptsRemainingError()
+        raise NoAttemptsRemaining()
 
 
 def test_guess_returns_422_when_no_attempts_remaining():
@@ -129,3 +130,23 @@ def test_guess_returns_422_when_no_attempts_remaining():
 
     assert response.status_code == 422
     assert response.json() == {"error": "No attempts remaining"}
+
+
+class FakeGameServicePokemonNotFound:
+    async def start_game(self) -> Game:
+        raise NotImplementedError()
+
+    async def guess(self, game_id: str, pokemon_name: str) -> Game:
+        raise PokemonNotFound()
+
+
+def test_guess_returns_422_when_pokemon_not_found():
+    with container.game_service.override(FakeGameServicePokemonNotFound()):
+        client = TestClient(app, raise_server_exceptions=False)
+        response = client.post(
+            "/games/game-1/guess",
+            json={"pokemon_name": "notapokemon"},
+        )
+
+    assert response.status_code == 422
+    assert response.json() == {"error": "Pokemon not found"}
