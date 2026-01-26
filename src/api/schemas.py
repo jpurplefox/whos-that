@@ -1,6 +1,18 @@
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 from domain.game import ComparisonHint, Game, StatHint
+
+
+class ErrorResponse(BaseModel):
+    model_config = {"json_schema_serialization_defaults_required": True}
+
+    error: str
+    details: list[Any] | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return self.model_dump(exclude_none=True)
 
 
 class GuessRequest(BaseModel):

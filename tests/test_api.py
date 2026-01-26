@@ -159,7 +159,9 @@ def test_guess_returns_422_when_pokemon_name_is_invalid():
     )
 
     assert response.status_code == 422
-    assert "errors" in response.json()
+    data = response.json()
+    assert data["error"] == "Validation error"
+    assert "details" in data
 
 
 class FakeGuessGameNotFound:

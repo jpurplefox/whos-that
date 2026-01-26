@@ -9,13 +9,14 @@ from starlette.routing import Route
 from api import views
 from api.containers import Container
 from api.exceptions import InvalidJSONBody
+from api.schemas import ErrorResponse
 
 
 container = Container()
 
 
 async def invalid_json_body_handler(request: Request, exc: Exception) -> JSONResponse:
-    return JSONResponse({"error": "Invalid JSON"}, status_code=400)
+    return JSONResponse(ErrorResponse(error="Invalid JSON").to_dict(), status_code=400)
 
 
 @asynccontextmanager
