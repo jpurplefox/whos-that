@@ -9,12 +9,8 @@ from services.game_service import GameService
 
 
 class FakePokemonRepository:
-    def __init__(self, pokemon: Pokemon):
-        self.pokemon = pokemon
+    def __init__(self) -> None:
         self.pokemons_by_name: dict[str, Pokemon] = {}
-
-    async def get_random_pokemon(self) -> Pokemon:
-        return self.pokemon
 
     async def get_by_name(self, name: str) -> Pokemon:
         return self.pokemons_by_name[name]
@@ -29,6 +25,14 @@ class FakeStatSelector:
 
     def select(self) -> Stat:
         return self.stat
+
+
+class FakePokemonSelector:
+    def __init__(self, pokemon: Pokemon):
+        self.pokemon = pokemon
+
+    async def select(self) -> Pokemon:
+        return self.pokemon
 
 
 class FakeGameRepository:
@@ -50,11 +54,12 @@ class FakeGameRepository:
 @pytest.mark.asyncio
 async def test_start_game_creates_game_with_pokemon():
     pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
-    repository = FakePokemonRepository(pokemon)
+    pokemon_repository = FakePokemonRepository()
     stat_selector = FakeStatSelector(Stat.SPEED)
     game_repository = FakeGameRepository()
+    pokemon_selector = FakePokemonSelector(pokemon)
 
-    service = GameService(repository, stat_selector, game_repository)
+    service = GameService(pokemon_repository, stat_selector, game_repository, pokemon_selector)
     game = await service.start_game()
 
     assert game.pokemon == pokemon
@@ -63,11 +68,12 @@ async def test_start_game_creates_game_with_pokemon():
 @pytest.mark.asyncio
 async def test_start_game_adds_first_hint_with_selected_stat():
     pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
-    repository = FakePokemonRepository(pokemon)
+    pokemon_repository = FakePokemonRepository()
     stat_selector = FakeStatSelector(Stat.SPEED)
     game_repository = FakeGameRepository()
+    pokemon_selector = FakePokemonSelector(pokemon)
 
-    service = GameService(repository, stat_selector, game_repository)
+    service = GameService(pokemon_repository, stat_selector, game_repository, pokemon_selector)
     game = await service.start_game()
 
     assert len(game.hints) == 1
@@ -77,11 +83,12 @@ async def test_start_game_adds_first_hint_with_selected_stat():
 @pytest.mark.asyncio
 async def test_start_game_saves_game_with_id():
     pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
-    repository = FakePokemonRepository(pokemon)
+    pokemon_repository = FakePokemonRepository()
     stat_selector = FakeStatSelector(Stat.SPEED)
     game_repository = FakeGameRepository()
+    pokemon_selector = FakePokemonSelector(pokemon)
 
-    service = GameService(repository, stat_selector, game_repository)
+    service = GameService(pokemon_repository, stat_selector, game_repository, pokemon_selector)
     game = await service.start_game()
 
     assert game.id is not None
@@ -91,12 +98,13 @@ async def test_start_game_saves_game_with_id():
 async def test_guess_returns_game_with_attempt():
     pikachu = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
     charmander = Pokemon(id=4, name="Charmander", hp=39, attack=52, defense=43, sp_attack=60, sp_defense=50, speed=65)
-    repository = FakePokemonRepository(pikachu)
-    repository.add_pokemon(charmander)
+    pokemon_repository = FakePokemonRepository()
+    pokemon_repository.add_pokemon(charmander)
     stat_selector = FakeStatSelector(Stat.SPEED)
     game_repository = FakeGameRepository()
+    pokemon_selector = FakePokemonSelector(pikachu)
 
-    service = GameService(repository, stat_selector, game_repository)
+    service = GameService(pokemon_repository, stat_selector, game_repository, pokemon_selector)
     game = await service.start_game()
     game = await service.guess(game.id, "Charmander")
 

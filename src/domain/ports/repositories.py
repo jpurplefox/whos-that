@@ -5,7 +5,7 @@ from domain.pokemon import Pokemon
 
 
 class PokemonRepository(Protocol):
-    async def get_random_pokemon(self) -> Pokemon:
+    async def get_by_number(self, number: int) -> Pokemon:
         ...
 
     async def get_by_name(self, name: str) -> Pokemon:

@@ -4,20 +4,16 @@ import httpx
 
 from domain.exceptions import PokemonNotFound
 from domain.pokemon import Pokemon
-from infrastructure.random_generator import RandomGenerator
 
 
 class PokeApiPokemonRepository:
     BASE_URL = "https://pokeapi.co/api/v2/pokemon"
-    MAX_POKEMON_ID = 151
 
-    def __init__(self, client: httpx.AsyncClient, random_generator: RandomGenerator):
+    def __init__(self, client: httpx.AsyncClient):
         self.client = client
-        self.random_generator = random_generator
 
-    async def get_random_pokemon(self) -> Pokemon:
-        pokemon_id = self.random_generator.randint(1, self.MAX_POKEMON_ID)
-        return await self._fetch_pokemon(str(pokemon_id))
+    async def get_by_number(self, number: int) -> Pokemon:
+        return await self._fetch_pokemon(str(number))
 
     async def get_by_name(self, name: str) -> Pokemon:
         return await self._fetch_pokemon(name.lower())

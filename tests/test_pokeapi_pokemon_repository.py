@@ -6,14 +6,6 @@ from domain.pokemon import Pokemon
 from repositories.pokeapi_pokemon_repository import PokeApiPokemonRepository
 
 
-class FakeRandomGenerator:
-    def __init__(self, value: int):
-        self.value = value
-
-    def randint(self, min_value: int, max_value: int) -> int:
-        return self.value
-
-
 def make_pokemon_response(
     id: int,
     name: str,
@@ -40,7 +32,7 @@ def make_pokemon_response(
 
 @pytest.mark.asyncio
 @respx.mock
-async def test_get_random_pokemon_fetches_pokemon_by_random_id():
+async def test_get_by_number_fetches_pokemon_by_id():
     respx.get("https://pokeapi.co/api/v2/pokemon/25").mock(
         return_value=httpx.Response(
             200,
@@ -58,8 +50,8 @@ async def test_get_random_pokemon_fetches_pokemon_by_random_id():
     )
 
     async with httpx.AsyncClient() as client:
-        repository = PokeApiPokemonRepository(client, FakeRandomGenerator(25))
-        pokemon = await repository.get_random_pokemon()
+        repository = PokeApiPokemonRepository(client)
+        pokemon = await repository.get_by_number(25)
 
     assert pokemon == Pokemon(
         id=25,
@@ -93,7 +85,7 @@ async def test_get_by_name_fetches_pokemon_by_name():
     )
 
     async with httpx.AsyncClient() as client:
-        repository = PokeApiPokemonRepository(client, FakeRandomGenerator(1))
+        repository = PokeApiPokemonRepository(client)
         pokemon = await repository.get_by_name("Bulbasaur")
 
     assert pokemon == Pokemon(
