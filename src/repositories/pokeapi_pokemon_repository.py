@@ -7,10 +7,9 @@ from domain.pokemon import Pokemon
 
 
 class PokeApiPokemonRepository:
-    BASE_URL = "https://pokeapi.co/api/v2/pokemon"
-
-    def __init__(self, client: httpx.AsyncClient):
+    def __init__(self, client: httpx.AsyncClient, base_url: str):
         self.client = client
+        self.base_url = base_url
 
     async def get_by_number(self, number: int) -> Pokemon:
         return await self._fetch_pokemon(str(number))
@@ -19,7 +18,7 @@ class PokeApiPokemonRepository:
         return await self._fetch_pokemon(name.lower())
 
     async def _fetch_pokemon(self, identifier: str) -> Pokemon:
-        response = await self.client.get(f"{self.BASE_URL}/{identifier}")
+        response = await self.client.get(f"{self.base_url}/{identifier}")
         if response.status_code == 404:
             raise PokemonNotFound(f"Pokemon '{identifier}' not found")
         response.raise_for_status()

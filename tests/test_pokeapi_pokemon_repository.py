@@ -50,7 +50,7 @@ async def test_get_by_number_fetches_pokemon_by_id():
     )
 
     async with httpx.AsyncClient() as client:
-        repository = PokeApiPokemonRepository(client)
+        repository = PokeApiPokemonRepository(client, base_url="https://pokeapi.co/api/v2/pokemon")
         pokemon = await repository.get_by_number(25)
 
     assert pokemon == Pokemon(
@@ -85,7 +85,7 @@ async def test_get_by_name_fetches_pokemon_by_name():
     )
 
     async with httpx.AsyncClient() as client:
-        repository = PokeApiPokemonRepository(client)
+        repository = PokeApiPokemonRepository(client, base_url="https://pokeapi.co/api/v2/pokemon")
         pokemon = await repository.get_by_name("Bulbasaur")
 
     assert pokemon == Pokemon(

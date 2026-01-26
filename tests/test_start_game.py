@@ -29,7 +29,7 @@ async def test_creates_game_with_pokemon(game_repository: GameRepository):
     pokemon_selector = FakePokemonSelector(pokemon)
     stat_selector = FakeStatSelector(Stat.SPEED)
 
-    start_game = StartGame(pokemon_selector, stat_selector, game_repository)
+    start_game = StartGame(pokemon_selector, stat_selector, game_repository, max_attempts=4)
     game = await start_game.execute()
 
     assert game.pokemon == pokemon
@@ -41,7 +41,7 @@ async def test_adds_first_hint_with_selected_stat(game_repository: GameRepositor
     pokemon_selector = FakePokemonSelector(pokemon)
     stat_selector = FakeStatSelector(Stat.SPEED)
 
-    start_game = StartGame(pokemon_selector, stat_selector, game_repository)
+    start_game = StartGame(pokemon_selector, stat_selector, game_repository, max_attempts=4)
     game = await start_game.execute()
 
     assert len(game.hints) == 1
@@ -54,7 +54,7 @@ async def test_saves_game_with_id(game_repository: GameRepository):
     pokemon_selector = FakePokemonSelector(pokemon)
     stat_selector = FakeStatSelector(Stat.SPEED)
 
-    start_game = StartGame(pokemon_selector, stat_selector, game_repository)
+    start_game = StartGame(pokemon_selector, stat_selector, game_repository, max_attempts=4)
     game = await start_game.execute()
 
     assert game.id is not None
