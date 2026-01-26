@@ -4,6 +4,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from api.containers import Container
+from api.helpers import parse_json_body
 from api.schemas import GameResponse, GuessRequest
 from domain.exceptions import GameNotFound, NoAttemptsRemaining, PokemonNotFound
 from services.guess import Guess
@@ -25,7 +26,7 @@ async def guess(
     guess_use_case: Guess = Provide[Container.guess],
 ) -> JSONResponse:
     game_id = request.path_params["game_id"]
-    body = await request.json()
+    body = await parse_json_body(request)
 
     try:
         guess_request = GuessRequest(**body)

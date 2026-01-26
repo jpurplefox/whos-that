@@ -1,0 +1,2 @@
+class InvalidJSONBody(Exception):
+    pass

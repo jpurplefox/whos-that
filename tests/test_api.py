@@ -177,3 +177,15 @@ def test_guess_returns_404_when_game_not_found():
 
     assert response.status_code == 404
     assert response.json() == {"error": "Game not found"}
+
+
+def test_guess_returns_400_when_invalid_json():
+    client = TestClient(app, raise_server_exceptions=False)
+    response = client.post(
+        "/games/game-1/guess",
+        content="not valid json",
+        headers={"Content-Type": "application/json"},
+    )
+
+    assert response.status_code == 400
+    assert response.json() == {"error": "Invalid JSON"}

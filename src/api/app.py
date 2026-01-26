@@ -2,13 +2,20 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from starlette.applications import Starlette
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 from starlette.routing import Route
 
 from api import views
 from api.containers import Container
+from api.exceptions import InvalidJSONBody
 
 
 container = Container()
+
+
+async def invalid_json_body_handler(request: Request, exc: Exception) -> JSONResponse:
+    return JSONResponse({"error": "Invalid JSON"}, status_code=400)
 
 
 @asynccontextmanager
@@ -24,4 +31,8 @@ routes = [
 ]
 
 container.wire(modules=[views])
-app = Starlette(routes=routes, lifespan=lifespan)
+app = Starlette(
+    routes=routes,
+    lifespan=lifespan,
+    exception_handlers={InvalidJSONBody: invalid_json_body_handler},
+)
