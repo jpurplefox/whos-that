@@ -10,16 +10,6 @@ from domain.game import NoAttemptsRemainingError
 from services.game_service import GameService
 
 
-async def no_attempts_remaining_handler(
-    request: Request,
-    exc: NoAttemptsRemainingError,
-) -> JSONResponse:
-    return JSONResponse(
-        {"error": "No attempts remaining"},
-        status_code=422,
-    )
-
-
 @inject
 async def create_game(
     request: Request,
@@ -38,7 +28,11 @@ async def guess(
     body = await request.json()
     pokemon_name = body["pokemon_name"]
 
-    game = await game_service.guess(game_id, pokemon_name)
+    try:
+        game = await game_service.guess(game_id, pokemon_name)
+    except NoAttemptsRemainingError:
+        return JSONResponse({"error": "No attempts remaining"}, status_code=422)
+
     return JSONResponse(GameResponse.from_game(game).model_dump())
 
 
@@ -50,8 +44,4 @@ routes = [
 container = Container()
 container.wire(modules=[__name__])
 
-exception_handlers = {
-    NoAttemptsRemainingError: no_attempts_remaining_handler,
-}
-
-app = Starlette(routes=routes, exception_handlers=exception_handlers)  # type: ignore[arg-type]
+app = Starlette(routes=routes)
