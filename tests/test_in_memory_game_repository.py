@@ -2,7 +2,7 @@ import pytest
 
 from domain.game import Game
 from domain.pokemon import Pokemon
-from repositories.in_memory_game_repository import InMemoryGameRepository
+from adapters.in_memory_game_repository import InMemoryGameRepository
 
 
 @pytest.mark.asyncio

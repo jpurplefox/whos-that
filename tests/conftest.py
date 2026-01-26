@@ -1,6 +1,6 @@
 import pytest
 
-from repositories.in_memory_game_repository import InMemoryGameRepository
+from adapters.in_memory_game_repository import InMemoryGameRepository
 
 
 @pytest.fixture

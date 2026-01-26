@@ -3,7 +3,7 @@ import pytest
 import respx
 
 from domain.pokemon import Pokemon
-from repositories.pokeapi_pokemon_repository import PokeApiPokemonRepository
+from adapters.pokeapi_pokemon_repository import PokeApiPokemonRepository
 
 
 def make_pokemon_response(

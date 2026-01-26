@@ -4,11 +4,11 @@ import httpx
 from dependency_injector import containers, providers
 
 from config import Settings
-from infrastructure.random_generator import SystemRandomGenerator
-from infrastructure.random_pokemon_selector import RandomPokemonSelector
-from infrastructure.random_stat_selector import RandomStatSelector
-from repositories.in_memory_game_repository import InMemoryGameRepository
-from repositories.pokeapi_pokemon_repository import PokeApiPokemonRepository
+from adapters.in_memory_game_repository import InMemoryGameRepository
+from adapters.pokeapi_pokemon_repository import PokeApiPokemonRepository
+from adapters.random_generator import SystemRandomGenerator
+from adapters.random_pokemon_selector import RandomPokemonSelector
+from adapters.random_stat_selector import RandomStatSelector
 from services.guess import Guess
 from services.start_game import StartGame
 
