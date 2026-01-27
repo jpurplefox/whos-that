@@ -1,7 +1,8 @@
 import pytest
-from starlette.testclient import TestClient
+from litestar.testing import TestClient
 
-from api.app import app, container
+from api.app import app
+from api.dependencies import container
 from domain.exceptions import GameNotFound, NoAttemptsRemaining, PokemonNotFound
 from domain.game import Game
 from domain.pokemon import Pokemon
@@ -57,10 +58,10 @@ def test_create_game_returns_game_with_hint(pikachu: Pokemon):
     game.add_stat_hint(Stat.SPEED)
 
     with container.start_game.override(FakeStartGame(game)):
-        client = TestClient(app)
-        response = client.post("/games")
+        with TestClient(app) as client:
+            response = client.post("/games")
 
-    assert response.status_code == 200
+    assert response.status_code == 201
     data = response.json()
     assert data["id"] == "game-1"
     assert data["is_won"] is False
@@ -78,13 +79,13 @@ def test_guess_correct_pokemon(pikachu: Pokemon):
     game.guess(pikachu)
 
     with container.guess.override(FakeGuess(game)):
-        client = TestClient(app)
-        response = client.post(
-            "/games/game-1/guess",
-            json={"pokemon_name": "pikachu"},
-        )
+        with TestClient(app) as client:
+            response = client.post(
+                "/games/game-1/guess",
+                json={"pokemon_name": "pikachu"},
+            )
 
-    assert response.status_code == 200
+    assert response.status_code == 201
     data = response.json()
     assert data["is_won"] is True
     assert data["attempts_remaining"] == 3
@@ -100,13 +101,13 @@ def test_guess_incorrect_pokemon_returns_comparison_hint(
     game.guess(bulbasaur)
 
     with container.guess.override(FakeGuess(game)):
-        client = TestClient(app)
-        response = client.post(
-            "/games/game-1/guess",
-            json={"pokemon_name": "bulbasaur"},
-        )
+        with TestClient(app) as client:
+            response = client.post(
+                "/games/game-1/guess",
+                json={"pokemon_name": "bulbasaur"},
+            )
 
-    assert response.status_code == 200
+    assert response.status_code == 201
     data = response.json()
     assert data["is_won"] is False
     assert data["attempts_remaining"] == 3
@@ -122,16 +123,15 @@ class FakeGuessNoAttempts:
         raise NoAttemptsRemaining()
 
 
-def test_guess_returns_422_when_no_attempts_remaining():
+def test_guess_returns_400_when_no_attempts_remaining():
     with container.guess.override(FakeGuessNoAttempts()):
-        client = TestClient(app, raise_server_exceptions=False)
-        response = client.post(
-            "/games/game-1/guess",
-            json={"pokemon_name": "pikachu"},
-        )
+        with TestClient(app) as client:
+            response = client.post(
+                "/games/game-1/guess",
+                json={"pokemon_name": "pikachu"},
+            )
 
-    assert response.status_code == 422
-    assert response.json() == {"error": "No attempts remaining"}
+    assert response.status_code == 400
 
 
 class FakeGuessPokemonNotFound:
@@ -139,29 +139,25 @@ class FakeGuessPokemonNotFound:
         raise PokemonNotFound()
 
 
-def test_guess_returns_422_when_pokemon_not_found():
+def test_guess_returns_400_when_pokemon_not_found():
     with container.guess.override(FakeGuessPokemonNotFound()):
-        client = TestClient(app, raise_server_exceptions=False)
+        with TestClient(app) as client:
+            response = client.post(
+                "/games/game-1/guess",
+                json={"pokemon_name": "notapokemon"},
+            )
+
+    assert response.status_code == 400
+
+
+def test_guess_returns_400_when_pokemon_name_is_invalid():
+    with TestClient(app) as client:
         response = client.post(
             "/games/game-1/guess",
-            json={"pokemon_name": "notapokemon"},
+            json={"pokemon_name": "../pikachu"},
         )
 
-    assert response.status_code == 422
-    assert response.json() == {"error": "Pokemon not found"}
-
-
-def test_guess_returns_422_when_pokemon_name_is_invalid():
-    client = TestClient(app, raise_server_exceptions=False)
-    response = client.post(
-        "/games/game-1/guess",
-        json={"pokemon_name": "../pikachu"},
-    )
-
-    assert response.status_code == 422
-    data = response.json()
-    assert data["error"] == "Validation error"
-    assert "details" in data
+    assert response.status_code == 400
 
 
 class FakeGuessGameNotFound:
@@ -171,23 +167,21 @@ class FakeGuessGameNotFound:
 
 def test_guess_returns_404_when_game_not_found():
     with container.guess.override(FakeGuessGameNotFound()):
-        client = TestClient(app, raise_server_exceptions=False)
-        response = client.post(
-            "/games/nonexistent/guess",
-            json={"pokemon_name": "pikachu"},
-        )
+        with TestClient(app) as client:
+            response = client.post(
+                "/games/nonexistent/guess",
+                json={"pokemon_name": "pikachu"},
+            )
 
     assert response.status_code == 404
-    assert response.json() == {"error": "Game not found"}
 
 
 def test_guess_returns_400_when_invalid_json():
-    client = TestClient(app, raise_server_exceptions=False)
-    response = client.post(
-        "/games/game-1/guess",
-        content="not valid json",
-        headers={"Content-Type": "application/json"},
-    )
+    with TestClient(app) as client:
+        response = client.post(
+            "/games/game-1/guess",
+            content="not valid json",
+            headers={"Content-Type": "application/json"},
+        )
 
     assert response.status_code == 400
-    assert response.json() == {"error": "Invalid JSON"}

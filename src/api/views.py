@@ -1,46 +1,46 @@
-from dependency_injector.wiring import inject, Provide
-from pydantic import ValidationError
-from starlette.requests import Request
-from starlette.responses import JSONResponse
+from litestar import Router, post
+from litestar.di import Provide
+from litestar.exceptions import HTTPException
+from litestar.params import Dependency
 
-from api.containers import Container
-from api.helpers import parse_json_body
-from api.schemas import ErrorResponse, GameResponse, GuessRequest
+from api.dependencies import get_guess, get_start_game
+from api.schemas import GameResponse, GuessRequest
 from domain.exceptions import GameNotFound, NoAttemptsRemaining, PokemonNotFound
 from services.guess import Guess
 from services.start_game import StartGame
 
 
-@inject
+@post("/games")
 async def create_game(
-    request: Request,
-    start_game: StartGame = Provide[Container.start_game],
-) -> JSONResponse:
+    start_game: StartGame = Dependency(skip_validation=True),
+) -> GameResponse:
     game = await start_game.execute()
-    return JSONResponse(GameResponse.from_game(game).model_dump())
+    return GameResponse.from_game(game)
 
 
-@inject
+@post("/games/{game_id:str}/guess")
 async def guess(
-    request: Request,
-    guess_use_case: Guess = Provide[Container.guess],
-) -> JSONResponse:
-    game_id = request.path_params["game_id"]
-    body = await parse_json_body(request)
-
+    game_id: str,
+    data: GuessRequest,
+    guess_use_case: Guess = Dependency(skip_validation=True),
+) -> GameResponse:
     try:
-        guess_request = GuessRequest(**body)
-    except ValidationError as e:
-        error = ErrorResponse(error="Validation error", details=e.errors())
-        return JSONResponse(error.to_dict(), status_code=422)
-
-    try:
-        game = await guess_use_case.execute(game_id, guess_request.pokemon_name)
+        game = await guess_use_case.execute(game_id, data.pokemon_name)
     except GameNotFound:
-        return JSONResponse(ErrorResponse(error="Game not found").to_dict(), status_code=404)
+        raise HTTPException(status_code=404, detail="Game not found")
     except NoAttemptsRemaining:
-        return JSONResponse(ErrorResponse(error="No attempts remaining").to_dict(), status_code=422)
+        raise HTTPException(status_code=400, detail="No attempts remaining")
     except PokemonNotFound:
-        return JSONResponse(ErrorResponse(error="Pokemon not found").to_dict(), status_code=422)
+        raise HTTPException(status_code=400, detail="Pokemon not found")
 
-    return JSONResponse(GameResponse.from_game(game).model_dump())
+    return GameResponse.from_game(game)
+
+
+router = Router(
+    path="/",
+    route_handlers=[create_game, guess],
+    dependencies={
+        "start_game": Provide(get_start_game),
+        "guess_use_case": Provide(get_guess),
+    },
+)
