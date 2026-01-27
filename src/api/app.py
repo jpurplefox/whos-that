@@ -2,7 +2,8 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 import sentry_sdk
-from litestar import Litestar
+from litestar import Litestar, Request, Response
+from litestar.exceptions import SerializationException
 from sentry_sdk.integrations.litestar import LitestarIntegration
 
 from api.dependencies import container
@@ -28,7 +29,15 @@ async def lifespan(app: Litestar) -> AsyncIterator[None]:
     await container.shutdown_resources()  # type: ignore[misc]
 
 
+def _handle_serialization_error(_: Request, exc: SerializationException) -> Response:
+    return Response(
+        content={"status_code": 400, "detail": exc.detail},
+        status_code=400,
+    )
+
+
 app = Litestar(
     route_handlers=[router],
     lifespan=[lifespan],
+    exception_handlers={SerializationException: _handle_serialization_error},
 )
