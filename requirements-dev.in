@@ -1,0 +1,6 @@
+-c requirements.txt
+mypy
+pytest
+pytest-asyncio
+pytest-cov
+respx
