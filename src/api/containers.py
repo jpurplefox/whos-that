@@ -9,6 +9,7 @@ from adapters.pokeapi_pokemon_repository import PokeApiPokemonRepository
 from adapters.random_generator import SystemRandomGenerator
 from adapters.random_pokemon_selector import RandomPokemonSelector
 from adapters.random_stat_selector import RandomStatSelector
+from services.get_game import GetGame
 from services.guess import Guess
 from services.start_game import StartGame
 
@@ -60,5 +61,10 @@ class Container(containers.DeclarativeContainer):
     guess = providers.Singleton(
         Guess,
         pokemon_repository=pokemon_repository,
+        game_repository=game_repository,
+    )
+
+    get_game = providers.Singleton(
+        GetGame,
         game_repository=game_repository,
     )

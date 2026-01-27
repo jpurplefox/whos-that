@@ -45,6 +45,19 @@ class FakeStartGame:
         return self.game
 
 
+class FakeGetGame:
+    def __init__(self, game: Game):
+        self.game = game
+
+    async def execute(self, game_id: str) -> Game:
+        return self.game
+
+
+class FakeGetGameNotFound:
+    async def execute(self, game_id: str) -> Game:
+        raise GameNotFound()
+
+
 class FakeGuess:
     def __init__(self, game: Game):
         self.game = game
@@ -185,3 +198,31 @@ def test_guess_returns_400_when_invalid_json():
         )
 
     assert response.status_code == 400
+
+
+def test_get_game_returns_game(pikachu: Pokemon):
+    game = Game(pokemon=pikachu, id="game-1")
+    game.add_stat_hint(Stat.SPEED)
+
+    with container.get_game.override(FakeGetGame(game)):
+        with TestClient(app) as client:
+            response = client.get("/games/game-1")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == "game-1"
+    assert data["is_won"] is False
+    assert data["attempts_remaining"] == 4
+    assert data["attempts"] == []
+    assert len(data["hints"]) == 1
+    assert data["hints"][0]["type"] == "stat"
+    assert data["hints"][0]["stat"] == "speed"
+    assert data["hints"][0]["value"] == 90
+
+
+def test_get_game_returns_404_when_not_found():
+    with container.get_game.override(FakeGetGameNotFound()):
+        with TestClient(app) as client:
+            response = client.get("/games/nonexistent")
+
+    assert response.status_code == 404
