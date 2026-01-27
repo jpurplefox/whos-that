@@ -8,6 +8,9 @@ from sentry_sdk.integrations.litestar import LitestarIntegration
 from api.dependencies import container
 from api.views import router
 from config import Settings
+from structlog_config import configure_logging
+
+configure_logging()
 
 _settings = Settings()
 if _settings.sentry_dsn:

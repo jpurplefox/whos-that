@@ -14,10 +14,30 @@ from domain.exceptions import (
     NotEnoughBattery,
     PokemonNotFound,
 )
+from domain.game import ComparisonHint, Game, Hint, StatHint
+from structlog_config import get_logger
 from services.consult_pokedex import ConsultPokedex
 from services.get_game import GetGame
 from services.guess import Guess
 from services.start_game import StartGame
+
+logger = get_logger()
+
+
+def _serialize_hint(hint: Hint) -> dict:
+    if isinstance(hint, StatHint):
+        return {"type": "stat", "stat": hint.stat.value, "value": hint.value}
+    if isinstance(hint, ComparisonHint):
+        return {
+            "type": "comparison",
+            "pokemon": hint.pokemon.name,
+            "comparisons": {s.value: c.value for s, c in hint.comparisons.items()},
+        }
+    return {"type": type(hint).__name__}
+
+
+def _serialize_hints(game: Game) -> list[dict]:
+    return [_serialize_hint(h) for h in game.hints]
 
 
 @post("/games")
@@ -25,6 +45,13 @@ async def create_game(
     start_game: StartGame = Dependency(skip_validation=True),
 ) -> GameResponse:
     game = await start_game.execute()
+    logger.info(
+        "game_started",
+        game_id=game.id,
+        pokemon_id=game.pokemon.id,
+        pokemon_name=game.pokemon.name,
+        hints=_serialize_hints(game),
+    )
     return GameResponse.from_game(game)
 
 
@@ -68,6 +95,13 @@ async def consult(
     except GameOver:
         raise HTTPException(status_code=400, detail="Game is over")
 
+    logger.info(
+        "pokedex_consulted",
+        game_id=game.id,
+        battery_remaining=game.battery,
+        turn_number=len(game.attempts) + 1,
+        hints=_serialize_hints(game),
+    )
     return GameResponse.from_game(game)
 
 
@@ -92,6 +126,26 @@ async def guess(
     except PokemonNotFound:
         raise HTTPException(status_code=400, detail="Pokemon not found")
 
+    logger.info(
+        "guess_made",
+        game_id=game.id,
+        guessed_pokemon=data.pokemon_name,
+        target_pokemon=game.pokemon.name,
+        is_correct=game.is_won,
+        attempt_number=len(game.attempts),
+        attempts_remaining=game.attempts_remaining,
+        battery_remaining=game.battery,
+        hints=_serialize_hints(game),
+    )
+    if game.is_over:
+        logger.info(
+            "game_over",
+            game_id=game.id,
+            result="won" if game.is_won else "lost",
+            total_attempts=len(game.attempts),
+            pokemon_id=game.pokemon.id,
+            pokemon_name=game.pokemon.name,
+        )
     return GameResponse.from_game(game)
 
 

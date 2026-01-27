@@ -4,4 +4,5 @@ litestar
 pydantic-settings
 sentry-sdk[litestar]
 sniffio
+structlog
 uvicorn
