@@ -28,30 +28,6 @@ async def create_game(
     return GameResponse.from_game(game)
 
 
-@post(
-    "/games/{game_id:str}/guess",
-    responses={
-        400: ResponseSpec(data_container=None, description="Game is over or pokemon not found"),
-        404: ResponseSpec(data_container=None, description="Game not found"),
-    },
-)
-async def guess(
-    game_id: str,
-    data: GuessRequest,
-    guess_use_case: Guess = Dependency(skip_validation=True),
-) -> GameResponse:
-    try:
-        game = await guess_use_case.execute(game_id, data.pokemon_name)
-    except GameNotFound:
-        raise HTTPException(status_code=404, detail="Game not found")
-    except GameOver:
-        raise HTTPException(status_code=400, detail="Game is over")
-    except PokemonNotFound:
-        raise HTTPException(status_code=400, detail="Pokemon not found")
-
-    return GameResponse.from_game(game)
-
-
 @get(
     "/games/{game_id:str}",
     responses={404: ResponseSpec(data_container=None, description="Game not found")},
@@ -95,9 +71,33 @@ async def consult(
     return GameResponse.from_game(game)
 
 
+@post(
+    "/games/{game_id:str}/guess",
+    responses={
+        400: ResponseSpec(data_container=None, description="Game is over or pokemon not found"),
+        404: ResponseSpec(data_container=None, description="Game not found"),
+    },
+)
+async def guess(
+    game_id: str,
+    data: GuessRequest,
+    guess_use_case: Guess = Dependency(skip_validation=True),
+) -> GameResponse:
+    try:
+        game = await guess_use_case.execute(game_id, data.pokemon_name)
+    except GameNotFound:
+        raise HTTPException(status_code=404, detail="Game not found")
+    except GameOver:
+        raise HTTPException(status_code=400, detail="Game is over")
+    except PokemonNotFound:
+        raise HTTPException(status_code=400, detail="Pokemon not found")
+
+    return GameResponse.from_game(game)
+
+
 router = Router(
     path="/",
-    route_handlers=[create_game, guess, get_game, consult],
+    route_handlers=[create_game, get_game, consult, guess],
     dependencies={
         "start_game": Provide(get_start_game),
         "guess_use_case": Provide(get_guess),
