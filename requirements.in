@@ -2,4 +2,5 @@ dependency-injector
 httpx
 litestar
 pydantic-settings
+sniffio
 uvicorn
