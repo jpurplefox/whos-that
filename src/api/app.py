@@ -1,4 +1,5 @@
 from collections.abc import AsyncIterator
+from typing import Any
 from contextlib import asynccontextmanager
 
 import sentry_sdk
@@ -29,7 +30,7 @@ async def lifespan(app: Litestar) -> AsyncIterator[None]:
     await container.shutdown_resources()  # type: ignore[misc]
 
 
-def _handle_serialization_error(_: Request, exc: SerializationException) -> Response:
+def _handle_serialization_error(_: "Request[Any, Any, Any]", exc: SerializationException) -> "Response[Any]":
     return Response(
         content={"status_code": 400, "detail": exc.detail},
         status_code=400,

@@ -24,7 +24,7 @@ from services.start_game import StartGame
 logger = get_logger()
 
 
-def _serialize_hint(hint: Hint) -> dict:
+def _serialize_hint(hint: Hint) -> dict[str, object]:
     if isinstance(hint, StatHint):
         return {"type": "stat", "stat": hint.stat.value, "value": hint.value}
     if isinstance(hint, ComparisonHint):
@@ -36,7 +36,7 @@ def _serialize_hint(hint: Hint) -> dict:
     return {"type": type(hint).__name__}
 
 
-def _serialize_hints(game: Game) -> list[dict]:
+def _serialize_hints(game: Game) -> list[dict[str, object]]:
     return [_serialize_hint(h) for h in game.hints]
 
 
