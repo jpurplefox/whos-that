@@ -2,5 +2,6 @@ dependency-injector
 httpx
 litestar
 pydantic-settings
+sentry-sdk[litestar]
 sniffio
 uvicorn

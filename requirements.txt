@@ -14,6 +14,7 @@ certifi==2026.1.4
     # via
     #   httpcore
     #   httpx
+    #   sentry-sdk
 click==8.3.1
     # via
     #   litestar
@@ -38,7 +39,9 @@ idna==3.11
     #   anyio
     #   httpx
 litestar==2.15.1
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   sentry-sdk
 litestar-htmx==0.5.0
     # via litestar
 markdown-it-py==4.0.0
@@ -71,6 +74,8 @@ rich==14.3.1
     #   rich-click
 rich-click==1.9.6
     # via litestar
+sentry-sdk[litestar]==2.50.0
+    # via -r requirements.in
 sniffio==1.3.1
     # via -r requirements.in
 typing-extensions==4.15.0
@@ -84,5 +89,7 @@ typing-inspection==0.4.2
     # via
     #   pydantic
     #   pydantic-settings
+urllib3==2.6.3
+    # via sentry-sdk
 uvicorn==0.34.3
     # via -r requirements.in

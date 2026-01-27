@@ -11,3 +11,5 @@ class Settings(BaseSettings):
     pokedex_max_battery: int = 100
     pokedex_stat_cost: int = 40
     pokedex_battery_recovery: int = 10
+    sentry_dsn: str = ""
+    sentry_traces_sample_rate: float = 1.0
