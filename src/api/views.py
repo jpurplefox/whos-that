@@ -4,9 +4,17 @@ from litestar.exceptions import HTTPException
 from litestar.openapi.datastructures import ResponseSpec
 from litestar.params import Dependency
 
-from api.dependencies import get_get_game, get_guess, get_start_game
+from api.dependencies import get_consult_pokedex, get_get_game, get_guess, get_start_game
 from api.schemas import GameResponse, GuessRequest
-from domain.exceptions import GameNotFound, NoAttemptsRemaining, PokemonNotFound
+from domain.exceptions import (
+    AlreadyConsultedThisTurn,
+    GameNotFound,
+    GameOver,
+    NoStatsAvailable,
+    NotEnoughBattery,
+    PokemonNotFound,
+)
+from services.consult_pokedex import ConsultPokedex
 from services.get_game import GetGame
 from services.guess import Guess
 from services.start_game import StartGame
@@ -23,7 +31,7 @@ async def create_game(
 @post(
     "/games/{game_id:str}/guess",
     responses={
-        400: ResponseSpec(data_container=None, description="No attempts remaining or pokemon not found"),
+        400: ResponseSpec(data_container=None, description="Game is over or pokemon not found"),
         404: ResponseSpec(data_container=None, description="Game not found"),
     },
 )
@@ -36,8 +44,8 @@ async def guess(
         game = await guess_use_case.execute(game_id, data.pokemon_name)
     except GameNotFound:
         raise HTTPException(status_code=404, detail="Game not found")
-    except NoAttemptsRemaining:
-        raise HTTPException(status_code=400, detail="No attempts remaining")
+    except GameOver:
+        raise HTTPException(status_code=400, detail="Game is over")
     except PokemonNotFound:
         raise HTTPException(status_code=400, detail="Pokemon not found")
 
@@ -60,12 +68,40 @@ async def get_game(
     return GameResponse.from_game(game)
 
 
+@post(
+    "/games/{game_id:str}/consult",
+    responses={
+        400: ResponseSpec(data_container=None, description="Not enough battery, already consulted this turn, or no stats available"),
+        404: ResponseSpec(data_container=None, description="Game not found"),
+    },
+)
+async def consult(
+    game_id: str,
+    consult_pokedex: ConsultPokedex = Dependency(skip_validation=True),
+) -> GameResponse:
+    try:
+        game = await consult_pokedex.execute(game_id)
+    except GameNotFound:
+        raise HTTPException(status_code=404, detail="Game not found")
+    except NotEnoughBattery:
+        raise HTTPException(status_code=400, detail="Not enough battery")
+    except AlreadyConsultedThisTurn:
+        raise HTTPException(status_code=400, detail="Already consulted this turn")
+    except NoStatsAvailable:
+        raise HTTPException(status_code=400, detail="No stats available")
+    except GameOver:
+        raise HTTPException(status_code=400, detail="Game is over")
+
+    return GameResponse.from_game(game)
+
+
 router = Router(
     path="/",
-    route_handlers=[create_game, guess, get_game],
+    route_handlers=[create_game, guess, get_game, consult],
     dependencies={
         "start_game": Provide(get_start_game),
         "guess_use_case": Provide(get_guess),
         "get_game_use_case": Provide(get_get_game),
+        "consult_pokedex": Provide(get_consult_pokedex),
     },
 )

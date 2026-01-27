@@ -9,6 +9,7 @@ from adapters.pokeapi_pokemon_repository import PokeApiPokemonRepository
 from adapters.random_generator import SystemRandomGenerator
 from adapters.random_pokemon_selector import RandomPokemonSelector
 from adapters.random_stat_selector import RandomStatSelector
+from services.consult_pokedex import ConsultPokedex
 from services.get_game import GetGame
 from services.guess import Guess
 from services.start_game import StartGame
@@ -56,6 +57,15 @@ class Container(containers.DeclarativeContainer):
         stat_selector=stat_selector,
         game_repository=game_repository,
         max_attempts=settings.provided.max_attempts,
+        max_battery=settings.provided.pokedex_max_battery,
+        battery_recovery=settings.provided.pokedex_battery_recovery,
+    )
+
+    consult_pokedex = providers.Singleton(
+        ConsultPokedex,
+        game_repository=game_repository,
+        random_generator=random_generator,
+        stat_cost=settings.provided.pokedex_stat_cost,
     )
 
     guess = providers.Singleton(

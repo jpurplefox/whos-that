@@ -25,6 +25,8 @@ class GameResponse(BaseModel):
     attempts_remaining: int
     attempts: list[str]
     hints: list[StatHintResponse | ComparisonHintResponse]
+    battery: int
+    max_battery: int
 
     @classmethod
     def from_game(cls, game: Game) -> "GameResponse":
@@ -50,4 +52,6 @@ class GameResponse(BaseModel):
             attempts_remaining=game.attempts_remaining,
             attempts=[attempt.name for attempt in game.attempts],
             hints=hints,
+            battery=game.battery,
+            max_battery=game.max_battery,
         )

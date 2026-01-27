@@ -3,7 +3,14 @@ from litestar.testing import TestClient
 
 from api.app import app
 from api.dependencies import container
-from domain.exceptions import GameNotFound, NoAttemptsRemaining, PokemonNotFound
+from domain.exceptions import (
+    AlreadyConsultedThisTurn,
+    GameNotFound,
+    GameOver,
+    NoStatsAvailable,
+    NotEnoughBattery,
+    PokemonNotFound,
+)
 from domain.game import Game
 from domain.pokemon import Pokemon
 from domain.stat import Stat
@@ -84,6 +91,8 @@ def test_create_game_returns_game_with_hint(pikachu: Pokemon):
     assert data["hints"][0]["type"] == "stat"
     assert data["hints"][0]["stat"] == "speed"
     assert data["hints"][0]["value"] == 90
+    assert data["battery"] == 100
+    assert data["max_battery"] == 100
 
 
 def test_guess_correct_pokemon(pikachu: Pokemon):
@@ -133,7 +142,7 @@ def test_guess_incorrect_pokemon_returns_comparison_hint(
 
 class FakeGuessNoAttempts:
     async def execute(self, game_id: str, pokemon_name: str) -> Game:
-        raise NoAttemptsRemaining()
+        raise GameOver()
 
 
 def test_guess_returns_400_when_no_attempts_remaining():
@@ -218,6 +227,8 @@ def test_get_game_returns_game(pikachu: Pokemon):
     assert data["hints"][0]["type"] == "stat"
     assert data["hints"][0]["stat"] == "speed"
     assert data["hints"][0]["value"] == 90
+    assert data["battery"] == 100
+    assert data["max_battery"] == 100
 
 
 def test_get_game_returns_404_when_not_found():
@@ -226,3 +237,69 @@ def test_get_game_returns_404_when_not_found():
             response = client.get("/games/nonexistent")
 
     assert response.status_code == 404
+
+
+# --- Consult endpoint tests ---
+
+
+class FakeConsultPokedex:
+    def __init__(self, game: Game):
+        self.game = game
+
+    async def execute(self, game_id: str) -> Game:
+        return self.game
+
+
+class FakeConsultPokedexGameNotFound:
+    async def execute(self, game_id: str) -> Game:
+        raise GameNotFound()
+
+
+class FakeConsultPokedexNotEnoughBattery:
+    async def execute(self, game_id: str) -> Game:
+        raise NotEnoughBattery()
+
+
+def test_consult_returns_game(pikachu: Pokemon):
+    game = Game(pokemon=pikachu, id="game-1", battery=70, max_battery=100)
+    game.add_stat_hint(Stat.SPEED)
+
+    with container.consult_pokedex.override(FakeConsultPokedex(game)):
+        with TestClient(app) as client:
+            response = client.post("/games/game-1/consult")
+
+    assert response.status_code == 201
+    data = response.json()
+    assert data["id"] == "game-1"
+    assert data["battery"] == 70
+    assert data["max_battery"] == 100
+    assert len(data["hints"]) == 1
+
+
+def test_consult_returns_404_when_game_not_found():
+    with container.consult_pokedex.override(FakeConsultPokedexGameNotFound()):
+        with TestClient(app) as client:
+            response = client.post("/games/nonexistent/consult")
+
+    assert response.status_code == 404
+
+
+def test_consult_returns_400_when_not_enough_battery():
+    with container.consult_pokedex.override(FakeConsultPokedexNotEnoughBattery()):
+        with TestClient(app) as client:
+            response = client.post("/games/game-1/consult")
+
+    assert response.status_code == 400
+
+
+class FakeConsultPokedexGameOver:
+    async def execute(self, game_id: str) -> Game:
+        raise GameOver()
+
+
+def test_consult_returns_400_when_game_is_over():
+    with container.consult_pokedex.override(FakeConsultPokedexGameOver()):
+        with TestClient(app) as client:
+            response = client.post("/games/game-1/consult")
+
+    assert response.status_code == 400

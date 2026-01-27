@@ -11,15 +11,25 @@ class StartGame:
         stat_selector: RandomStatSelector,
         game_repository: GameRepository,
         max_attempts: int,
+        max_battery: int = 100,
+        battery_recovery: int = 10,
     ):
         self.pokemon_selector = pokemon_selector
         self.stat_selector = stat_selector
         self.game_repository = game_repository
         self.max_attempts = max_attempts
+        self.max_battery = max_battery
+        self.battery_recovery = battery_recovery
 
     async def execute(self) -> Game:
         pokemon = await self.pokemon_selector.select()
-        game = Game(pokemon=pokemon, max_attempts=self.max_attempts)
+        game = Game(
+            pokemon=pokemon,
+            max_attempts=self.max_attempts,
+            battery=self.max_battery,
+            max_battery=self.max_battery,
+            battery_recovery=self.battery_recovery,
+        )
         random_stat = self.stat_selector.select()
         game.add_stat_hint(random_stat)
         return await self.game_repository.save(game)
