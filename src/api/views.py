@@ -1,6 +1,7 @@
 from litestar import Router, get, post
 from litestar.di import Provide
 from litestar.exceptions import HTTPException
+from litestar.openapi.datastructures import ResponseSpec
 from litestar.params import Dependency
 
 from api.dependencies import get_get_game, get_guess, get_start_game
@@ -19,7 +20,13 @@ async def create_game(
     return GameResponse.from_game(game)
 
 
-@post("/games/{game_id:str}/guess")
+@post(
+    "/games/{game_id:str}/guess",
+    responses={
+        400: ResponseSpec(data_container=None, description="No attempts remaining or pokemon not found"),
+        404: ResponseSpec(data_container=None, description="Game not found"),
+    },
+)
 async def guess(
     game_id: str,
     data: GuessRequest,
@@ -37,7 +44,10 @@ async def guess(
     return GameResponse.from_game(game)
 
 
-@get("/games/{game_id:str}")
+@get(
+    "/games/{game_id:str}",
+    responses={404: ResponseSpec(data_container=None, description="Game not found")},
+)
 async def get_game(
     game_id: str,
     get_game_use_case: GetGame = Dependency(skip_validation=True),
