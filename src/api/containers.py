@@ -1,24 +1,23 @@
-from collections.abc import AsyncIterator
+from pathlib import Path
 
-import httpx
 from dependency_injector import containers, providers
 
-from config import Settings
 from adapters.in_memory_game_repository import InMemoryGameRepository
-from adapters.pokeapi_pokemon_repository import PokeApiPokemonRepository
+from adapters.in_memory_pokemon_repository import InMemoryPokemonRepository
+from adapters.pokemon_loader import load_pokemon_from_json
 from adapters.random_generator import SystemRandomGenerator
 from adapters.random_pokemon_selector import RandomPokemonSelector
 from adapters.random_stat_selector import RandomStatSelector
+from config import Settings
 from services.consult_pokedex import ConsultPokedex
 from services.get_game import GetGame
 from services.guess import Guess
 from services.start_game import StartGame
 
 
-async def init_http_client(timeout: float) -> AsyncIterator[httpx.AsyncClient]:
-    client = httpx.AsyncClient(timeout=timeout)
-    yield client
-    await client.aclose()
+def _create_pokemon_repository(json_path: Path) -> InMemoryPokemonRepository:
+    pokemon_list = load_pokemon_from_json(json_path)
+    return InMemoryPokemonRepository(pokemon_list)
 
 
 class Container(containers.DeclarativeContainer):
@@ -26,15 +25,9 @@ class Container(containers.DeclarativeContainer):
 
     random_generator = providers.Singleton(SystemRandomGenerator)
 
-    http_client = providers.Resource(
-        init_http_client,
-        timeout=settings.provided.http_timeout,
-    )
-
     pokemon_repository = providers.Singleton(
-        PokeApiPokemonRepository,
-        client=http_client,
-        base_url=settings.provided.pokeapi_base_url,
+        _create_pokemon_repository,
+        json_path=settings.provided.pokemon_json_path,
     )
 
     stat_selector = providers.Singleton(

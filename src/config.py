@@ -1,4 +1,8 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_DEFAULT_POKEMON_JSON = Path(__file__).parent / "data" / "pokemon.json"
 
 
 class Settings(BaseSettings):
@@ -6,8 +10,7 @@ class Settings(BaseSettings):
 
     max_attempts: int = 4
     max_pokemon_number: int = 151
-    pokeapi_base_url: str = "https://pokeapi.co/api/v2/pokemon"
-    http_timeout: float = 10.0
+    pokemon_json_path: Path = _DEFAULT_POKEMON_JSON
     pokedex_max_battery: int = 100
     pokedex_stat_cost: int = 40
     pokedex_battery_recovery: int = 10
