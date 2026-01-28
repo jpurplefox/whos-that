@@ -46,7 +46,7 @@ class FakeGuess:
 
 
 def test_create_game_returns_game_with_hint():
-    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
 
@@ -69,7 +69,7 @@ def test_create_game_returns_game_with_hint():
 
 
 def test_guess_correct_pokemon():
-    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
     game.guess(pikachu)
@@ -89,8 +89,8 @@ def test_guess_correct_pokemon():
 
 
 def test_guess_incorrect_pokemon_returns_comparison_hint():
-    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
-    bulbasaur = Pokemon(id=1, name="bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45)
+    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
+    bulbasaur = Pokemon(id=1, name="bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
     game.guess(bulbasaur)
@@ -183,7 +183,7 @@ def test_guess_returns_400_when_invalid_json():
 
 
 def test_get_game_returns_game():
-    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
 
@@ -235,7 +235,7 @@ class FakeConsultPokedexNotEnoughBattery:
 
 
 def test_consult_returns_game():
-    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     game = Game(pokemon=pikachu, id="game-1", battery=70, max_battery=100)
     game.add_stat_hint(Stat.SPEED)
 
@@ -278,3 +278,18 @@ def test_consult_returns_400_when_game_is_over():
             response = client.post("/games/game-1/consult")
 
     assert response.status_code == 400
+
+
+# --- List Pokemon endpoint tests ---
+
+
+def test_list_pokemon_returns_all_pokemon():
+    with TestClient(app) as client:
+        response = client.get("/pokemon")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 151
+    assert data[0]["id"] == 1
+    assert data[0]["name"] == "bulbasaur"
+    assert "image_url" in data[0]

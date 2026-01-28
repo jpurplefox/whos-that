@@ -15,7 +15,7 @@ class FakeRandomGenerator:
 
 @pytest.mark.asyncio
 async def test_select_returns_pokemon_with_random_number():
-    pikachu = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pikachu = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     repository = InMemoryPokemonRepository([pikachu])
     random_generator = FakeRandomGenerator(25)
 

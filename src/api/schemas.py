@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 
 from domain.game import ComparisonHint, Game, StatHint
+from domain.pokemon import Pokemon
 
 
 class GuessRequest(BaseModel):
@@ -54,4 +55,18 @@ class GameResponse(BaseModel):
             hints=hints,
             battery=game.battery,
             max_battery=game.max_battery,
+        )
+
+
+class PokemonResponse(BaseModel):
+    id: int
+    name: str
+    image_url: str
+
+    @classmethod
+    def from_pokemon(cls, pokemon: Pokemon) -> "PokemonResponse":
+        return cls(
+            id=pokemon.id,
+            name=pokemon.name,
+            image_url=pokemon.image_url,
         )

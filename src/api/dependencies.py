@@ -2,6 +2,7 @@ import inspect
 from typing import TypeVar, Callable, Awaitable, Union
 
 from api.containers import Container
+from domain.ports.repositories import PokemonRepository
 from services.consult_pokedex import ConsultPokedex
 from services.get_game import GetGame
 from services.guess import Guess
@@ -31,3 +32,7 @@ async def get_get_game() -> GetGame:
 
 async def get_consult_pokedex() -> ConsultPokedex:
     return await _resolve(container.consult_pokedex)
+
+
+async def get_pokemon_repository() -> PokemonRepository:
+    return await _resolve(container.pokemon_repository)

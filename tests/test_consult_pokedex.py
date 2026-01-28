@@ -18,7 +18,7 @@ class FakeRandomGenerator:
 
 @pytest.mark.asyncio
 async def test_consult_adds_stat_hint_and_reduces_battery(game_repository: GameRepository):
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     game = Game(pokemon=pokemon, battery=100, max_battery=100)
     game = await game_repository.save(game)
 
@@ -32,7 +32,7 @@ async def test_consult_adds_stat_hint_and_reduces_battery(game_repository: GameR
 
 @pytest.mark.asyncio
 async def test_consult_raises_no_stats_available(game_repository: GameRepository):
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     game = Game(pokemon=pokemon, battery=100, max_battery=100)
     for stat in Stat:
         game.add_stat_hint(stat)

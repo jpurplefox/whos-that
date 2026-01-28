@@ -36,4 +36,5 @@ class PokeApiPokemonRepository:
             sp_attack=stats["special-attack"],
             sp_defense=stats["special-defense"],
             speed=stats["speed"],
+            image_url=data["sprites"]["front_default"],
         )

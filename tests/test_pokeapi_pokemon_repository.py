@@ -15,6 +15,7 @@ def make_pokemon_response(
     sp_attack: int,
     sp_defense: int,
     speed: int,
+    image_url: str = "https://example.com/sprite.png",
 ) -> dict:
     return {
         "id": id,
@@ -27,6 +28,7 @@ def make_pokemon_response(
             {"base_stat": sp_defense, "stat": {"name": "special-defense"}},
             {"base_stat": speed, "stat": {"name": "speed"}},
         ],
+        "sprites": {"front_default": image_url},
     }
 
 
@@ -62,6 +64,7 @@ async def test_get_by_number_fetches_pokemon_by_id():
         sp_attack=50,
         sp_defense=50,
         speed=90,
+        image_url="https://example.com/sprite.png",
     )
 
 
@@ -97,4 +100,5 @@ async def test_get_by_name_fetches_pokemon_by_name():
         sp_attack=65,
         sp_defense=65,
         speed=45,
+        image_url="https://example.com/sprite.png",
     )

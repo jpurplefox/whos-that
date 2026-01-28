@@ -25,7 +25,7 @@ class FakePokemonSelector:
 
 @pytest.mark.asyncio
 async def test_creates_game_with_pokemon(game_repository: GameRepository):
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     pokemon_selector = FakePokemonSelector(pokemon)
     stat_selector = FakeStatSelector(Stat.SPEED)
 
@@ -37,7 +37,7 @@ async def test_creates_game_with_pokemon(game_repository: GameRepository):
 
 @pytest.mark.asyncio
 async def test_adds_first_hint_with_selected_stat(game_repository: GameRepository):
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     pokemon_selector = FakePokemonSelector(pokemon)
     stat_selector = FakeStatSelector(Stat.SPEED)
 
@@ -50,7 +50,7 @@ async def test_adds_first_hint_with_selected_stat(game_repository: GameRepositor
 
 @pytest.mark.asyncio
 async def test_saves_game_with_id(game_repository: GameRepository):
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     pokemon_selector = FakePokemonSelector(pokemon)
     stat_selector = FakeStatSelector(Stat.SPEED)
 

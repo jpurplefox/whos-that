@@ -11,6 +11,9 @@ class PokemonRepository(Protocol):
     async def get_by_name(self, name: str) -> Pokemon:
         ...
 
+    async def get_all(self) -> list[Pokemon]:
+        ...
+
 
 class GameRepository(Protocol):
     async def save(self, game: Game) -> Game:

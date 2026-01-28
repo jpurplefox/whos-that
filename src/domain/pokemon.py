@@ -13,6 +13,7 @@ class Pokemon:
     sp_attack: int
     sp_defense: int
     speed: int
+    image_url: str
 
     def get_stat(self, stat: Stat) -> int:
         value: int = getattr(self, stat.value)

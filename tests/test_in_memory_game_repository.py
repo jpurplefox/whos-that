@@ -8,7 +8,7 @@ from adapters.in_memory_game_repository import InMemoryGameRepository
 @pytest.mark.asyncio
 async def test_save_assigns_id_to_new_game():
     repository = InMemoryGameRepository()
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     game = Game(pokemon=pokemon)
 
     saved_game = await repository.save(game)
@@ -19,7 +19,7 @@ async def test_save_assigns_id_to_new_game():
 @pytest.mark.asyncio
 async def test_save_preserves_existing_id():
     repository = InMemoryGameRepository()
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     game = Game(pokemon=pokemon, id="existing-id")
 
     saved_game = await repository.save(game)
@@ -30,7 +30,7 @@ async def test_save_preserves_existing_id():
 @pytest.mark.asyncio
 async def test_get_returns_saved_game():
     repository = InMemoryGameRepository()
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     game = Game(pokemon=pokemon)
     saved_game = await repository.save(game)
 
@@ -43,7 +43,7 @@ async def test_get_returns_saved_game():
 @pytest.mark.asyncio
 async def test_get_returns_copy_not_reference():
     repository = InMemoryGameRepository()
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     game = Game(pokemon=pokemon)
     saved_game = await repository.save(game)
 
@@ -57,7 +57,7 @@ async def test_get_returns_copy_not_reference():
 @pytest.mark.asyncio
 async def test_save_stores_copy_not_reference():
     repository = InMemoryGameRepository()
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
     game = Game(pokemon=pokemon)
     await repository.save(game)
 

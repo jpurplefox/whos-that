@@ -21,3 +21,6 @@ class InMemoryPokemonRepository:
         if pokemon is None:
             raise PokemonNotFound(f"Pokemon '{name}' not found")
         return pokemon
+
+    async def get_all(self) -> list[Pokemon]:
+        return sorted(self._pokemon_by_id.values(), key=lambda p: p.id)

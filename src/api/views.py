@@ -4,8 +4,9 @@ from litestar.exceptions import HTTPException
 from litestar.openapi.datastructures import ResponseSpec
 from litestar.params import Dependency
 
-from api.dependencies import get_consult_pokedex, get_get_game, get_guess, get_start_game
-from api.schemas import GameResponse, GuessRequest
+from api.dependencies import get_consult_pokedex, get_get_game, get_guess, get_pokemon_repository, get_start_game
+from api.schemas import GameResponse, GuessRequest, PokemonResponse
+from domain.ports.repositories import PokemonRepository
 from domain.exceptions import (
     AlreadyConsultedThisTurn,
     GameNotFound,
@@ -149,13 +150,22 @@ async def guess(
     return GameResponse.from_game(game)
 
 
+@get("/pokemon")
+async def list_pokemon(
+    pokemon_repository: PokemonRepository = Dependency(skip_validation=True),
+) -> list[PokemonResponse]:
+    pokemon_list = await pokemon_repository.get_all()
+    return [PokemonResponse.from_pokemon(p) for p in pokemon_list]
+
+
 router = Router(
     path="/",
-    route_handlers=[create_game, get_game, consult, guess],
+    route_handlers=[list_pokemon, create_game, get_game, consult, guess],
     dependencies={
         "start_game": Provide(get_start_game),
         "guess_use_case": Provide(get_guess),
         "get_game_use_case": Provide(get_get_game),
         "consult_pokedex": Provide(get_consult_pokedex),
+        "pokemon_repository": Provide(get_pokemon_repository),
     },
 )
