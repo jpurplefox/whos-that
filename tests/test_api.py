@@ -16,34 +16,6 @@ from domain.pokemon import Pokemon
 from domain.stat import Stat
 
 
-@pytest.fixture
-def pikachu():
-    return Pokemon(
-        id=25,
-        name="pikachu",
-        hp=35,
-        attack=55,
-        defense=40,
-        sp_attack=50,
-        sp_defense=50,
-        speed=90,
-    )
-
-
-@pytest.fixture
-def bulbasaur():
-    return Pokemon(
-        id=1,
-        name="bulbasaur",
-        hp=45,
-        attack=49,
-        defense=49,
-        sp_attack=65,
-        sp_defense=65,
-        speed=45,
-    )
-
-
 class FakeStartGame:
     def __init__(self, game: Game):
         self.game = game
@@ -73,7 +45,8 @@ class FakeGuess:
         return self.game
 
 
-def test_create_game_returns_game_with_hint(pikachu: Pokemon):
+def test_create_game_returns_game_with_hint():
+    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
 
@@ -95,7 +68,8 @@ def test_create_game_returns_game_with_hint(pikachu: Pokemon):
     assert data["max_battery"] == 100
 
 
-def test_guess_correct_pokemon(pikachu: Pokemon):
+def test_guess_correct_pokemon():
+    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
     game.guess(pikachu)
@@ -114,10 +88,9 @@ def test_guess_correct_pokemon(pikachu: Pokemon):
     assert data["attempts"] == ["pikachu"]
 
 
-def test_guess_incorrect_pokemon_returns_comparison_hint(
-    pikachu: Pokemon,
-    bulbasaur: Pokemon,
-):
+def test_guess_incorrect_pokemon_returns_comparison_hint():
+    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
+    bulbasaur = Pokemon(id=1, name="bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45)
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
     game.guess(bulbasaur)
@@ -209,7 +182,8 @@ def test_guess_returns_400_when_invalid_json():
     assert response.status_code == 400
 
 
-def test_get_game_returns_game(pikachu: Pokemon):
+def test_get_game_returns_game():
+    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
 
@@ -260,7 +234,8 @@ class FakeConsultPokedexNotEnoughBattery:
         raise NotEnoughBattery()
 
 
-def test_consult_returns_game(pikachu: Pokemon):
+def test_consult_returns_game():
+    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90)
     game = Game(pokemon=pikachu, id="game-1", battery=70, max_battery=100)
     game.add_stat_hint(Stat.SPEED)
 
