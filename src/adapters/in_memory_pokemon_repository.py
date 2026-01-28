@@ -21,6 +21,3 @@ class InMemoryPokemonRepository:
         if pokemon is None:
             raise PokemonNotFound(f"Pokemon '{name}' not found")
         return pokemon
-
-    def count(self) -> int:
-        return len(self._pokemon_by_id)
