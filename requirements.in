@@ -1,8 +1,12 @@
 dependency-injector
 httpx
 litestar
+psycopg[binary]
+psycopg2-binary
 pydantic-settings
+pypika
 sentry-sdk[litestar]
 sniffio
 structlog
 uvicorn
+yoyo-migrations

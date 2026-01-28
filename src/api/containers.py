@@ -1,10 +1,14 @@
+from collections.abc import AsyncIterator
 from pathlib import Path
+from typing import Any
 
+import psycopg
 from dependency_injector import containers, providers
 
 from adapters.in_memory_game_repository import InMemoryGameRepository
 from adapters.in_memory_pokemon_repository import InMemoryPokemonRepository
 from adapters.pokemon_loader import load_pokemon_from_json
+from adapters.postgres_game_repository import PostgresGameRepository
 from adapters.random_generator import SystemRandomGenerator
 from adapters.random_pokemon_selector import RandomPokemonSelector
 from adapters.random_stat_selector import RandomStatSelector
@@ -18,6 +22,28 @@ from services.start_game import StartGame
 def _create_pokemon_repository(json_path: Path) -> InMemoryPokemonRepository:
     pokemon_list = load_pokemon_from_json(json_path)
     return InMemoryPokemonRepository(pokemon_list)
+
+
+async def _create_postgres_connection(
+    database_url: str,
+) -> AsyncIterator[psycopg.AsyncConnection | None]:
+    if not database_url:
+        yield None
+        return
+    connection = await psycopg.AsyncConnection.connect(database_url)
+    try:
+        yield connection
+    finally:
+        await connection.close()
+
+
+def _create_game_repository(
+    postgres_connection: psycopg.AsyncConnection | None,
+    pokemon_repository: InMemoryPokemonRepository,
+) -> Any:
+    if postgres_connection is not None:
+        return PostgresGameRepository(postgres_connection, pokemon_repository)
+    return InMemoryGameRepository()
 
 
 class Container(containers.DeclarativeContainer):
@@ -42,7 +68,16 @@ class Container(containers.DeclarativeContainer):
         max_pokemon_number=settings.provided.max_pokemon_number,
     )
 
-    game_repository = providers.Singleton(InMemoryGameRepository)
+    postgres_connection = providers.Resource(
+        _create_postgres_connection,
+        database_url=settings.provided.database_url,
+    )
+
+    game_repository = providers.Singleton(
+        _create_game_repository,
+        postgres_connection=postgres_connection,
+        pokemon_repository=pokemon_repository,
+    )
 
     start_game = providers.Singleton(
         StartGame,

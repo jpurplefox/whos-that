@@ -16,3 +16,4 @@ class Settings(BaseSettings):
     pokedex_battery_recovery: int = 10
     sentry_dsn: str = ""
     sentry_traces_sample_rate: float = 1.0
+    database_url: str = ""

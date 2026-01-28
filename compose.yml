@@ -6,6 +6,39 @@ services:
     env_file:
       - path: .env
         required: false
+    environment:
+      DATABASE_URL: postgresql://whos_that:whos_that@postgres:5432/whos_that
     volumes:
       - ./src:/app/src
     command: ["uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+
+  migrations:
+    build: .
+    volumes:
+      - ./migrations:/app/migrations
+    command: ["sh", "-c", "sleep 2 && yoyo apply --batch --database postgresql://whos_that:whos_that@postgres:5432/whos_that /app/migrations"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: whos_that
+      POSTGRES_PASSWORD: whos_that
+      POSTGRES_DB: whos_that
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U whos_that"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
