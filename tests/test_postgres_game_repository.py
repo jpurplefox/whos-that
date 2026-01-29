@@ -54,7 +54,6 @@ class TestSave:
     @pytest.mark.asyncio
     async def test_assigns_id_to_new_game(self, repository, mock_connection):
         cursor = AsyncMock()
-        cursor.fetchone = AsyncMock(return_value=None)
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
         pokemon = make_pokemon()
         game = Game(pokemon=pokemon)
@@ -66,7 +65,6 @@ class TestSave:
     @pytest.mark.asyncio
     async def test_preserves_existing_id(self, repository, mock_connection):
         cursor = AsyncMock()
-        cursor.fetchone = AsyncMock(return_value=None)
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
         pokemon = make_pokemon()
         game = Game(pokemon=pokemon, id="existing-id")
@@ -76,9 +74,8 @@ class TestSave:
         assert saved_game.id == "existing-id"
 
     @pytest.mark.asyncio
-    async def test_inserts_new_game(self, repository, mock_connection):
+    async def test_executes_upsert_query(self, repository, mock_connection):
         cursor = AsyncMock()
-        cursor.fetchone = AsyncMock(return_value=None)
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
         pokemon = make_pokemon()
         game = Game(pokemon=pokemon, id="test-id")
@@ -86,29 +83,14 @@ class TestSave:
         await repository.save(game)
 
         calls = cursor.execute.call_args_list
-        insert_call = calls[1][0][0]
-        assert "INSERT" in insert_call
-        assert '"games"' in insert_call
-
-    @pytest.mark.asyncio
-    async def test_updates_existing_game(self, repository, mock_connection):
-        cursor = AsyncMock()
-        cursor.fetchone = AsyncMock(return_value=("existing-id",))
-        mock_connection.cursor.return_value.__aenter__.return_value = cursor
-        pokemon = make_pokemon()
-        game = Game(pokemon=pokemon, id="existing-id")
-
-        await repository.save(game)
-
-        calls = cursor.execute.call_args_list
-        update_call = calls[1][0][0]
-        assert "UPDATE" in update_call
-        assert '"games"' in update_call
+        upsert_call = calls[0][0][0]
+        assert "INSERT" in upsert_call
+        assert "ON CONFLICT" in upsert_call
+        assert '"games"' in upsert_call
 
     @pytest.mark.asyncio
     async def test_commits_transaction(self, repository, mock_connection):
         cursor = AsyncMock()
-        cursor.fetchone = AsyncMock(return_value=None)
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
         pokemon = make_pokemon()
         game = Game(pokemon=pokemon)
@@ -127,17 +109,17 @@ class TestGet:
         mock_pokemon_repository.get_by_number.return_value = pokemon
         cursor = AsyncMock()
         cursor.fetchone = AsyncMock(
-            return_value=(
-                "test-id",
-                25,
-                4,
-                [],
-                [],
-                100,
-                100,
-                10,
-                False,
-            )
+            return_value={
+                "id": "test-id",
+                "pokemon_id": 25,
+                "max_attempts": 4,
+                "hints": [],
+                "attempts": [],
+                "battery": 100,
+                "max_battery": 100,
+                "battery_recovery": 10,
+                "consulted_this_turn": False,
+            }
         )
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
 
@@ -170,17 +152,17 @@ class TestGet:
         mock_pokemon_repository.get_by_number.return_value = pokemon
         cursor = AsyncMock()
         cursor.fetchone = AsyncMock(
-            return_value=(
-                "test-id",
-                25,
-                4,
-                [{"type": "stat", "stat": "speed", "value": 90}],
-                [],
-                100,
-                100,
-                10,
-                False,
-            )
+            return_value={
+                "id": "test-id",
+                "pokemon_id": 25,
+                "max_attempts": 4,
+                "hints": [{"type": "stat", "stat": "speed", "value": 90}],
+                "attempts": [],
+                "battery": 100,
+                "max_battery": 100,
+                "battery_recovery": 10,
+                "consulted_this_turn": False,
+            }
         )
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
 
@@ -202,11 +184,11 @@ class TestGet:
         )
         cursor = AsyncMock()
         cursor.fetchone = AsyncMock(
-            return_value=(
-                "test-id",
-                25,
-                4,
-                [
+            return_value={
+                "id": "test-id",
+                "pokemon_id": 25,
+                "max_attempts": 4,
+                "hints": [
                     {
                         "type": "comparison",
                         "pokemon_id": 1,
@@ -220,12 +202,12 @@ class TestGet:
                         },
                     }
                 ],
-                [],
-                100,
-                100,
-                10,
-                False,
-            )
+                "attempts": [],
+                "battery": 100,
+                "max_battery": 100,
+                "battery_recovery": 10,
+                "consulted_this_turn": False,
+            }
         )
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
 
@@ -249,17 +231,17 @@ class TestGet:
         )
         cursor = AsyncMock()
         cursor.fetchone = AsyncMock(
-            return_value=(
-                "test-id",
-                25,
-                4,
-                [],
-                [1],
-                100,
-                100,
-                10,
-                False,
-            )
+            return_value={
+                "id": "test-id",
+                "pokemon_id": 25,
+                "max_attempts": 4,
+                "hints": [],
+                "attempts": [1],
+                "battery": 100,
+                "max_battery": 100,
+                "battery_recovery": 10,
+                "consulted_this_turn": False,
+            }
         )
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
 
