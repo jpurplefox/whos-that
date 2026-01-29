@@ -1,10 +1,9 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 from domain.stat import Stat
 
 
-@dataclass
-class Pokemon:
+class Pokemon(BaseModel):
     id: int
     name: str
     hp: int

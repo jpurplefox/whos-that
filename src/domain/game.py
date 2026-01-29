@@ -1,19 +1,10 @@
-from dataclasses import dataclass, field
 from enum import Enum
+
+from pydantic import BaseModel, Field
 
 from domain.exceptions import AlreadyConsultedThisTurn, GameOver, NotEnoughBattery
 from domain.pokemon import Pokemon
 from domain.stat import Stat
-
-
-class Hint:
-    pass
-
-
-@dataclass
-class StatHint(Hint):
-    stat: Stat
-    value: int
 
 
 class Comparison(Enum):
@@ -22,19 +13,28 @@ class Comparison(Enum):
     EQUAL = "equal"
 
 
-@dataclass
+class Hint(BaseModel):
+    pass
+
+
+class StatHint(Hint):
+    stat: Stat
+    value: int
+
+
 class ComparisonHint(Hint):
     pokemon: Pokemon
     comparisons: dict[Stat, Comparison]
 
 
-@dataclass
-class Game:
+class Game(BaseModel):
+    model_config = {"validate_assignment": True}
+
     pokemon: Pokemon
     id: str | None = None
     max_attempts: int = 4
-    hints: list[Hint] = field(default_factory=list)
-    attempts: list[Pokemon] = field(default_factory=list)
+    hints: list[Hint] = Field(default_factory=list)
+    attempts: list[Pokemon] = Field(default_factory=list)
     battery: int = 100
     max_battery: int = 100
     battery_recovery: int = 10
