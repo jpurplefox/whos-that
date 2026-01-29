@@ -147,7 +147,6 @@ class PostgresGameRepository:
             elif hint_data["type"] == "comparison":
                 pokemon = await self._pokemon_repository.get_by_number(hint_data["pokemon_id"])
                 hint_data["pokemon"] = pokemon
-                del hint_data["pokemon_id"]
                 result.append(ComparisonHint.model_validate(hint_data))
         return result
 
