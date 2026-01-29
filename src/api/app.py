@@ -29,11 +29,15 @@ def _handle_serialization_error(_: "Request[Any, Any, Any]", exc: SerializationE
 
 
 async def _on_startup() -> None:
-    await container.init_resources()
+    resources = container.init_resources()
+    if resources:
+        await resources
 
 
 async def _on_shutdown() -> None:
-    await container.shutdown_resources()
+    resources = container.shutdown_resources()
+    if resources:
+        await resources
 
 
 app = Litestar(

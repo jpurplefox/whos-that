@@ -58,7 +58,7 @@ def _upsert_game() -> str:
             Parameter("%(battery_recovery)s"),
             Parameter("%(consulted_this_turn)s"),
         )
-        .on_conflict(_games.id)
+        .on_conflict(_games.id)  # type: ignore[operator]
         .do_update(_games.pokemon_id, Parameter("%(pokemon_id)s"))
         .do_update(_games.max_attempts, Parameter("%(max_attempts)s"))
         .do_update(_games.hints, Parameter("%(hints)s"))
