@@ -2,8 +2,8 @@ from collections.abc import AsyncIterator
 from pathlib import Path
 from typing import Any
 
-import psycopg
 from dependency_injector import containers, providers
+from psycopg_pool import AsyncConnectionPool
 
 from adapters.in_memory_game_repository import InMemoryGameRepository
 from adapters.in_memory_pokemon_repository import InMemoryPokemonRepository
@@ -24,25 +24,26 @@ def _create_pokemon_repository(json_path: Path) -> InMemoryPokemonRepository:
     return InMemoryPokemonRepository(pokemon_list)
 
 
-async def _create_postgres_connection(
+async def _create_connection_pool(
     database_url: str,
-) -> AsyncIterator[psycopg.AsyncConnection | None]:
+) -> AsyncIterator[AsyncConnectionPool | None]:
     if not database_url:
         yield None
         return
-    connection = await psycopg.AsyncConnection.connect(database_url)
+    pool = AsyncConnectionPool(database_url)
+    await pool.open()
     try:
-        yield connection
+        yield pool
     finally:
-        await connection.close()
+        await pool.close()
 
 
 def _create_game_repository(
-    postgres_connection: psycopg.AsyncConnection | None,
+    connection_pool: AsyncConnectionPool | None,
     pokemon_repository: InMemoryPokemonRepository,
 ) -> Any:
-    if postgres_connection is not None:
-        return PostgresGameRepository(postgres_connection, pokemon_repository)
+    if connection_pool is not None:
+        return PostgresGameRepository(connection_pool, pokemon_repository)
     return InMemoryGameRepository()
 
 
@@ -68,14 +69,14 @@ class Container(containers.DeclarativeContainer):
         max_pokemon_number=settings.provided.max_pokemon_number,
     )
 
-    postgres_connection = providers.Resource(
-        _create_postgres_connection,
+    connection_pool = providers.Resource(
+        _create_connection_pool,
         database_url=settings.provided.database_url,
     )
 
     game_repository = providers.Singleton(
         _create_game_repository,
-        postgres_connection=postgres_connection,
+        connection_pool=connection_pool,
         pokemon_repository=pokemon_repository,
     )
 

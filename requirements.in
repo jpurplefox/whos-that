@@ -1,7 +1,7 @@
 dependency-injector
 httpx
 litestar
-psycopg[binary]
+psycopg[binary,pool]
 psycopg2-binary
 pydantic-settings
 pypika

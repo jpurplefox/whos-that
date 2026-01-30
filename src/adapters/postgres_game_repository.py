@@ -2,8 +2,8 @@ import json
 import uuid
 from typing import Any
 
-import psycopg
 from psycopg.rows import dict_row
+from psycopg_pool import AsyncConnectionPool
 from pypika import Parameter, PostgreSQLQuery, Table
 
 from domain.exceptions import GameNotFound
@@ -73,10 +73,10 @@ def _upsert_game() -> str:
 class PostgresGameRepository:
     def __init__(
         self,
-        connection: psycopg.AsyncConnection,
+        pool: AsyncConnectionPool,
         pokemon_repository: PokemonRepository,
     ) -> None:
-        self._connection = connection
+        self._pool = pool
         self._pokemon_repository = pokemon_repository
 
     async def save(self, game: Game) -> Game:
@@ -94,16 +94,18 @@ class PostgresGameRepository:
             "consulted_this_turn": game.consulted_this_turn,
         }
 
-        async with self._connection.cursor() as cursor:
-            await cursor.execute(_upsert_game(), params)
-            await self._connection.commit()
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(_upsert_game(), params)
+                await conn.commit()
 
         return game.model_copy(update={"id": game_id})
 
     async def get(self, game_id: str) -> Game:
-        async with self._connection.cursor(row_factory=dict_row) as cursor:
-            await cursor.execute(_select_game_by_id(), {"id": game_id})
-            row = await cursor.fetchone()
+        async with self._pool.connection() as conn:
+            async with conn.cursor(row_factory=dict_row) as cursor:
+                await cursor.execute(_select_game_by_id(), {"id": game_id})
+                row = await cursor.fetchone()
 
         if row is None:
             raise GameNotFound(f"Game '{game_id}' not found")
