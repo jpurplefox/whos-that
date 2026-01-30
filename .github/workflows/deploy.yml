@@ -48,9 +48,7 @@ jobs:
         run: pip install yoyo-migrations psycopg2-binary
 
       - name: Run migrations
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: yoyo apply --batch ./migrations
+        run: yoyo apply --batch --database ${{ secrets.DATABASE_URL }} ./migrations
 
   deploy:
     needs: migrate
