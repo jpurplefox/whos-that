@@ -5,6 +5,11 @@ from typing import Any
 from dependency_injector import containers, providers
 from psycopg_pool import AsyncConnectionPool
 
+from adapters.connection_provider import (
+    ConnectionProvider,
+    DirectConnectionProvider,
+    PoolConnectionProvider,
+)
 from adapters.in_memory_game_repository import InMemoryGameRepository
 from adapters.in_memory_pokemon_repository import InMemoryPokemonRepository
 from adapters.pokemon_loader import load_pokemon_from_json
@@ -26,8 +31,9 @@ def _create_pokemon_repository(json_path: Path) -> InMemoryPokemonRepository:
 
 async def _create_connection_pool(
     database_url: str,
+    use_pool: bool,
 ) -> AsyncIterator[AsyncConnectionPool | None]:
-    if not database_url:
+    if not database_url or not use_pool:
         yield None
         return
     pool = AsyncConnectionPool(database_url)
@@ -38,12 +44,23 @@ async def _create_connection_pool(
         await pool.close()
 
 
+def _create_connection_provider(
+    database_url: str,
+    pool: AsyncConnectionPool | None,
+) -> PoolConnectionProvider | DirectConnectionProvider | None:
+    if not database_url:
+        return None
+    if pool is not None:
+        return PoolConnectionProvider(pool)
+    return DirectConnectionProvider(database_url)
+
+
 def _create_game_repository(
-    connection_pool: AsyncConnectionPool | None,
+    connection_provider: ConnectionProvider | None,
     pokemon_repository: InMemoryPokemonRepository,
 ) -> Any:
-    if connection_pool is not None:
-        return PostgresGameRepository(connection_pool, pokemon_repository)
+    if connection_provider is not None:
+        return PostgresGameRepository(connection_provider, pokemon_repository)
     return InMemoryGameRepository()
 
 
@@ -72,11 +89,18 @@ class Container(containers.DeclarativeContainer):
     connection_pool = providers.Resource(
         _create_connection_pool,
         database_url=settings.provided.database_url,
+        use_pool=settings.provided.use_connection_pool,
+    )
+
+    connection_provider = providers.Singleton(
+        _create_connection_provider,
+        database_url=settings.provided.database_url,
+        pool=connection_pool,
     )
 
     game_repository = providers.Singleton(
         _create_game_repository,
-        connection_pool=connection_pool,
+        connection_provider=connection_provider,
         pokemon_repository=pokemon_repository,
     )
 

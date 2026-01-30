@@ -33,17 +33,17 @@ def make_pokemon(
 
 
 @pytest.fixture
-def mock_pool():
-    pool = MagicMock()
+def mock_connection_provider():
+    provider = MagicMock()
     connection = AsyncMock()
     connection.cursor = MagicMock(return_value=AsyncMock())
-    pool.connection.return_value.__aenter__.return_value = connection
-    return pool
+    provider.connection.return_value.__aenter__.return_value = connection
+    return provider
 
 
 @pytest.fixture
-def mock_connection(mock_pool):
-    return mock_pool.connection.return_value.__aenter__.return_value
+def mock_connection(mock_connection_provider):
+    return mock_connection_provider.connection.return_value.__aenter__.return_value
 
 
 @pytest.fixture
@@ -53,8 +53,8 @@ def mock_pokemon_repository():
 
 
 @pytest.fixture
-def repository(mock_pool, mock_pokemon_repository):
-    return PostgresGameRepository(mock_pool, mock_pokemon_repository)
+def repository(mock_connection_provider, mock_pokemon_repository):
+    return PostgresGameRepository(mock_connection_provider, mock_pokemon_repository)
 
 
 class TestSave:

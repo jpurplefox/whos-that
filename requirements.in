@@ -10,3 +10,4 @@ sniffio
 structlog
 uvicorn
 yoyo-migrations
+mangum

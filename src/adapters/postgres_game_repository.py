@@ -3,9 +3,9 @@ import uuid
 from typing import Any
 
 from psycopg.rows import dict_row
-from psycopg_pool import AsyncConnectionPool
 from pypika import Parameter, PostgreSQLQuery, Table
 
+from adapters.connection_provider import ConnectionProvider
 from domain.exceptions import GameNotFound
 from domain.game import ComparisonHint, Game, Hint, StatHint
 from domain.pokemon import Pokemon
@@ -73,10 +73,10 @@ def _upsert_game() -> str:
 class PostgresGameRepository:
     def __init__(
         self,
-        pool: AsyncConnectionPool,
+        connection_provider: ConnectionProvider,
         pokemon_repository: PokemonRepository,
     ) -> None:
-        self._pool = pool
+        self._connection_provider = connection_provider
         self._pokemon_repository = pokemon_repository
 
     async def save(self, game: Game) -> Game:
@@ -94,7 +94,7 @@ class PostgresGameRepository:
             "consulted_this_turn": game.consulted_this_turn,
         }
 
-        async with self._pool.connection() as conn:
+        async with self._connection_provider.connection() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(_upsert_game(), params)
                 await conn.commit()
@@ -102,7 +102,7 @@ class PostgresGameRepository:
         return game.model_copy(update={"id": game_id})
 
     async def get(self, game_id: str) -> Game:
-        async with self._pool.connection() as conn:
+        async with self._connection_provider.connection() as conn:
             async with conn.cursor(row_factory=dict_row) as cursor:
                 await cursor.execute(_select_game_by_id(), {"id": game_id})
                 row = await cursor.fetchone()
