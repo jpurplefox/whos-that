@@ -80,11 +80,10 @@ class PostgresGameRepository:
         self._pokemon_repository = pokemon_repository
 
     async def save(self, game: Game) -> Game:
-        if game.id is None:
-            game.id = str(uuid.uuid4())
+        game_id = game.id if game.id is not None else str(uuid.uuid4())
 
         params = {
-            "id": game.id,
+            "id": game_id,
             "pokemon_id": game.pokemon.id,
             "max_attempts": game.max_attempts,
             "hints": json.dumps(self._serialize_hints(game.hints)),
@@ -99,7 +98,7 @@ class PostgresGameRepository:
             await cursor.execute(_upsert_game(), params)
             await self._connection.commit()
 
-        return game
+        return game.model_copy(update={"id": game_id})
 
     async def get(self, game_id: str) -> Game:
         async with self._connection.cursor(row_factory=dict_row) as cursor:
