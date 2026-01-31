@@ -1,13 +1,10 @@
-import pytest
 from litestar.testing import TestClient
 
 from api.app import app
 from api.dependencies import container
 from domain.exceptions import (
-    AlreadyConsultedThisTurn,
     GameNotFound,
     GameOver,
-    NoStatsAvailable,
     NotEnoughBattery,
     PokemonNotFound,
 )
@@ -45,8 +42,7 @@ class FakeGuess:
         return self.game
 
 
-def test_create_game_returns_game_with_hint():
-    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
+def test_create_game_returns_game_with_hint(pikachu: Pokemon):
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
 
@@ -68,8 +64,7 @@ def test_create_game_returns_game_with_hint():
     assert data["max_battery"] == 100
 
 
-def test_guess_correct_pokemon():
-    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
+def test_guess_correct_pokemon(pikachu: Pokemon):
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
     game.guess(pikachu)
@@ -88,9 +83,9 @@ def test_guess_correct_pokemon():
     assert data["attempts"] == ["pikachu"]
 
 
-def test_guess_incorrect_pokemon_returns_comparison_hint():
-    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
-    bulbasaur = Pokemon(id=1, name="bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
+def test_guess_incorrect_pokemon_returns_comparison_hint(
+    pikachu: Pokemon, bulbasaur: Pokemon
+):
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
     game.guess(bulbasaur)
@@ -182,8 +177,7 @@ def test_guess_returns_400_when_invalid_json():
     assert response.status_code == 400
 
 
-def test_get_game_returns_game():
-    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
+def test_get_game_returns_game(pikachu: Pokemon):
     game = Game(pokemon=pikachu, id="game-1")
     game.add_stat_hint(Stat.SPEED)
 
@@ -220,28 +214,27 @@ class FakeConsultPokedex:
     def __init__(self, game: Game):
         self.game = game
 
-    async def execute(self, game_id: str) -> Game:
+    async def execute(self, game_id: str, hint_type: object = None) -> Game:
         return self.game
 
 
 class FakeConsultPokedexGameNotFound:
-    async def execute(self, game_id: str) -> Game:
+    async def execute(self, game_id: str, hint_type: object = None) -> Game:
         raise GameNotFound()
 
 
 class FakeConsultPokedexNotEnoughBattery:
-    async def execute(self, game_id: str) -> Game:
+    async def execute(self, game_id: str, hint_type: object = None) -> Game:
         raise NotEnoughBattery()
 
 
-def test_consult_returns_game():
-    pikachu = Pokemon(id=25, name="pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
+def test_consult_returns_game(pikachu: Pokemon):
     game = Game(pokemon=pikachu, id="game-1", battery=70, max_battery=100)
     game.add_stat_hint(Stat.SPEED)
 
     with container.consult_pokedex.override(FakeConsultPokedex(game)):
         with TestClient(app) as client:
-            response = client.post("/games/game-1/consult")
+            response = client.post("/games/game-1/consult", json={"hint_type": "stat"})
 
     assert response.status_code == 201
     data = response.json()
@@ -254,7 +247,7 @@ def test_consult_returns_game():
 def test_consult_returns_404_when_game_not_found():
     with container.consult_pokedex.override(FakeConsultPokedexGameNotFound()):
         with TestClient(app) as client:
-            response = client.post("/games/nonexistent/consult")
+            response = client.post("/games/nonexistent/consult", json={"hint_type": "stat"})
 
     assert response.status_code == 404
 
@@ -262,20 +255,20 @@ def test_consult_returns_404_when_game_not_found():
 def test_consult_returns_400_when_not_enough_battery():
     with container.consult_pokedex.override(FakeConsultPokedexNotEnoughBattery()):
         with TestClient(app) as client:
-            response = client.post("/games/game-1/consult")
+            response = client.post("/games/game-1/consult", json={"hint_type": "stat"})
 
     assert response.status_code == 400
 
 
 class FakeConsultPokedexGameOver:
-    async def execute(self, game_id: str) -> Game:
+    async def execute(self, game_id: str, hint_type: object = None) -> Game:
         raise GameOver()
 
 
 def test_consult_returns_400_when_game_is_over():
     with container.consult_pokedex.override(FakeConsultPokedexGameOver()):
         with TestClient(app) as client:
-            response = client.post("/games/game-1/consult")
+            response = client.post("/games/game-1/consult", json={"hint_type": "stat"})
 
     assert response.status_code == 400
 

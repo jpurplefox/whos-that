@@ -19,6 +19,8 @@ def load_pokemon_from_json(json_path: Path) -> list[Pokemon]:
             sp_defense=entry["sp_defense"],
             speed=entry["speed"],
             image_url=entry["image_url"],
+            primary_type=entry["primary_type"],
+            secondary_type=entry.get("secondary_type"),
         )
         for entry in data
     ]

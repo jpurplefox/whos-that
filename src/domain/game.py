@@ -27,6 +27,14 @@ class ComparisonHint(Hint):
     comparisons: dict[Stat, Comparison]
 
 
+class PrimaryTypeHint(Hint):
+    primary_type: str
+
+
+class SecondaryTypeHint(Hint):
+    secondary_type: str | None
+
+
 class Game(BaseModel):
     model_config = {"validate_assignment": True}
 
@@ -62,12 +70,30 @@ class Game(BaseModel):
         self.hints.append(hint)
         return hint
 
+    def add_primary_type_hint(self) -> PrimaryTypeHint:
+        hint = PrimaryTypeHint(primary_type=self.pokemon.primary_type)
+        self.hints.append(hint)
+        return hint
+
+    def add_secondary_type_hint(self) -> SecondaryTypeHint:
+        hint = SecondaryTypeHint(secondary_type=self.pokemon.secondary_type)
+        self.hints.append(hint)
+        return hint
+
     @property
     def available_stats(self) -> list[Stat]:
         used_stats = {
             hint.stat for hint in self.hints if isinstance(hint, StatHint)
         }
         return [stat for stat in Stat if stat not in used_stats]
+
+    @property
+    def primary_type_revealed(self) -> bool:
+        return any(isinstance(hint, PrimaryTypeHint) for hint in self.hints)
+
+    @property
+    def secondary_type_revealed(self) -> bool:
+        return any(isinstance(hint, SecondaryTypeHint) for hint in self.hints)
 
     @property
     def is_over(self) -> bool:
@@ -83,6 +109,28 @@ class Game(BaseModel):
         self.battery -= cost
         self.consulted_this_turn = True
         return self.add_stat_hint(stat)
+
+    def consult_primary_type(self, cost: int) -> PrimaryTypeHint:
+        if self.is_over:
+            raise GameOver()
+        if self.consulted_this_turn:
+            raise AlreadyConsultedThisTurn()
+        if self.battery < cost:
+            raise NotEnoughBattery()
+        self.battery -= cost
+        self.consulted_this_turn = True
+        return self.add_primary_type_hint()
+
+    def consult_secondary_type(self, cost: int) -> SecondaryTypeHint:
+        if self.is_over:
+            raise GameOver()
+        if self.consulted_this_turn:
+            raise AlreadyConsultedThisTurn()
+        if self.battery < cost:
+            raise NotEnoughBattery()
+        self.battery -= cost
+        self.consulted_this_turn = True
+        return self.add_secondary_type_hint()
 
     @property
     def is_won(self) -> bool:

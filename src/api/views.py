@@ -5,19 +5,19 @@ from litestar.openapi.datastructures import ResponseSpec
 from litestar.params import Dependency
 
 from api.dependencies import get_consult_pokedex, get_get_game, get_guess, get_pokemon_repository, get_start_game
-from api.schemas import GameResponse, GuessRequest, PokemonResponse
+from api.schemas import ConsultRequest, GameResponse, GuessRequest, HintTypeRequest, PokemonResponse
 from domain.ports.repositories import PokemonRepository
 from domain.exceptions import (
     AlreadyConsultedThisTurn,
     GameNotFound,
     GameOver,
-    NoStatsAvailable,
+    HintAlreadyRevealed,
     NotEnoughBattery,
     PokemonNotFound,
 )
-from domain.game import ComparisonHint, Game, Hint, StatHint
+from domain.game import ComparisonHint, Game, Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint
 from structlog_config import get_logger
-from services.consult_pokedex import ConsultPokedex
+from services.consult_pokedex import ConsultPokedex, HintType
 from services.get_game import GetGame
 from services.guess import Guess
 from services.start_game import StartGame
@@ -34,6 +34,10 @@ def _serialize_hint(hint: Hint) -> dict[str, object]:
             "pokemon": hint.pokemon.name,
             "comparisons": {s.value: c.value for s, c in hint.comparisons.items()},
         }
+    if isinstance(hint, PrimaryTypeHint):
+        return {"type": "primary_type", "primary_type": hint.primary_type}
+    if isinstance(hint, SecondaryTypeHint):
+        return {"type": "secondary_type", "secondary_type": hint.secondary_type}
     return {"type": type(hint).__name__}
 
 
@@ -72,33 +76,46 @@ async def get_game(
     return GameResponse.from_game(game)
 
 
+def _convert_hint_type(hint_type: HintTypeRequest) -> HintType:
+    match hint_type:
+        case HintTypeRequest.STAT:
+            return HintType.STAT
+        case HintTypeRequest.PRIMARY_TYPE:
+            return HintType.PRIMARY_TYPE
+        case HintTypeRequest.SECONDARY_TYPE:
+            return HintType.SECONDARY_TYPE
+
+
 @post(
     "/games/{game_id:str}/consult",
     responses={
-        400: ResponseSpec(data_container=None, description="Not enough battery, already consulted this turn, or no stats available"),
+        400: ResponseSpec(data_container=None, description="Not enough battery, already consulted this turn, or hint already revealed"),
         404: ResponseSpec(data_container=None, description="Game not found"),
     },
 )
 async def consult(
     game_id: str,
+    data: ConsultRequest,
     consult_pokedex: ConsultPokedex = Dependency(skip_validation=True),
 ) -> GameResponse:
+    hint_type = _convert_hint_type(data.hint_type)
     try:
-        game = await consult_pokedex.execute(game_id)
+        game = await consult_pokedex.execute(game_id, hint_type)
     except GameNotFound:
         raise HTTPException(status_code=404, detail="Game not found")
     except NotEnoughBattery:
         raise HTTPException(status_code=400, detail="Not enough battery")
     except AlreadyConsultedThisTurn:
         raise HTTPException(status_code=400, detail="Already consulted this turn")
-    except NoStatsAvailable:
-        raise HTTPException(status_code=400, detail="No stats available")
+    except HintAlreadyRevealed:
+        raise HTTPException(status_code=400, detail="Hint already revealed")
     except GameOver:
         raise HTTPException(status_code=400, detail="Game is over")
 
     logger.info(
         "pokedex_consulted",
         game_id=game.id,
+        hint_type=data.hint_type.value,
         battery_remaining=game.battery,
         turn_number=len(game.attempts) + 1,
         hints=_serialize_hints(game),

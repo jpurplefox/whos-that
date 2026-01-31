@@ -7,7 +7,14 @@ from pypika import Parameter, PostgreSQLQuery, Table
 
 from adapters.connection_provider import ConnectionProvider
 from domain.exceptions import GameNotFound
-from domain.game import ComparisonHint, Game, Hint, StatHint
+from domain.game import (
+    ComparisonHint,
+    Game,
+    Hint,
+    PrimaryTypeHint,
+    SecondaryTypeHint,
+    StatHint,
+)
 from domain.pokemon import Pokemon
 from domain.ports.repositories import PokemonRepository
 
@@ -138,6 +145,14 @@ class PostgresGameRepository:
                 data["type"] = "comparison"
                 data["pokemon_id"] = data.pop("pokemon")["id"]
                 result.append(data)
+            elif isinstance(hint, PrimaryTypeHint):
+                data = hint.model_dump(mode="json")
+                data["type"] = "primary_type"
+                result.append(data)
+            elif isinstance(hint, SecondaryTypeHint):
+                data = hint.model_dump(mode="json")
+                data["type"] = "secondary_type"
+                result.append(data)
         return result
 
     async def _deserialize_hints(self, hints_data: list[dict[str, Any]]) -> list[Hint]:
@@ -149,6 +164,10 @@ class PostgresGameRepository:
                 pokemon = await self._pokemon_repository.get_by_number(hint_data["pokemon_id"])
                 hint_data["pokemon"] = pokemon
                 result.append(ComparisonHint.model_validate(hint_data))
+            elif hint_data["type"] == "primary_type":
+                result.append(PrimaryTypeHint.model_validate(hint_data))
+            elif hint_data["type"] == "secondary_type":
+                result.append(SecondaryTypeHint.model_validate(hint_data))
         return result
 
     async def _deserialize_attempts(self, attempts_data: list[int]) -> list[Pokemon]:

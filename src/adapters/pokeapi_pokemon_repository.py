@@ -27,6 +27,9 @@ class PokeApiPokemonRepository:
 
     def _parse_pokemon(self, data: dict[str, Any]) -> Pokemon:
         stats = {stat["stat"]["name"]: stat["base_stat"] for stat in data["stats"]}
+        types = sorted(data["types"], key=lambda t: t["slot"])
+        primary_type = types[0]["type"]["name"]
+        secondary_type = types[1]["type"]["name"] if len(types) > 1 else None
         return Pokemon(
             id=data["id"],
             name=data["name"],
@@ -37,4 +40,6 @@ class PokeApiPokemonRepository:
             sp_defense=stats["special-defense"],
             speed=stats["speed"],
             image_url=data["sprites"]["front_default"],
+            primary_type=primary_type,
+            secondary_type=secondary_type,
         )

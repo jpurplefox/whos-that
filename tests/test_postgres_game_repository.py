@@ -9,29 +9,6 @@ from domain.pokemon import Pokemon
 from domain.stat import Stat
 
 
-def make_pokemon(
-    id: int = 25,
-    name: str = "Pikachu",
-    hp: int = 35,
-    attack: int = 55,
-    defense: int = 40,
-    sp_attack: int = 50,
-    sp_defense: int = 50,
-    speed: int = 90,
-) -> Pokemon:
-    return Pokemon(
-        id=id,
-        name=name,
-        hp=hp,
-        attack=attack,
-        defense=defense,
-        sp_attack=sp_attack,
-        sp_defense=sp_defense,
-        speed=speed,
-        image_url=f"https://example.com/{name.lower()}.png",
-    )
-
-
 @pytest.fixture
 def mock_connection_provider():
     provider = MagicMock()
@@ -59,33 +36,30 @@ def repository(mock_connection_provider, mock_pokemon_repository):
 
 class TestSave:
     @pytest.mark.asyncio
-    async def test_assigns_id_to_new_game(self, repository, mock_connection):
+    async def test_assigns_id_to_new_game(self, repository, mock_connection, pikachu: Pokemon):
         cursor = AsyncMock()
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
-        pokemon = make_pokemon()
-        game = Game(pokemon=pokemon)
+        game = Game(pokemon=pikachu)
 
         saved_game = await repository.save(game)
 
         assert saved_game.id is not None
 
     @pytest.mark.asyncio
-    async def test_preserves_existing_id(self, repository, mock_connection):
+    async def test_preserves_existing_id(self, repository, mock_connection, pikachu: Pokemon):
         cursor = AsyncMock()
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
-        pokemon = make_pokemon()
-        game = Game(pokemon=pokemon, id="existing-id")
+        game = Game(pokemon=pikachu, id="existing-id")
 
         saved_game = await repository.save(game)
 
         assert saved_game.id == "existing-id"
 
     @pytest.mark.asyncio
-    async def test_executes_upsert_query(self, repository, mock_connection):
+    async def test_executes_upsert_query(self, repository, mock_connection, pikachu: Pokemon):
         cursor = AsyncMock()
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
-        pokemon = make_pokemon()
-        game = Game(pokemon=pokemon, id="test-id")
+        game = Game(pokemon=pikachu, id="test-id")
 
         await repository.save(game)
 
@@ -96,11 +70,10 @@ class TestSave:
         assert '"games"' in upsert_call
 
     @pytest.mark.asyncio
-    async def test_commits_transaction(self, repository, mock_connection):
+    async def test_commits_transaction(self, repository, mock_connection, pikachu: Pokemon):
         cursor = AsyncMock()
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
-        pokemon = make_pokemon()
-        game = Game(pokemon=pokemon)
+        game = Game(pokemon=pikachu)
 
         await repository.save(game)
 
@@ -110,10 +83,9 @@ class TestSave:
 class TestGet:
     @pytest.mark.asyncio
     async def test_returns_saved_game(
-        self, repository, mock_connection, mock_pokemon_repository
+        self, repository, mock_connection, mock_pokemon_repository, pikachu: Pokemon
     ):
-        pokemon = make_pokemon()
-        mock_pokemon_repository.get_by_number.return_value = pokemon
+        mock_pokemon_repository.get_by_number.return_value = pikachu
         cursor = AsyncMock()
         cursor.fetchone = AsyncMock(
             return_value={
@@ -133,7 +105,7 @@ class TestGet:
         game = await repository.get("test-id")
 
         assert game.id == "test-id"
-        assert game.pokemon == pokemon
+        assert game.pokemon == pikachu
         assert game.max_attempts == 4
         assert game.battery == 100
         assert game.max_battery == 100
@@ -153,10 +125,9 @@ class TestGet:
 
     @pytest.mark.asyncio
     async def test_deserializes_stat_hints(
-        self, repository, mock_connection, mock_pokemon_repository
+        self, repository, mock_connection, mock_pokemon_repository, pikachu: Pokemon
     ):
-        pokemon = make_pokemon()
-        mock_pokemon_repository.get_by_number.return_value = pokemon
+        mock_pokemon_repository.get_by_number.return_value = pikachu
         cursor = AsyncMock()
         cursor.fetchone = AsyncMock(
             return_value={
@@ -182,12 +153,15 @@ class TestGet:
 
     @pytest.mark.asyncio
     async def test_deserializes_comparison_hints(
-        self, repository, mock_connection, mock_pokemon_repository
+        self,
+        repository,
+        mock_connection,
+        mock_pokemon_repository,
+        pikachu: Pokemon,
+        bulbasaur: Pokemon,
     ):
-        pokemon = make_pokemon()
-        bulbasaur = make_pokemon(id=1, name="Bulbasaur")
         mock_pokemon_repository.get_by_number.side_effect = (
-            lambda n: pokemon if n == 25 else bulbasaur
+            lambda n: pikachu if n == 25 else bulbasaur
         )
         cursor = AsyncMock()
         cursor.fetchone = AsyncMock(
@@ -229,12 +203,15 @@ class TestGet:
 
     @pytest.mark.asyncio
     async def test_deserializes_attempts(
-        self, repository, mock_connection, mock_pokemon_repository
+        self,
+        repository,
+        mock_connection,
+        mock_pokemon_repository,
+        pikachu: Pokemon,
+        bulbasaur: Pokemon,
     ):
-        pokemon = make_pokemon()
-        bulbasaur = make_pokemon(id=1, name="Bulbasaur")
         mock_pokemon_repository.get_by_number.side_effect = (
-            lambda n: pokemon if n == 25 else bulbasaur
+            lambda n: pikachu if n == 25 else bulbasaur
         )
         cursor = AsyncMock()
         cursor.fetchone = AsyncMock(
@@ -266,11 +243,10 @@ class TestSerializeHints:
 
         assert result == [{"type": "stat", "stat": "speed", "value": 90}]
 
-    def test_serializes_comparison_hint(self, repository):
-        pokemon = make_pokemon()
+    def test_serializes_comparison_hint(self, repository, pikachu: Pokemon):
         hints = [
             ComparisonHint(
-                pokemon=pokemon,
+                pokemon=pikachu,
                 comparisons={
                     Stat.HP: Comparison.HIGHER,
                     Stat.ATTACK: Comparison.LOWER,
@@ -299,12 +275,11 @@ class TestSerializeHints:
             }
         ]
 
-    def test_serializes_multiple_hints(self, repository):
-        pokemon = make_pokemon()
+    def test_serializes_multiple_hints(self, repository, pikachu: Pokemon):
         hints = [
             StatHint(stat=Stat.HP, value=35),
             ComparisonHint(
-                pokemon=pokemon,
+                pokemon=pikachu,
                 comparisons={stat: Comparison.EQUAL for stat in Stat},
             ),
         ]

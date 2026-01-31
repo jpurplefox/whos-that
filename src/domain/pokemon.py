@@ -13,6 +13,8 @@ class Pokemon(BaseModel):
     sp_defense: int
     speed: int
     image_url: str
+    primary_type: str
+    secondary_type: str | None = None
 
     def get_stat(self, stat: Stat) -> int:
         value: int = getattr(self, stat.value)

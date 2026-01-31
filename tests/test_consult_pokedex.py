@@ -1,11 +1,11 @@
 import pytest
 
-from domain.exceptions import NoStatsAvailable
+from domain.exceptions import HintAlreadyRevealed
 from domain.game import Game
 from domain.pokemon import Pokemon
 from domain.ports.repositories import GameRepository
 from domain.stat import Stat
-from services.consult_pokedex import ConsultPokedex
+from services.consult_pokedex import ConsultPokedex, HintType
 
 
 class FakeRandomGenerator:
@@ -17,13 +17,14 @@ class FakeRandomGenerator:
 
 
 @pytest.mark.asyncio
-async def test_consult_adds_stat_hint_and_reduces_battery(game_repository: GameRepository):
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
-    game = Game(pokemon=pokemon, battery=100, max_battery=100)
+async def test_consult_adds_stat_hint_and_reduces_battery(
+    game_repository: GameRepository, pikachu: Pokemon
+):
+    game = Game(pokemon=pikachu, battery=100, max_battery=100)
     game = await game_repository.save(game)
 
     consult = ConsultPokedex(game_repository, FakeRandomGenerator(0), stat_cost=40)
-    updated = await consult.execute(game.id)
+    updated = await consult.execute(game.id, HintType.STAT)
 
     assert updated.battery == 60
     assert len(updated.hints) == 1
@@ -31,14 +32,15 @@ async def test_consult_adds_stat_hint_and_reduces_battery(game_repository: GameR
 
 
 @pytest.mark.asyncio
-async def test_consult_raises_no_stats_available(game_repository: GameRepository):
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
-    game = Game(pokemon=pokemon, battery=100, max_battery=100)
+async def test_consult_raises_hint_already_revealed_when_all_stats_used(
+    game_repository: GameRepository, pikachu: Pokemon
+):
+    game = Game(pokemon=pikachu, battery=100, max_battery=100)
     for stat in Stat:
         game.add_stat_hint(stat)
     game = await game_repository.save(game)
 
     consult = ConsultPokedex(game_repository, FakeRandomGenerator(0), stat_cost=40)
 
-    with pytest.raises(NoStatsAvailable):
-        await consult.execute(game.id)
+    with pytest.raises(HintAlreadyRevealed):
+        await consult.execute(game.id, HintType.STAT)
