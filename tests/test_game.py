@@ -6,24 +6,21 @@ from domain.pokemon import Pokemon
 from domain.stat import Stat
 
 
-def test_game_starts_with_no_hints():
-    pokemon = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    game = Game(pokemon=pokemon)
+def test_game_starts_with_no_hints(bulbasaur: Pokemon):
+    game = Game(pokemon=bulbasaur)
     assert game.hints == []
 
 
-def test_add_hint_returns_hint_with_stat_and_value():
-    pokemon = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    game = Game(pokemon=pokemon)
+def test_add_hint_returns_hint_with_stat_and_value(bulbasaur: Pokemon):
+    game = Game(pokemon=bulbasaur)
 
     hint = game.add_stat_hint(Stat.HP)
 
     assert hint == StatHint(stat=Stat.HP, value=45)
 
 
-def test_add_hint_appends_to_hints_list():
-    pokemon = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    game = Game(pokemon=pokemon)
+def test_add_hint_appends_to_hints_list(bulbasaur: Pokemon):
+    game = Game(pokemon=bulbasaur)
 
     game.add_stat_hint(Stat.HP)
     game.add_stat_hint(Stat.ATTACK)
@@ -33,8 +30,7 @@ def test_add_hint_appends_to_hints_list():
     assert game.hints[1] == StatHint(stat=Stat.ATTACK, value=49)
 
 
-def test_guess_returns_true_when_correct():
-    bulbasaur = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
+def test_guess_returns_true_when_correct(bulbasaur: Pokemon):
     game = Game(pokemon=bulbasaur)
 
     result = game.guess(bulbasaur)
@@ -43,9 +39,7 @@ def test_guess_returns_true_when_correct():
     assert len(game.hints) == 0
 
 
-def test_guess_returns_false_when_incorrect():
-    bulbasaur = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    charmander = Pokemon(id=4, name="Charmander", hp=39, attack=52, defense=43, sp_attack=60, sp_defense=50, speed=65, image_url="https://example.com/charmander.png")
+def test_guess_returns_false_when_incorrect(bulbasaur: Pokemon, charmander: Pokemon):
     game = Game(pokemon=bulbasaur)
 
     result = game.guess(charmander)
@@ -53,9 +47,7 @@ def test_guess_returns_false_when_incorrect():
     assert result is False
 
 
-def test_guess_adds_to_attempts():
-    bulbasaur = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    charmander = Pokemon(id=4, name="Charmander", hp=39, attack=52, defense=43, sp_attack=60, sp_defense=50, speed=65, image_url="https://example.com/charmander.png")
+def test_guess_adds_to_attempts(bulbasaur: Pokemon, charmander: Pokemon):
     game = Game(pokemon=bulbasaur)
 
     game.guess(charmander)
@@ -64,9 +56,7 @@ def test_guess_adds_to_attempts():
     assert game.attempts[0] == charmander
 
 
-def test_guess_raises_when_no_attempts_remaining():
-    bulbasaur = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    charmander = Pokemon(id=4, name="Charmander", hp=39, attack=52, defense=43, sp_attack=60, sp_defense=50, speed=65, image_url="https://example.com/charmander.png")
+def test_guess_raises_when_no_attempts_remaining(bulbasaur: Pokemon, charmander: Pokemon):
     game = Game(pokemon=bulbasaur, max_attempts=1)
 
     game.guess(charmander)
@@ -75,9 +65,7 @@ def test_guess_raises_when_no_attempts_remaining():
         game.guess(charmander)
 
 
-def test_guess_adds_comparison_hint():
-    bulbasaur = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    charmander = Pokemon(id=4, name="Charmander", hp=39, attack=52, defense=43, sp_attack=60, sp_defense=50, speed=65, image_url="https://example.com/charmander.png")
+def test_guess_adds_comparison_hint(bulbasaur: Pokemon, charmander: Pokemon):
     game = Game(pokemon=bulbasaur)
 
     game.guess(charmander)
@@ -94,9 +82,8 @@ def test_guess_adds_comparison_hint():
     assert hint.comparisons[Stat.SPEED] == Comparison.LOWER
 
 
-def test_consult_stat_subtracts_battery_and_adds_hint():
-    pokemon = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    game = Game(pokemon=pokemon, battery=100, max_battery=100)
+def test_consult_stat_subtracts_battery_and_adds_hint(bulbasaur: Pokemon):
+    game = Game(pokemon=bulbasaur, battery=100, max_battery=100)
 
     hint = game.consult_stat(Stat.HP, cost=30)
 
@@ -106,9 +93,8 @@ def test_consult_stat_subtracts_battery_and_adds_hint():
     assert hint in game.hints
 
 
-def test_consult_stat_raises_already_consulted_this_turn():
-    pokemon = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    game = Game(pokemon=pokemon, battery=100, max_battery=100)
+def test_consult_stat_raises_already_consulted_this_turn(bulbasaur: Pokemon):
+    game = Game(pokemon=bulbasaur, battery=100, max_battery=100)
 
     game.consult_stat(Stat.HP, cost=30)
 
@@ -116,17 +102,15 @@ def test_consult_stat_raises_already_consulted_this_turn():
         game.consult_stat(Stat.ATTACK, cost=30)
 
 
-def test_consult_stat_raises_not_enough_battery():
-    pokemon = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    game = Game(pokemon=pokemon, battery=10, max_battery=100)
+def test_consult_stat_raises_not_enough_battery(bulbasaur: Pokemon):
+    game = Game(pokemon=bulbasaur, battery=10, max_battery=100)
 
     with pytest.raises(NotEnoughBattery):
         game.consult_stat(Stat.HP, cost=30)
 
 
-def test_available_stats_excludes_used_stats():
-    pokemon = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    game = Game(pokemon=pokemon)
+def test_available_stats_excludes_used_stats(bulbasaur: Pokemon):
+    game = Game(pokemon=bulbasaur)
 
     game.add_stat_hint(Stat.HP)
     game.add_stat_hint(Stat.ATTACK)
@@ -140,10 +124,8 @@ def test_available_stats_excludes_used_stats():
     assert Stat.SPEED in available
 
 
-def test_guess_recovers_battery_and_resets_consulted():
-    pokemon = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    charmander = Pokemon(id=4, name="Charmander", hp=39, attack=52, defense=43, sp_attack=60, sp_defense=50, speed=65, image_url="https://example.com/charmander.png")
-    game = Game(pokemon=pokemon, battery=70, max_battery=100, battery_recovery=10)
+def test_guess_recovers_battery_and_resets_consulted(bulbasaur: Pokemon, charmander: Pokemon):
+    game = Game(pokemon=bulbasaur, battery=70, max_battery=100, battery_recovery=10)
     game.consulted_this_turn = True
 
     game.guess(charmander)
@@ -152,8 +134,7 @@ def test_guess_recovers_battery_and_resets_consulted():
     assert game.consulted_this_turn is False
 
 
-def test_consult_stat_raises_game_over_when_won():
-    bulbasaur = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
+def test_consult_stat_raises_game_over_when_won(bulbasaur: Pokemon):
     game = Game(pokemon=bulbasaur, battery=100, max_battery=100)
     game.guess(bulbasaur)
     assert game.is_won
@@ -162,9 +143,9 @@ def test_consult_stat_raises_game_over_when_won():
         game.consult_stat(Stat.HP, cost=30)
 
 
-def test_consult_stat_raises_game_over_when_no_attempts_remaining():
-    bulbasaur = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    charmander = Pokemon(id=4, name="Charmander", hp=39, attack=52, defense=43, sp_attack=60, sp_defense=50, speed=65, image_url="https://example.com/charmander.png")
+def test_consult_stat_raises_game_over_when_no_attempts_remaining(
+    bulbasaur: Pokemon, charmander: Pokemon
+):
     game = Game(pokemon=bulbasaur, max_attempts=1, battery=100, max_battery=100)
     game.guess(charmander)
     assert game.attempts_remaining == 0
@@ -173,10 +154,8 @@ def test_consult_stat_raises_game_over_when_no_attempts_remaining():
         game.consult_stat(Stat.HP, cost=30)
 
 
-def test_guess_battery_does_not_exceed_max():
-    pokemon = Pokemon(id=1, name="Bulbasaur", hp=45, attack=49, defense=49, sp_attack=65, sp_defense=65, speed=45, image_url="https://example.com/bulbasaur.png")
-    charmander = Pokemon(id=4, name="Charmander", hp=39, attack=52, defense=43, sp_attack=60, sp_defense=50, speed=65, image_url="https://example.com/charmander.png")
-    game = Game(pokemon=pokemon, battery=95, max_battery=100, battery_recovery=10)
+def test_guess_battery_does_not_exceed_max(bulbasaur: Pokemon, charmander: Pokemon):
+    game = Game(pokemon=bulbasaur, battery=95, max_battery=100, battery_recovery=10)
 
     game.guess(charmander)
 

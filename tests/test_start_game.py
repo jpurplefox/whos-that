@@ -24,21 +24,21 @@ class FakePokemonSelector:
 
 
 @pytest.mark.asyncio
-async def test_creates_game_with_pokemon(game_repository: GameRepository):
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
-    pokemon_selector = FakePokemonSelector(pokemon)
+async def test_creates_game_with_pokemon(game_repository: GameRepository, pikachu: Pokemon):
+    pokemon_selector = FakePokemonSelector(pikachu)
     stat_selector = FakeStatSelector(Stat.SPEED)
 
     start_game = StartGame(pokemon_selector, stat_selector, game_repository, max_attempts=4)
     game = await start_game.execute()
 
-    assert game.pokemon == pokemon
+    assert game.pokemon == pikachu
 
 
 @pytest.mark.asyncio
-async def test_adds_first_hint_with_selected_stat(game_repository: GameRepository):
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
-    pokemon_selector = FakePokemonSelector(pokemon)
+async def test_adds_first_hint_with_selected_stat(
+    game_repository: GameRepository, pikachu: Pokemon
+):
+    pokemon_selector = FakePokemonSelector(pikachu)
     stat_selector = FakeStatSelector(Stat.SPEED)
 
     start_game = StartGame(pokemon_selector, stat_selector, game_repository, max_attempts=4)
@@ -49,9 +49,8 @@ async def test_adds_first_hint_with_selected_stat(game_repository: GameRepositor
 
 
 @pytest.mark.asyncio
-async def test_saves_game_with_id(game_repository: GameRepository):
-    pokemon = Pokemon(id=25, name="Pikachu", hp=35, attack=55, defense=40, sp_attack=50, sp_defense=50, speed=90, image_url="https://example.com/pikachu.png")
-    pokemon_selector = FakePokemonSelector(pokemon)
+async def test_saves_game_with_id(game_repository: GameRepository, pikachu: Pokemon):
+    pokemon_selector = FakePokemonSelector(pikachu)
     stat_selector = FakeStatSelector(Stat.SPEED)
 
     start_game = StartGame(pokemon_selector, stat_selector, game_repository, max_attempts=4)

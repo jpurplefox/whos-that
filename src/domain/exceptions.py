@@ -22,5 +22,9 @@ class NoStatsAvailable(DomainException):
     pass
 
 
+class HintAlreadyRevealed(DomainException):
+    pass
+
+
 class GameOver(DomainException):
     pass
