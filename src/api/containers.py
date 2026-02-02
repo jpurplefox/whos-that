@@ -10,6 +10,7 @@ from adapters.connection_provider import (
     DirectConnectionProvider,
     PoolConnectionProvider,
 )
+from adapters.hint_serializers import HintSerializerRegistry
 from adapters.in_memory_game_repository import InMemoryGameRepository
 from adapters.in_memory_pokemon_repository import InMemoryPokemonRepository
 from adapters.pokemon_loader import load_pokemon_from_json
@@ -58,9 +59,10 @@ def _create_connection_provider(
 def _create_game_repository(
     connection_provider: ConnectionProvider | None,
     pokemon_repository: InMemoryPokemonRepository,
+    hint_serializer: HintSerializerRegistry,
 ) -> Any:
     if connection_provider is not None:
-        return PostgresGameRepository(connection_provider, pokemon_repository)
+        return PostgresGameRepository(connection_provider, pokemon_repository, hint_serializer)
     return InMemoryGameRepository()
 
 
@@ -98,10 +100,16 @@ class Container(containers.DeclarativeContainer):
         pool=connection_pool,
     )
 
+    hint_serializer = providers.Singleton(
+        HintSerializerRegistry,
+        pokemon_repository=pokemon_repository,
+    )
+
     game_repository = providers.Singleton(
         _create_game_repository,
         connection_provider=connection_provider,
         pokemon_repository=pokemon_repository,
+        hint_serializer=hint_serializer,
     )
 
     start_game = providers.Singleton(
