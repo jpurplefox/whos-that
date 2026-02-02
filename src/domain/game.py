@@ -2,7 +2,12 @@ from enum import Enum
 
 from pydantic import BaseModel, Field
 
-from domain.exceptions import AlreadyConsultedThisTurn, GameOver, NotEnoughBattery
+from domain.exceptions import (
+    AlreadyConsultedThisTurn,
+    GameOver,
+    HintAlreadyRevealed,
+    NotEnoughBattery,
+)
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 
@@ -14,25 +19,72 @@ class Comparison(Enum):
 
 
 class Hint(BaseModel):
-    pass
+    def is_already_revealed(self, hints: list["Hint"]) -> bool:
+        raise NotImplementedError
 
 
 class StatHint(Hint):
     stat: Stat
     value: int
 
+    def is_already_revealed(self, hints: list[Hint]) -> bool:
+        return any(isinstance(h, StatHint) and h.stat == self.stat for h in hints)
+
+    @classmethod
+    def create(cls, pokemon: Pokemon, stat: Stat) -> "StatHint":
+        return cls(stat=stat, value=pokemon.get_stat(stat))
+
+    @classmethod
+    def available_stats(cls, hints: list[Hint]) -> list[Stat]:
+        used = {h.stat for h in hints if isinstance(h, StatHint)}
+        return [s for s in Stat if s not in used]
+
 
 class ComparisonHint(Hint):
     pokemon: Pokemon
     comparisons: dict[Stat, Comparison]
 
+    def is_already_revealed(self, hints: list[Hint]) -> bool:
+        return any(
+            isinstance(h, ComparisonHint) and h.pokemon.id == self.pokemon.id
+            for h in hints
+        )
+
+    @classmethod
+    def create(cls, target: Pokemon, guessed: Pokemon) -> "ComparisonHint":
+        comparisons: dict[Stat, Comparison] = {}
+        for stat in Stat:
+            target_value = target.get_stat(stat)
+            guess_value = guessed.get_stat(stat)
+            if target_value > guess_value:
+                comparisons[stat] = Comparison.HIGHER
+            elif target_value < guess_value:
+                comparisons[stat] = Comparison.LOWER
+            else:
+                comparisons[stat] = Comparison.EQUAL
+        return cls(pokemon=guessed, comparisons=comparisons)
+
 
 class PrimaryTypeHint(Hint):
     primary_type: str
 
+    def is_already_revealed(self, hints: list[Hint]) -> bool:
+        return any(isinstance(h, PrimaryTypeHint) for h in hints)
+
+    @classmethod
+    def create(cls, pokemon: Pokemon) -> "PrimaryTypeHint":
+        return cls(primary_type=pokemon.primary_type)
+
 
 class SecondaryTypeHint(Hint):
     secondary_type: str | None
+
+    def is_already_revealed(self, hints: list[Hint]) -> bool:
+        return any(isinstance(h, SecondaryTypeHint) for h in hints)
+
+    @classmethod
+    def create(cls, pokemon: Pokemon) -> "SecondaryTypeHint":
+        return cls(secondary_type=pokemon.secondary_type)
 
 
 class Game(BaseModel):
@@ -48,89 +100,22 @@ class Game(BaseModel):
     battery_recovery: int = 10
     consulted_this_turn: bool = False
 
-    def add_stat_hint(self, stat: Stat) -> StatHint:
-        value = self.pokemon.get_stat(stat)
-        hint = StatHint(stat=stat, value=value)
+    def consult(self, hint: Hint, cost: int) -> None:
+        if self.is_over:
+            raise GameOver()
+        if self.consulted_this_turn:
+            raise AlreadyConsultedThisTurn()
+        if self.battery < cost:
+            raise NotEnoughBattery()
+        if hint.is_already_revealed(self.hints):
+            raise HintAlreadyRevealed()
         self.hints.append(hint)
-        return hint
-
-    def add_comparison_hint(self, pokemon: Pokemon) -> ComparisonHint:
-        comparisons: dict[Stat, Comparison] = {}
-        for stat in Stat:
-            target_value = self.pokemon.get_stat(stat)
-            guess_value = pokemon.get_stat(stat)
-            if target_value > guess_value:
-                comparisons[stat] = Comparison.HIGHER
-            elif target_value < guess_value:
-                comparisons[stat] = Comparison.LOWER
-            else:
-                comparisons[stat] = Comparison.EQUAL
-
-        hint = ComparisonHint(pokemon=pokemon, comparisons=comparisons)
-        self.hints.append(hint)
-        return hint
-
-    def add_primary_type_hint(self) -> PrimaryTypeHint:
-        hint = PrimaryTypeHint(primary_type=self.pokemon.primary_type)
-        self.hints.append(hint)
-        return hint
-
-    def add_secondary_type_hint(self) -> SecondaryTypeHint:
-        hint = SecondaryTypeHint(secondary_type=self.pokemon.secondary_type)
-        self.hints.append(hint)
-        return hint
-
-    @property
-    def available_stats(self) -> list[Stat]:
-        used_stats = {
-            hint.stat for hint in self.hints if isinstance(hint, StatHint)
-        }
-        return [stat for stat in Stat if stat not in used_stats]
-
-    @property
-    def primary_type_revealed(self) -> bool:
-        return any(isinstance(hint, PrimaryTypeHint) for hint in self.hints)
-
-    @property
-    def secondary_type_revealed(self) -> bool:
-        return any(isinstance(hint, SecondaryTypeHint) for hint in self.hints)
+        self.battery -= cost
+        self.consulted_this_turn = True
 
     @property
     def is_over(self) -> bool:
         return self.is_won or self.attempts_remaining == 0
-
-    def consult_stat(self, stat: Stat, cost: int) -> StatHint:
-        if self.is_over:
-            raise GameOver()
-        if self.consulted_this_turn:
-            raise AlreadyConsultedThisTurn()
-        if self.battery < cost:
-            raise NotEnoughBattery()
-        self.battery -= cost
-        self.consulted_this_turn = True
-        return self.add_stat_hint(stat)
-
-    def consult_primary_type(self, cost: int) -> PrimaryTypeHint:
-        if self.is_over:
-            raise GameOver()
-        if self.consulted_this_turn:
-            raise AlreadyConsultedThisTurn()
-        if self.battery < cost:
-            raise NotEnoughBattery()
-        self.battery -= cost
-        self.consulted_this_turn = True
-        return self.add_primary_type_hint()
-
-    def consult_secondary_type(self, cost: int) -> SecondaryTypeHint:
-        if self.is_over:
-            raise GameOver()
-        if self.consulted_this_turn:
-            raise AlreadyConsultedThisTurn()
-        if self.battery < cost:
-            raise NotEnoughBattery()
-        self.battery -= cost
-        self.consulted_this_turn = True
-        return self.add_secondary_type_hint()
 
     @property
     def is_won(self) -> bool:
@@ -145,7 +130,8 @@ class Game(BaseModel):
             raise GameOver()
         self.attempts.append(pokemon)
         if not self.is_won:
-            self.add_comparison_hint(pokemon)
+            hint = ComparisonHint.create(self.pokemon, pokemon)
+            self.hints.append(hint)
         self.battery = min(self.battery + self.battery_recovery, self.max_battery)
         self.consulted_this_turn = False
         return self.is_won

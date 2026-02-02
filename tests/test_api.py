@@ -8,7 +8,7 @@ from domain.exceptions import (
     NotEnoughBattery,
     PokemonNotFound,
 )
-from domain.game import Game
+from domain.game import Game, StatHint
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 
@@ -44,7 +44,7 @@ class FakeGuess:
 
 def test_create_game_returns_game_with_hint(pikachu: Pokemon):
     game = Game(pokemon=pikachu, id="game-1")
-    game.add_stat_hint(Stat.SPEED)
+    game.hints.append(StatHint.create(pikachu, Stat.SPEED))
 
     with container.start_game.override(FakeStartGame(game)):
         with TestClient(app) as client:
@@ -66,7 +66,7 @@ def test_create_game_returns_game_with_hint(pikachu: Pokemon):
 
 def test_guess_correct_pokemon(pikachu: Pokemon):
     game = Game(pokemon=pikachu, id="game-1")
-    game.add_stat_hint(Stat.SPEED)
+    game.hints.append(StatHint.create(pikachu, Stat.SPEED))
     game.guess(pikachu)
 
     with container.guess.override(FakeGuess(game)):
@@ -87,7 +87,7 @@ def test_guess_incorrect_pokemon_returns_comparison_hint(
     pikachu: Pokemon, bulbasaur: Pokemon
 ):
     game = Game(pokemon=pikachu, id="game-1")
-    game.add_stat_hint(Stat.SPEED)
+    game.hints.append(StatHint.create(pikachu, Stat.SPEED))
     game.guess(bulbasaur)
 
     with container.guess.override(FakeGuess(game)):
@@ -179,7 +179,7 @@ def test_guess_returns_400_when_invalid_json():
 
 def test_get_game_returns_game(pikachu: Pokemon):
     game = Game(pokemon=pikachu, id="game-1")
-    game.add_stat_hint(Stat.SPEED)
+    game.hints.append(StatHint.create(pikachu, Stat.SPEED))
 
     with container.get_game.override(FakeGetGame(game)):
         with TestClient(app) as client:
@@ -230,7 +230,7 @@ class FakeConsultPokedexNotEnoughBattery:
 
 def test_consult_returns_game(pikachu: Pokemon):
     game = Game(pokemon=pikachu, id="game-1", battery=70, max_battery=100)
-    game.add_stat_hint(Stat.SPEED)
+    game.hints.append(StatHint.create(pikachu, Stat.SPEED))
 
     with container.consult_pokedex.override(FakeConsultPokedex(game)):
         with TestClient(app) as client:

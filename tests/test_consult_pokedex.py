@@ -1,7 +1,7 @@
 import pytest
 
 from domain.exceptions import HintAlreadyRevealed
-from domain.game import Game
+from domain.game import Game, StatHint
 from domain.pokemon import Pokemon
 from domain.ports.repositories import GameRepository
 from domain.stat import Stat
@@ -37,7 +37,7 @@ async def test_consult_raises_hint_already_revealed_when_all_stats_used(
 ):
     game = Game(pokemon=pikachu, battery=100, max_battery=100)
     for stat in Stat:
-        game.add_stat_hint(stat)
+        game.hints.append(StatHint.create(pikachu, stat))
     game = await game_repository.save(game)
 
     consult = ConsultPokedex(game_repository, FakeRandomGenerator(0), stat_cost=40)

@@ -1,4 +1,4 @@
-from domain.game import Game
+from domain.game import Game, StatHint
 from domain.ports.random_pokemon_selector import RandomPokemonSelector
 from domain.ports.random_stat_selector import RandomStatSelector
 from domain.ports.repositories import GameRepository
@@ -31,5 +31,6 @@ class StartGame:
             battery_recovery=self.battery_recovery,
         )
         random_stat = self.stat_selector.select()
-        game.add_stat_hint(random_stat)
+        hint = StatHint.create(pokemon, random_stat)
+        game.hints.append(hint)
         return await self.game_repository.save(game)

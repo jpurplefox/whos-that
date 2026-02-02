@@ -1,7 +1,7 @@
 import pytest
 
 from adapters.in_memory_pokemon_repository import InMemoryPokemonRepository
-from domain.game import Game
+from domain.game import Game, StatHint
 from domain.pokemon import Pokemon
 from domain.ports.repositories import GameRepository
 from domain.stat import Stat
@@ -15,7 +15,7 @@ async def test_returns_game_with_attempt(
     pokemon_repository = InMemoryPokemonRepository([charmander])
 
     game = Game(pokemon=pikachu, id="game-1")
-    game.add_stat_hint(Stat.SPEED)
+    game.hints.append(StatHint.create(pikachu, Stat.SPEED))
     await game_repository.save(game)
 
     guess = Guess(pokemon_repository, game_repository)

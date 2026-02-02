@@ -2,7 +2,7 @@ from enum import Enum
 
 from adapters.random_generator import RandomGenerator
 from domain.exceptions import HintAlreadyRevealed
-from domain.game import Game
+from domain.game import Game, Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint
 from domain.ports.repositories import GameRepository
 
 
@@ -26,30 +26,22 @@ class ConsultPokedex:
     async def execute(self, game_id: str, hint_type: HintType) -> Game:
         game = await self.game_repository.get(game_id)
 
+        hint: Hint
         match hint_type:
             case HintType.STAT:
-                self._consult_stat(game)
+                hint = self._create_stat_hint(game)
             case HintType.PRIMARY_TYPE:
-                self._consult_primary_type(game)
+                hint = PrimaryTypeHint.create(game.pokemon)
             case HintType.SECONDARY_TYPE:
-                self._consult_secondary_type(game)
+                hint = SecondaryTypeHint.create(game.pokemon)
 
+        game.consult(hint, self.stat_cost)
         return await self.game_repository.save(game)
 
-    def _consult_stat(self, game: Game) -> None:
-        available = game.available_stats
+    def _create_stat_hint(self, game: Game) -> StatHint:
+        available = StatHint.available_stats(game.hints)
         if not available:
             raise HintAlreadyRevealed("All stats already revealed")
         index = self.random_generator.randint(0, len(available) - 1)
         stat = available[index]
-        game.consult_stat(stat, self.stat_cost)
-
-    def _consult_primary_type(self, game: Game) -> None:
-        if game.primary_type_revealed:
-            raise HintAlreadyRevealed("Primary type already revealed")
-        game.consult_primary_type(self.stat_cost)
-
-    def _consult_secondary_type(self, game: Game) -> None:
-        if game.secondary_type_revealed:
-            raise HintAlreadyRevealed("Secondary type already revealed")
-        game.consult_secondary_type(self.stat_cost)
+        return StatHint.create(game.pokemon, stat)
