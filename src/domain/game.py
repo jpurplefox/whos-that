@@ -1,7 +1,9 @@
 from enum import Enum
+from typing import ClassVar
 
 from pydantic import BaseModel, Field
 
+from domain.balance import HintCosts
 from domain.exceptions import (
     AlreadyConsultedThisTurn,
     GameOver,
@@ -19,16 +21,27 @@ class Comparison(Enum):
 
 
 class Hint(BaseModel):
+    hint_type_name: ClassVar[str]
+
     def is_already_revealed(self, hints: list["Hint"]) -> bool:
+        raise NotImplementedError
+
+    @classmethod
+    def is_available(cls, hints: list["Hint"]) -> bool:
         raise NotImplementedError
 
 
 class StatHint(Hint):
+    hint_type_name: ClassVar[str] = "stat"
     stat: Stat
     value: int
 
     def is_already_revealed(self, hints: list[Hint]) -> bool:
         return any(isinstance(h, StatHint) and h.stat == self.stat for h in hints)
+
+    @classmethod
+    def is_available(cls, hints: list[Hint]) -> bool:
+        return len(cls.available_stats(hints)) > 0
 
     @classmethod
     def create(cls, pokemon: Pokemon, stat: Stat) -> "StatHint":
@@ -66,10 +79,15 @@ class ComparisonHint(Hint):
 
 
 class PrimaryTypeHint(Hint):
+    hint_type_name: ClassVar[str] = "primary_type"
     primary_type: str
 
     def is_already_revealed(self, hints: list[Hint]) -> bool:
         return any(isinstance(h, PrimaryTypeHint) for h in hints)
+
+    @classmethod
+    def is_available(cls, hints: list[Hint]) -> bool:
+        return not any(isinstance(h, PrimaryTypeHint) for h in hints)
 
     @classmethod
     def create(cls, pokemon: Pokemon) -> "PrimaryTypeHint":
@@ -77,10 +95,15 @@ class PrimaryTypeHint(Hint):
 
 
 class SecondaryTypeHint(Hint):
+    hint_type_name: ClassVar[str] = "secondary_type"
     secondary_type: str | None
 
     def is_already_revealed(self, hints: list[Hint]) -> bool:
         return any(isinstance(h, SecondaryTypeHint) for h in hints)
+
+    @classmethod
+    def is_available(cls, hints: list[Hint]) -> bool:
+        return not any(isinstance(h, SecondaryTypeHint) for h in hints)
 
     @classmethod
     def create(cls, pokemon: Pokemon) -> "SecondaryTypeHint":
@@ -91,6 +114,7 @@ class Game(BaseModel):
     model_config = {"validate_assignment": True}
 
     pokemon: Pokemon
+    hint_costs: HintCosts = Field(default_factory=HintCosts)
     id: str | None = None
     max_attempts: int = 4
     hints: list[Hint] = Field(default_factory=list)
@@ -135,3 +159,6 @@ class Game(BaseModel):
         self.battery = min(self.battery + self.battery_recovery, self.max_battery)
         self.consulted_this_turn = False
         return self.is_won
+
+
+CONSULTABLE_HINTS: list[type[Hint]] = [StatHint, PrimaryTypeHint, SecondaryTypeHint]

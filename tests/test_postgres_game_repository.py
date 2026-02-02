@@ -104,6 +104,7 @@ class TestGet:
                 "max_battery": 100,
                 "battery_recovery": 10,
                 "consulted_this_turn": False,
+                "hint_costs": None,
             }
         )
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
@@ -146,6 +147,7 @@ class TestGet:
                 "max_battery": 100,
                 "battery_recovery": 10,
                 "consulted_this_turn": False,
+                "hint_costs": None,
             }
         )
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
@@ -194,6 +196,7 @@ class TestGet:
                 "max_battery": 100,
                 "battery_recovery": 10,
                 "consulted_this_turn": False,
+                "hint_costs": None,
             }
         )
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
@@ -231,6 +234,7 @@ class TestGet:
                 "max_battery": 100,
                 "battery_recovery": 10,
                 "consulted_this_turn": False,
+                "hint_costs": None,
             }
         )
         mock_connection.cursor.return_value.__aenter__.return_value = cursor

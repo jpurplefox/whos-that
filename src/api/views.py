@@ -12,6 +12,7 @@ from domain.exceptions import (
     GameNotFound,
     GameOver,
     HintAlreadyRevealed,
+    HintNotAvailable,
     NotEnoughBattery,
     PokemonNotFound,
 )
@@ -98,6 +99,8 @@ async def consult(
         raise HTTPException(status_code=400, detail="Already consulted this turn")
     except HintAlreadyRevealed:
         raise HTTPException(status_code=400, detail="Hint already revealed")
+    except HintNotAvailable:
+        raise HTTPException(status_code=400, detail="Hint not available")
     except GameOver:
         raise HTTPException(status_code=400, detail="Game is over")
 

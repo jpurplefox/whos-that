@@ -1,0 +1,11 @@
+{
+  "max_attempts": 4,
+  "initial_battery": 100,
+  "max_battery": 100,
+  "battery_recovery": 25,
+  "hint_costs": {
+    "stat": 40,
+    "primary_type": 75,
+    "secondary_type": 75
+  }
+}

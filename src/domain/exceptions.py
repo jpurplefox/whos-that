@@ -28,3 +28,7 @@ class HintAlreadyRevealed(DomainException):
 
 class GameOver(DomainException):
     pass
+
+
+class HintNotAvailable(DomainException):
+    pass

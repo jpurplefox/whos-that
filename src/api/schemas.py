@@ -3,8 +3,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from domain.game import Game
 from api.hint_serializers import hint_registry
+from domain.game import CONSULTABLE_HINTS, Game
 from domain.pokemon import Pokemon
 
 
@@ -22,12 +22,19 @@ class GuessRequest(BaseModel):
     pokemon_name: str = Field(pattern=r"^[a-zA-Z0-9-]+$", max_length=50)
 
 
+class AvailableHint(BaseModel):
+    type: str
+    cost: int | None
+    available: bool
+
+
 class GameResponse(BaseModel):
     id: str | None
     is_won: bool
     attempts_remaining: int
     attempts: list[str]
     hints: list[dict[str, Any]]
+    available_hints: list[AvailableHint]
     battery: int
     max_battery: int
 
@@ -39,9 +46,20 @@ class GameResponse(BaseModel):
             attempts_remaining=game.attempts_remaining,
             attempts=[attempt.name for attempt in game.attempts],
             hints=[hint_registry.serialize(hint) for hint in game.hints],
+            available_hints=cls._build_available_hints(game),
             battery=game.battery,
             max_battery=game.max_battery,
         )
+
+    @classmethod
+    def _build_available_hints(cls, game: Game) -> list[AvailableHint]:
+        result = []
+        for hint_class in CONSULTABLE_HINTS:
+            hint_type = hint_class.hint_type_name
+            cost = getattr(game.hint_costs, hint_type)
+            available = cost is not None and hint_class.is_available(game.hints)
+            result.append(AvailableHint(type=hint_type, cost=cost, available=available))
+        return result
 
 
 class PokemonResponse(BaseModel):

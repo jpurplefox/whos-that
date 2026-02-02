@@ -1,5 +1,6 @@
 import pytest
 
+from domain.balance import Balance, HintCosts
 from domain.game import StatHint
 from domain.pokemon import Pokemon
 from domain.ports.repositories import GameRepository
@@ -23,12 +24,25 @@ class FakePokemonSelector:
         return self.pokemon
 
 
+@pytest.fixture
+def balance() -> Balance:
+    return Balance(
+        max_attempts=4,
+        initial_battery=100,
+        max_battery=100,
+        battery_recovery=10,
+        hint_costs=HintCosts(stat=40, primary_type=30, secondary_type=30),
+    )
+
+
 @pytest.mark.asyncio
-async def test_creates_game_with_pokemon(game_repository: GameRepository, pikachu: Pokemon):
+async def test_creates_game_with_pokemon(
+    game_repository: GameRepository, pikachu: Pokemon, balance: Balance
+):
     pokemon_selector = FakePokemonSelector(pikachu)
     stat_selector = FakeStatSelector(Stat.SPEED)
 
-    start_game = StartGame(pokemon_selector, stat_selector, game_repository, max_attempts=4)
+    start_game = StartGame(pokemon_selector, stat_selector, game_repository, balance)
     game = await start_game.execute()
 
     assert game.pokemon == pikachu
@@ -36,12 +50,12 @@ async def test_creates_game_with_pokemon(game_repository: GameRepository, pikach
 
 @pytest.mark.asyncio
 async def test_adds_first_hint_with_selected_stat(
-    game_repository: GameRepository, pikachu: Pokemon
+    game_repository: GameRepository, pikachu: Pokemon, balance: Balance
 ):
     pokemon_selector = FakePokemonSelector(pikachu)
     stat_selector = FakeStatSelector(Stat.SPEED)
 
-    start_game = StartGame(pokemon_selector, stat_selector, game_repository, max_attempts=4)
+    start_game = StartGame(pokemon_selector, stat_selector, game_repository, balance)
     game = await start_game.execute()
 
     assert len(game.hints) == 1
@@ -49,11 +63,13 @@ async def test_adds_first_hint_with_selected_stat(
 
 
 @pytest.mark.asyncio
-async def test_saves_game_with_id(game_repository: GameRepository, pikachu: Pokemon):
+async def test_saves_game_with_id(
+    game_repository: GameRepository, pikachu: Pokemon, balance: Balance
+):
     pokemon_selector = FakePokemonSelector(pikachu)
     stat_selector = FakeStatSelector(Stat.SPEED)
 
-    start_game = StartGame(pokemon_selector, stat_selector, game_repository, max_attempts=4)
+    start_game = StartGame(pokemon_selector, stat_selector, game_repository, balance)
     game = await start_game.execute()
 
     assert game.id is not None

@@ -6,9 +6,10 @@ from psycopg.rows import dict_row
 from pypika import Parameter, PostgreSQLQuery, Table
 
 from adapters.connection_provider import ConnectionProvider
+from adapters.hint_serializers import HintSerializerRegistry
+from domain.balance import HintCosts
 from domain.exceptions import GameNotFound
 from domain.game import Game, Hint
-from adapters.hint_serializers import HintSerializerRegistry
 from domain.pokemon import Pokemon
 from domain.ports.repositories import PokemonRepository
 
@@ -22,6 +23,7 @@ def _select_game_by_id() -> str:
         .select(
             _games.id,
             _games.pokemon_id,
+            _games.hint_costs,
             _games.max_attempts,
             _games.hints,
             _games.attempts,
@@ -40,6 +42,7 @@ def _upsert_game() -> str:
         .columns(
             "id",
             "pokemon_id",
+            "hint_costs",
             "max_attempts",
             "hints",
             "attempts",
@@ -51,6 +54,7 @@ def _upsert_game() -> str:
         .insert(
             Parameter("%(id)s"),
             Parameter("%(pokemon_id)s"),
+            Parameter("%(hint_costs)s"),
             Parameter("%(max_attempts)s"),
             Parameter("%(hints)s"),
             Parameter("%(attempts)s"),
@@ -61,6 +65,7 @@ def _upsert_game() -> str:
         )
         .on_conflict(_games.id)  # type: ignore[operator]
         .do_update(_games.pokemon_id, Parameter("%(pokemon_id)s"))
+        .do_update(_games.hint_costs, Parameter("%(hint_costs)s"))
         .do_update(_games.max_attempts, Parameter("%(max_attempts)s"))
         .do_update(_games.hints, Parameter("%(hints)s"))
         .do_update(_games.attempts, Parameter("%(attempts)s"))
@@ -88,6 +93,7 @@ class PostgresGameRepository:
         params = {
             "id": game_id,
             "pokemon_id": game.pokemon.id,
+            "hint_costs": json.dumps(game.hint_costs.model_dump()),
             "max_attempts": game.max_attempts,
             "hints": json.dumps(self._serialize_hints(game.hints)),
             "attempts": json.dumps([p.id for p in game.attempts]),
@@ -114,12 +120,18 @@ class PostgresGameRepository:
             raise GameNotFound(f"Game '{game_id}' not found")
 
         pokemon = await self._pokemon_repository.get_by_number(row["pokemon_id"])
+        hint_costs = (
+            HintCosts.model_validate(row["hint_costs"])
+            if row["hint_costs"]
+            else HintCosts()
+        )
         hints = await self._deserialize_hints(row["hints"])
         attempts = await self._deserialize_attempts(row["attempts"])
 
         return Game(
             id=row["id"],
             pokemon=pokemon,
+            hint_costs=hint_costs,
             max_attempts=row["max_attempts"],
             hints=hints,
             attempts=attempts,

@@ -3,17 +3,15 @@ from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _DEFAULT_POKEMON_JSON = Path(__file__).parent / "data" / "pokemon.json"
+_DEFAULT_BALANCE_JSON = Path(__file__).parent / "data" / "balance.json"
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env")
 
-    max_attempts: int = 4
     max_pokemon_number: int = 151
     pokemon_json_path: Path = _DEFAULT_POKEMON_JSON
-    pokedex_max_battery: int = 100
-    pokedex_stat_cost: int = 40
-    pokedex_battery_recovery: int = 10
+    balance_json_path: Path = _DEFAULT_BALANCE_JSON
     sentry_dsn: str = ""
     sentry_traces_sample_rate: float = 1.0
     database_url: str = ""
