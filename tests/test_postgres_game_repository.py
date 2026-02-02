@@ -2,6 +2,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from adapters.hint_serializers import HintSerializerRegistry
 from adapters.postgres_game_repository import PostgresGameRepository
 from domain.exceptions import GameNotFound
 from domain.game import Comparison, ComparisonHint, Game, StatHint
@@ -30,8 +31,13 @@ def mock_pokemon_repository():
 
 
 @pytest.fixture
-def repository(mock_connection_provider, mock_pokemon_repository):
-    return PostgresGameRepository(mock_connection_provider, mock_pokemon_repository)
+def hint_serializer(mock_pokemon_repository):
+    return HintSerializerRegistry(mock_pokemon_repository)
+
+
+@pytest.fixture
+def repository(mock_connection_provider, mock_pokemon_repository, hint_serializer):
+    return PostgresGameRepository(mock_connection_provider, mock_pokemon_repository, hint_serializer)
 
 
 class TestSave:

@@ -7,14 +7,8 @@ from pypika import Parameter, PostgreSQLQuery, Table
 
 from adapters.connection_provider import ConnectionProvider
 from domain.exceptions import GameNotFound
-from domain.game import (
-    ComparisonHint,
-    Game,
-    Hint,
-    PrimaryTypeHint,
-    SecondaryTypeHint,
-    StatHint,
-)
+from domain.game import Game, Hint
+from adapters.hint_serializers import HintSerializerRegistry
 from domain.pokemon import Pokemon
 from domain.ports.repositories import PokemonRepository
 
@@ -82,9 +76,11 @@ class PostgresGameRepository:
         self,
         connection_provider: ConnectionProvider,
         pokemon_repository: PokemonRepository,
+        hint_serializer: HintSerializerRegistry,
     ) -> None:
         self._connection_provider = connection_provider
         self._pokemon_repository = pokemon_repository
+        self._hint_serializer = hint_serializer
 
     async def save(self, game: Game) -> Game:
         game_id = game.id if game.id is not None else str(uuid.uuid4())
@@ -134,41 +130,10 @@ class PostgresGameRepository:
         )
 
     def _serialize_hints(self, hints: list[Hint]) -> list[dict[str, Any]]:
-        result: list[dict[str, Any]] = []
-        for hint in hints:
-            if isinstance(hint, StatHint):
-                data = hint.model_dump(mode="json")
-                data["type"] = "stat"
-                result.append(data)
-            elif isinstance(hint, ComparisonHint):
-                data = hint.model_dump(mode="json")
-                data["type"] = "comparison"
-                data["pokemon_id"] = data.pop("pokemon")["id"]
-                result.append(data)
-            elif isinstance(hint, PrimaryTypeHint):
-                data = hint.model_dump(mode="json")
-                data["type"] = "primary_type"
-                result.append(data)
-            elif isinstance(hint, SecondaryTypeHint):
-                data = hint.model_dump(mode="json")
-                data["type"] = "secondary_type"
-                result.append(data)
-        return result
+        return [self._hint_serializer.serialize(hint) for hint in hints]
 
     async def _deserialize_hints(self, hints_data: list[dict[str, Any]]) -> list[Hint]:
-        result: list[Hint] = []
-        for hint_data in hints_data:
-            if hint_data["type"] == "stat":
-                result.append(StatHint.model_validate(hint_data))
-            elif hint_data["type"] == "comparison":
-                pokemon = await self._pokemon_repository.get_by_number(hint_data["pokemon_id"])
-                hint_data["pokemon"] = pokemon
-                result.append(ComparisonHint.model_validate(hint_data))
-            elif hint_data["type"] == "primary_type":
-                result.append(PrimaryTypeHint.model_validate(hint_data))
-            elif hint_data["type"] == "secondary_type":
-                result.append(SecondaryTypeHint.model_validate(hint_data))
-        return result
+        return [await self._hint_serializer.deserialize(hint_data) for hint_data in hints_data]
 
     async def _deserialize_attempts(self, attempts_data: list[int]) -> list[Pokemon]:
         return [await self._pokemon_repository.get_by_number(pid) for pid in attempts_data]

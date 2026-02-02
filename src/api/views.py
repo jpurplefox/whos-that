@@ -15,7 +15,8 @@ from domain.exceptions import (
     NotEnoughBattery,
     PokemonNotFound,
 )
-from domain.game import ComparisonHint, Game, Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint
+from domain.game import Game, Hint
+from api.hint_serializers import hint_registry
 from structlog_config import get_logger
 from services.consult_pokedex import ConsultPokedex, HintType
 from services.get_game import GetGame
@@ -26,19 +27,7 @@ logger = get_logger()
 
 
 def _serialize_hint(hint: Hint) -> dict[str, object]:
-    if isinstance(hint, StatHint):
-        return {"type": "stat", "stat": hint.stat.value, "value": hint.value}
-    if isinstance(hint, ComparisonHint):
-        return {
-            "type": "comparison",
-            "pokemon": hint.pokemon.name,
-            "comparisons": {s.value: c.value for s, c in hint.comparisons.items()},
-        }
-    if isinstance(hint, PrimaryTypeHint):
-        return {"type": "primary_type", "primary_type": hint.primary_type}
-    if isinstance(hint, SecondaryTypeHint):
-        return {"type": "secondary_type", "secondary_type": hint.secondary_type}
-    return {"type": type(hint).__name__}
+    return hint_registry.serialize(hint)
 
 
 def _serialize_hints(game: Game) -> list[dict[str, object]]:
