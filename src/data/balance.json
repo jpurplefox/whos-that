@@ -7,5 +7,6 @@
     "stat": 40,
     "primary_type": 75,
     "secondary_type": 75
-  }
+  },
+  "initial_hints": ["stat"]
 }

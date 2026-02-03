@@ -162,3 +162,5 @@ class Game(BaseModel):
 
 
 CONSULTABLE_HINTS: list[type[Hint]] = [StatHint, PrimaryTypeHint, SecondaryTypeHint]
+
+HINT_REGISTRY: dict[str, type[Hint]] = {h.hint_type_name: h for h in CONSULTABLE_HINTS}

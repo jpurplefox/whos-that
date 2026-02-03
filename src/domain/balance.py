@@ -16,6 +16,7 @@ class Balance(BaseModel):
     max_battery: int
     battery_recovery: int
     hint_costs: HintCosts
+    initial_hints: list[str] = []
 
 
 def load_balance(path: Path) -> Balance:

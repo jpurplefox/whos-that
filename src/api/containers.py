@@ -17,7 +17,6 @@ from adapters.pokemon_loader import load_pokemon_from_json
 from adapters.postgres_game_repository import PostgresGameRepository
 from adapters.random_generator import SystemRandomGenerator
 from adapters.random_pokemon_selector import RandomPokemonSelector
-from adapters.random_stat_selector import RandomStatSelector
 from config import Settings
 from domain.balance import load_balance
 from services.consult_pokedex import ConsultPokedex
@@ -82,11 +81,6 @@ class Container(containers.DeclarativeContainer):
         json_path=settings.provided.pokemon_json_path,
     )
 
-    stat_selector = providers.Singleton(
-        RandomStatSelector,
-        random_generator=random_generator,
-    )
-
     pokemon_selector = providers.Singleton(
         RandomPokemonSelector,
         pokemon_repository=pokemon_repository,
@@ -121,7 +115,7 @@ class Container(containers.DeclarativeContainer):
     start_game = providers.Singleton(
         StartGame,
         pokemon_selector=pokemon_selector,
-        stat_selector=stat_selector,
+        random_generator=random_generator,
         game_repository=game_repository,
         balance=balance,
     )
