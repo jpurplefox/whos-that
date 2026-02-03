@@ -287,3 +287,59 @@ def test_list_pokemon_returns_all_pokemon():
     assert data[0]["id"] == 1
     assert data[0]["name"] == "bulbasaur"
     assert "image_url" in data[0]
+
+
+# --- Pokemon reveal tests ---
+
+
+def test_game_not_over_does_not_reveal_pokemon(pikachu: Pokemon):
+    game = Game(pokemon=pikachu, id="game-1")
+
+    with container.get_game.override(FakeGetGame(game)):
+        with TestClient(app) as client:
+            response = client.get("/games/game-1")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["is_over"] is False
+    assert data["pokemon"] is None
+
+
+def test_game_won_reveals_pokemon(pikachu: Pokemon):
+    game = Game(pokemon=pikachu, id="game-1")
+    game.guess(pikachu)
+
+    with container.guess.override(FakeGuess(game)):
+        with TestClient(app) as client:
+            response = client.post(
+                "/games/game-1/guess",
+                json={"pokemon_name": "pikachu"},
+            )
+
+    assert response.status_code == 201
+    data = response.json()
+    assert data["is_over"] is True
+    assert data["is_won"] is True
+    assert data["pokemon"] is not None
+    assert data["pokemon"]["name"] == "pikachu"
+    assert data["pokemon"]["id"] == 25
+
+
+def test_game_lost_reveals_pokemon(pikachu: Pokemon, bulbasaur: Pokemon):
+    game = Game(pokemon=pikachu, id="game-1", max_attempts=1)
+    game.guess(bulbasaur)
+
+    with container.guess.override(FakeGuess(game)):
+        with TestClient(app) as client:
+            response = client.post(
+                "/games/game-1/guess",
+                json={"pokemon_name": "bulbasaur"},
+            )
+
+    assert response.status_code == 201
+    data = response.json()
+    assert data["is_over"] is True
+    assert data["is_won"] is False
+    assert data["pokemon"] is not None
+    assert data["pokemon"]["name"] == "pikachu"
+    assert data["pokemon"]["id"] == 25

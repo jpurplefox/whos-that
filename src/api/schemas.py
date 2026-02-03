@@ -33,24 +33,28 @@ class AvailableHint(BaseModel):
 class GameResponse(BaseModel):
     id: str | None
     is_won: bool
+    is_over: bool
     attempts_remaining: int
     attempts: list[str]
     hints: list[dict[str, Any]]
     available_hints: list[AvailableHint]
     battery: int
     max_battery: int
+    pokemon: "PokemonResponse | None"
 
     @classmethod
     def from_game(cls, game: Game) -> "GameResponse":
         return cls(
             id=game.id,
             is_won=game.is_won,
+            is_over=game.is_over,
             attempts_remaining=game.attempts_remaining,
             attempts=[attempt.name for attempt in game.attempts],
             hints=[hint_registry.serialize(hint) for hint in game.hints],
             available_hints=cls._build_available_hints(game),
             battery=game.battery,
             max_battery=game.max_battery,
+            pokemon=PokemonResponse.from_pokemon(game.pokemon) if game.is_over else None,
         )
 
     @classmethod
