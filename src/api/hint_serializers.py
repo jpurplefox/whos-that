@@ -1,6 +1,6 @@
 from typing import Any, Protocol
 
-from domain.game import (
+from domain.hint import (
     ComparisonHint,
     Hint,
     PrimaryTypeHint,

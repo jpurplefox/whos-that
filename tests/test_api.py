@@ -8,7 +8,8 @@ from domain.exceptions import (
     NotEnoughBattery,
     PokemonNotFound,
 )
-from domain.game import Game, StatHint
+from domain.game import Game
+from domain.hint import StatHint
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 

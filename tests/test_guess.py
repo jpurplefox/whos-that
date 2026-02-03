@@ -1,7 +1,8 @@
 import pytest
 
 from adapters.in_memory_pokemon_repository import InMemoryPokemonRepository
-from domain.game import Game, StatHint
+from domain.game import Game
+from domain.hint import StatHint
 from domain.pokemon import Pokemon
 from domain.ports.repositories import GameRepository
 from domain.stat import Stat

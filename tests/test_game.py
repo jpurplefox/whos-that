@@ -6,7 +6,8 @@ from domain.exceptions import (
     HintAlreadyRevealed,
     NotEnoughBattery,
 )
-from domain.game import Comparison, ComparisonHint, Game, StatHint
+from domain.game import Game
+from domain.hint import Comparison, ComparisonHint, StatHint
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 

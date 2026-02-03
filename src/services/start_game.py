@@ -2,7 +2,8 @@ from typing import Protocol
 
 from adapters.random_generator import RandomGenerator
 from domain.balance import Balance
-from domain.game import Game, Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint
+from domain.game import Game
+from domain.hint import Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint
 from domain.pokemon import Pokemon
 from domain.ports.random_pokemon_selector import RandomPokemonSelector
 from domain.ports.repositories import GameRepository

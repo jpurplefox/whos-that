@@ -9,7 +9,8 @@ from adapters.connection_provider import ConnectionProvider
 from adapters.hint_serializers import HintSerializerRegistry
 from domain.balance import HintCosts
 from domain.exceptions import GameNotFound
-from domain.game import Game, Hint
+from domain.game import Game
+from domain.hint import Hint
 from domain.pokemon import Pokemon
 from domain.ports.repositories import PokemonRepository
 

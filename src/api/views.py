@@ -16,7 +16,8 @@ from domain.exceptions import (
     NotEnoughBattery,
     PokemonNotFound,
 )
-from domain.game import Game, Hint
+from domain.game import Game
+from domain.hint import Hint
 from api.hint_serializers import hint_registry
 from structlog_config import get_logger
 from services.consult_pokedex import ConsultPokedex, HintType

@@ -2,7 +2,8 @@ import pytest
 
 from domain.balance import HintCosts
 from domain.exceptions import HintAlreadyRevealed, HintNotAvailable
-from domain.game import Game, StatHint
+from domain.game import Game
+from domain.hint import StatHint
 from domain.pokemon import Pokemon
 from domain.ports.repositories import GameRepository
 from domain.stat import Stat

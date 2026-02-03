@@ -1,7 +1,7 @@
 import pytest
 
 from domain.balance import Balance, HintCosts
-from domain.game import StatHint
+from domain.hint import StatHint
 from domain.pokemon import Pokemon
 from domain.ports.repositories import GameRepository
 from services.start_game import StartGame

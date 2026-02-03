@@ -4,7 +4,8 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from api.hint_serializers import hint_registry
-from domain.game import CONSULTABLE_HINTS, Game
+from domain.game import Game
+from domain.hint import CONSULTABLE_HINTS
 from domain.pokemon import Pokemon
 
 
