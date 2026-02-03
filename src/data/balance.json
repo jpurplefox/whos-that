@@ -6,7 +6,8 @@
   "hint_costs": {
     "stat": 40,
     "primary_type": 75,
-    "secondary_type": 75
+    "secondary_type": 75,
+    "fully_evolved": 30
   },
   "initial_hints": ["stat"]
 }

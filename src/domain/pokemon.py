@@ -15,7 +15,13 @@ class Pokemon(BaseModel):
     image_url: str
     primary_type: str
     secondary_type: str | None = None
+    evolves_from: int | None = None
+    evolves_to: list[int] = []
 
     def get_stat(self, stat: Stat) -> int:
         value: int = getattr(self, stat.value)
         return value
+
+    @property
+    def is_fully_evolved(self) -> bool:
+        return len(self.evolves_to) == 0

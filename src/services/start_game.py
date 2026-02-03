@@ -3,7 +3,7 @@ from typing import Protocol
 from adapters.random_generator import RandomGenerator
 from domain.balance import Balance
 from domain.game import Game
-from domain.hint import Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint
+from domain.hint import FullyEvolvedHint, Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint
 from domain.pokemon import Pokemon
 from domain.ports.random_pokemon_selector import RandomPokemonSelector
 from domain.ports.repositories import GameRepository
@@ -38,6 +38,13 @@ class SecondaryTypeHintCreator:
         return SecondaryTypeHint.create(pokemon)
 
 
+class FullyEvolvedHintCreator:
+    def create(
+        self, pokemon: Pokemon, hints: list[Hint], random_generator: RandomGenerator
+    ) -> Hint:
+        return FullyEvolvedHint.create(pokemon)
+
+
 class HintCreatorRegistry:
     def __init__(self) -> None:
         self._creators: dict[str, HintCreator] = {}
@@ -63,6 +70,7 @@ def _create_registry() -> HintCreatorRegistry:
     registry.register("stat", StatHintCreator())
     registry.register("primary_type", PrimaryTypeHintCreator())
     registry.register("secondary_type", SecondaryTypeHintCreator())
+    registry.register("fully_evolved", FullyEvolvedHintCreator())
     return registry
 
 

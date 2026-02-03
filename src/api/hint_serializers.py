@@ -2,6 +2,7 @@ from typing import Any, Protocol
 
 from domain.hint import (
     ComparisonHint,
+    FullyEvolvedHint,
     Hint,
     PrimaryTypeHint,
     SecondaryTypeHint,
@@ -41,6 +42,12 @@ class SecondaryTypeHintSerializer:
         return {"type": "secondary_type", "secondary_type": hint.secondary_type}
 
 
+class FullyEvolvedHintSerializer:
+    def serialize(self, hint: Hint) -> dict[str, Any]:
+        assert isinstance(hint, FullyEvolvedHint)
+        return {"type": "fully_evolved", "is_fully_evolved": hint.is_fully_evolved}
+
+
 class HintSerializerRegistry:
     def __init__(self) -> None:
         self._serializers: dict[type[Hint], HintSerializer] = {}
@@ -61,6 +68,7 @@ def _create_registry() -> HintSerializerRegistry:
     registry.register(ComparisonHint, ComparisonHintSerializer())
     registry.register(PrimaryTypeHint, PrimaryTypeHintSerializer())
     registry.register(SecondaryTypeHint, SecondaryTypeHintSerializer())
+    registry.register(FullyEvolvedHint, FullyEvolvedHintSerializer())
     return registry
 
 

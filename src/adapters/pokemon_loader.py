@@ -21,6 +21,8 @@ def load_pokemon_from_json(json_path: Path) -> list[Pokemon]:
             image_url=entry["image_url"],
             primary_type=entry["primary_type"],
             secondary_type=entry.get("secondary_type"),
+            evolves_from=entry.get("evolves_from"),
+            evolves_to=entry.get("evolves_to", []),
         )
         for entry in data
     ]

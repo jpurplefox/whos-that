@@ -24,3 +24,11 @@ def test_get_stat_sp_defense(bulbasaur: Pokemon):
 
 def test_get_stat_speed(bulbasaur: Pokemon):
     assert bulbasaur.get_stat(Stat.SPEED) == 45
+
+
+def test_is_fully_evolved_false_when_has_evolutions(pikachu: Pokemon):
+    assert pikachu.is_fully_evolved is False
+
+
+def test_is_fully_evolved_true_when_no_evolutions(raichu: Pokemon):
+    assert raichu.is_fully_evolved is True

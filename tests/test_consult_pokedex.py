@@ -3,7 +3,7 @@ import pytest
 from domain.balance import HintCosts
 from domain.exceptions import HintAlreadyRevealed, HintNotAvailable
 from domain.game import Game
-from domain.hint import StatHint
+from domain.hint import FullyEvolvedHint, StatHint
 from domain.pokemon import Pokemon
 from domain.ports.repositories import GameRepository
 from domain.stat import Stat
@@ -65,3 +65,20 @@ async def test_consult_raises_hint_not_available_when_cost_is_none(
 
     with pytest.raises(HintNotAvailable):
         await consult.execute(game.id, HintType.PRIMARY_TYPE)
+
+
+@pytest.mark.asyncio
+async def test_consult_fully_evolved_adds_hint_and_reduces_battery(
+    game_repository: GameRepository, pikachu: Pokemon
+):
+    hint_costs = HintCosts(stat=40, fully_evolved=30)
+    game = Game(pokemon=pikachu, hint_costs=hint_costs, battery=100, max_battery=100)
+    game = await game_repository.save(game)
+
+    consult = ConsultPokedex(game_repository, FakeRandomGenerator(0))
+    updated = await consult.execute(game.id, HintType.FULLY_EVOLVED)
+
+    assert updated.battery == 70
+    assert len(updated.hints) == 1
+    assert isinstance(updated.hints[0], FullyEvolvedHint)
+    assert updated.hints[0].is_fully_evolved is False

@@ -13,6 +13,7 @@ class HintTypeRequest(Enum):
     STAT = "stat"
     PRIMARY_TYPE = "primary_type"
     SECONDARY_TYPE = "secondary_type"
+    FULLY_EVOLVED = "fully_evolved"
 
 
 class ConsultRequest(BaseModel):

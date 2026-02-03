@@ -103,4 +103,25 @@ class SecondaryTypeHint(Hint):
         return cls(secondary_type=pokemon.secondary_type)
 
 
-CONSULTABLE_HINTS: list[type[Hint]] = [StatHint, PrimaryTypeHint, SecondaryTypeHint]
+class FullyEvolvedHint(Hint):
+    hint_type_name: ClassVar[str] = "fully_evolved"
+    is_fully_evolved: bool
+
+    def is_already_revealed(self, hints: list[Hint]) -> bool:
+        return any(isinstance(h, FullyEvolvedHint) for h in hints)
+
+    @classmethod
+    def is_available(cls, hints: list[Hint]) -> bool:
+        return not any(isinstance(h, FullyEvolvedHint) for h in hints)
+
+    @classmethod
+    def create(cls, pokemon: Pokemon) -> "FullyEvolvedHint":
+        return cls(is_fully_evolved=pokemon.is_fully_evolved)
+
+
+CONSULTABLE_HINTS: list[type[Hint]] = [
+    StatHint,
+    PrimaryTypeHint,
+    SecondaryTypeHint,
+    FullyEvolvedHint,
+]

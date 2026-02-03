@@ -10,7 +10,11 @@
     "speed": 45,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
     "primary_type": "grass",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": null,
+    "evolves_to": [
+      2
+    ]
   },
   {
     "id": 2,
@@ -23,7 +27,11 @@
     "speed": 60,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png",
     "primary_type": "grass",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": 1,
+    "evolves_to": [
+      3
+    ]
   },
   {
     "id": 3,
@@ -36,7 +44,9 @@
     "speed": 80,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
     "primary_type": "grass",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": 2,
+    "evolves_to": []
   },
   {
     "id": 4,
@@ -49,7 +59,11 @@
     "speed": 65,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
     "primary_type": "fire",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      5
+    ]
   },
   {
     "id": 5,
@@ -62,7 +76,11 @@
     "speed": 80,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png",
     "primary_type": "fire",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 4,
+    "evolves_to": [
+      6
+    ]
   },
   {
     "id": 6,
@@ -75,7 +93,9 @@
     "speed": 100,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
     "primary_type": "fire",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": 5,
+    "evolves_to": []
   },
   {
     "id": 7,
@@ -88,7 +108,11 @@
     "speed": 43,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      8
+    ]
   },
   {
     "id": 8,
@@ -101,7 +125,11 @@
     "speed": 58,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/8.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 7,
+    "evolves_to": [
+      9
+    ]
   },
   {
     "id": 9,
@@ -114,7 +142,9 @@
     "speed": 78,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 8,
+    "evolves_to": []
   },
   {
     "id": 10,
@@ -127,7 +157,11 @@
     "speed": 45,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png",
     "primary_type": "bug",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      11
+    ]
   },
   {
     "id": 11,
@@ -140,7 +174,11 @@
     "speed": 30,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png",
     "primary_type": "bug",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 10,
+    "evolves_to": [
+      12
+    ]
   },
   {
     "id": 12,
@@ -153,7 +191,9 @@
     "speed": 70,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png",
     "primary_type": "bug",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": 11,
+    "evolves_to": []
   },
   {
     "id": 13,
@@ -166,7 +206,11 @@
     "speed": 50,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png",
     "primary_type": "bug",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": null,
+    "evolves_to": [
+      14
+    ]
   },
   {
     "id": 14,
@@ -179,7 +223,11 @@
     "speed": 35,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
     "primary_type": "bug",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": 13,
+    "evolves_to": [
+      15
+    ]
   },
   {
     "id": 15,
@@ -192,7 +240,9 @@
     "speed": 75,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/15.png",
     "primary_type": "bug",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": 14,
+    "evolves_to": []
   },
   {
     "id": 16,
@@ -205,7 +255,11 @@
     "speed": 56,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
     "primary_type": "normal",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": null,
+    "evolves_to": [
+      17
+    ]
   },
   {
     "id": 17,
@@ -218,7 +272,11 @@
     "speed": 71,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/17.png",
     "primary_type": "normal",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": 16,
+    "evolves_to": [
+      18
+    ]
   },
   {
     "id": 18,
@@ -231,7 +289,9 @@
     "speed": 101,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/18.png",
     "primary_type": "normal",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": 17,
+    "evolves_to": []
   },
   {
     "id": 19,
@@ -244,7 +304,11 @@
     "speed": 72,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/19.png",
     "primary_type": "normal",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      20
+    ]
   },
   {
     "id": 20,
@@ -257,7 +321,9 @@
     "speed": 97,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
     "primary_type": "normal",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 19,
+    "evolves_to": []
   },
   {
     "id": 21,
@@ -270,7 +336,11 @@
     "speed": 70,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/21.png",
     "primary_type": "normal",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": null,
+    "evolves_to": [
+      22
+    ]
   },
   {
     "id": 22,
@@ -283,7 +353,9 @@
     "speed": 100,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/22.png",
     "primary_type": "normal",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": 21,
+    "evolves_to": []
   },
   {
     "id": 23,
@@ -296,7 +368,11 @@
     "speed": 55,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png",
     "primary_type": "poison",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      24
+    ]
   },
   {
     "id": 24,
@@ -309,7 +385,9 @@
     "speed": 80,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png",
     "primary_type": "poison",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 23,
+    "evolves_to": []
   },
   {
     "id": 25,
@@ -322,7 +400,11 @@
     "speed": 90,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
     "primary_type": "electric",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      26
+    ]
   },
   {
     "id": 26,
@@ -335,7 +417,9 @@
     "speed": 110,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png",
     "primary_type": "electric",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 25,
+    "evolves_to": []
   },
   {
     "id": 27,
@@ -348,7 +432,11 @@
     "speed": 40,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/27.png",
     "primary_type": "ground",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      28
+    ]
   },
   {
     "id": 28,
@@ -361,7 +449,9 @@
     "speed": 65,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png",
     "primary_type": "ground",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 27,
+    "evolves_to": []
   },
   {
     "id": 29,
@@ -374,7 +464,11 @@
     "speed": 41,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png",
     "primary_type": "poison",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      30
+    ]
   },
   {
     "id": 30,
@@ -387,7 +481,11 @@
     "speed": 56,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png",
     "primary_type": "poison",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 29,
+    "evolves_to": [
+      31
+    ]
   },
   {
     "id": 31,
@@ -400,7 +498,9 @@
     "speed": 76,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/31.png",
     "primary_type": "poison",
-    "secondary_type": "ground"
+    "secondary_type": "ground",
+    "evolves_from": 30,
+    "evolves_to": []
   },
   {
     "id": 32,
@@ -413,7 +513,11 @@
     "speed": 50,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
     "primary_type": "poison",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      33
+    ]
   },
   {
     "id": 33,
@@ -426,7 +530,11 @@
     "speed": 65,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/33.png",
     "primary_type": "poison",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 32,
+    "evolves_to": [
+      34
+    ]
   },
   {
     "id": 34,
@@ -439,7 +547,9 @@
     "speed": 85,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/34.png",
     "primary_type": "poison",
-    "secondary_type": "ground"
+    "secondary_type": "ground",
+    "evolves_from": 33,
+    "evolves_to": []
   },
   {
     "id": 35,
@@ -452,7 +562,11 @@
     "speed": 35,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png",
     "primary_type": "fairy",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      36
+    ]
   },
   {
     "id": 36,
@@ -465,7 +579,9 @@
     "speed": 60,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/36.png",
     "primary_type": "fairy",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 35,
+    "evolves_to": []
   },
   {
     "id": 37,
@@ -478,7 +594,11 @@
     "speed": 65,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png",
     "primary_type": "fire",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      38
+    ]
   },
   {
     "id": 38,
@@ -491,7 +611,9 @@
     "speed": 100,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png",
     "primary_type": "fire",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 37,
+    "evolves_to": []
   },
   {
     "id": 39,
@@ -504,7 +626,11 @@
     "speed": 20,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png",
     "primary_type": "normal",
-    "secondary_type": "fairy"
+    "secondary_type": "fairy",
+    "evolves_from": null,
+    "evolves_to": [
+      40
+    ]
   },
   {
     "id": 40,
@@ -517,7 +643,9 @@
     "speed": 45,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
     "primary_type": "normal",
-    "secondary_type": "fairy"
+    "secondary_type": "fairy",
+    "evolves_from": 39,
+    "evolves_to": []
   },
   {
     "id": 41,
@@ -530,7 +658,11 @@
     "speed": 55,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png",
     "primary_type": "poison",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": null,
+    "evolves_to": [
+      42
+    ]
   },
   {
     "id": 42,
@@ -543,7 +675,9 @@
     "speed": 90,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png",
     "primary_type": "poison",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": 41,
+    "evolves_to": []
   },
   {
     "id": 43,
@@ -556,7 +690,11 @@
     "speed": 30,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png",
     "primary_type": "grass",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": null,
+    "evolves_to": [
+      44
+    ]
   },
   {
     "id": 44,
@@ -569,7 +707,11 @@
     "speed": 40,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png",
     "primary_type": "grass",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": 43,
+    "evolves_to": [
+      45
+    ]
   },
   {
     "id": 45,
@@ -582,7 +724,9 @@
     "speed": 50,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png",
     "primary_type": "grass",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": 44,
+    "evolves_to": []
   },
   {
     "id": 46,
@@ -595,7 +739,11 @@
     "speed": 25,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png",
     "primary_type": "bug",
-    "secondary_type": "grass"
+    "secondary_type": "grass",
+    "evolves_from": null,
+    "evolves_to": [
+      47
+    ]
   },
   {
     "id": 47,
@@ -608,7 +756,9 @@
     "speed": 30,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/47.png",
     "primary_type": "bug",
-    "secondary_type": "grass"
+    "secondary_type": "grass",
+    "evolves_from": 46,
+    "evolves_to": []
   },
   {
     "id": 48,
@@ -621,7 +771,11 @@
     "speed": 45,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/48.png",
     "primary_type": "bug",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": null,
+    "evolves_to": [
+      49
+    ]
   },
   {
     "id": 49,
@@ -634,7 +788,9 @@
     "speed": 90,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/49.png",
     "primary_type": "bug",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": 48,
+    "evolves_to": []
   },
   {
     "id": 50,
@@ -647,7 +803,11 @@
     "speed": 95,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png",
     "primary_type": "ground",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      51
+    ]
   },
   {
     "id": 51,
@@ -660,7 +820,9 @@
     "speed": 120,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png",
     "primary_type": "ground",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 50,
+    "evolves_to": []
   },
   {
     "id": 52,
@@ -673,7 +835,11 @@
     "speed": 90,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png",
     "primary_type": "normal",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      53
+    ]
   },
   {
     "id": 53,
@@ -686,7 +852,9 @@
     "speed": 115,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/53.png",
     "primary_type": "normal",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 52,
+    "evolves_to": []
   },
   {
     "id": 54,
@@ -699,7 +867,11 @@
     "speed": 55,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      55
+    ]
   },
   {
     "id": 55,
@@ -712,7 +884,9 @@
     "speed": 85,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 54,
+    "evolves_to": []
   },
   {
     "id": 56,
@@ -725,7 +899,11 @@
     "speed": 70,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png",
     "primary_type": "fighting",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      57
+    ]
   },
   {
     "id": 57,
@@ -738,7 +916,9 @@
     "speed": 95,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/57.png",
     "primary_type": "fighting",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 56,
+    "evolves_to": []
   },
   {
     "id": 58,
@@ -751,7 +931,11 @@
     "speed": 60,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png",
     "primary_type": "fire",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      59
+    ]
   },
   {
     "id": 59,
@@ -764,7 +948,9 @@
     "speed": 95,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
     "primary_type": "fire",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 58,
+    "evolves_to": []
   },
   {
     "id": 60,
@@ -777,7 +963,11 @@
     "speed": 90,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      61
+    ]
   },
   {
     "id": 61,
@@ -790,7 +980,11 @@
     "speed": 90,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 60,
+    "evolves_to": [
+      62
+    ]
   },
   {
     "id": 62,
@@ -803,7 +997,9 @@
     "speed": 70,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/62.png",
     "primary_type": "water",
-    "secondary_type": "fighting"
+    "secondary_type": "fighting",
+    "evolves_from": 61,
+    "evolves_to": []
   },
   {
     "id": 63,
@@ -816,7 +1012,11 @@
     "speed": 90,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
     "primary_type": "psychic",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      64
+    ]
   },
   {
     "id": 64,
@@ -829,7 +1029,11 @@
     "speed": 105,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png",
     "primary_type": "psychic",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 63,
+    "evolves_to": [
+      65
+    ]
   },
   {
     "id": 65,
@@ -842,7 +1046,9 @@
     "speed": 120,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png",
     "primary_type": "psychic",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 64,
+    "evolves_to": []
   },
   {
     "id": 66,
@@ -855,7 +1061,11 @@
     "speed": 35,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
     "primary_type": "fighting",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      67
+    ]
   },
   {
     "id": 67,
@@ -868,7 +1078,11 @@
     "speed": 45,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png",
     "primary_type": "fighting",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 66,
+    "evolves_to": [
+      68
+    ]
   },
   {
     "id": 68,
@@ -881,7 +1095,9 @@
     "speed": 55,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
     "primary_type": "fighting",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 67,
+    "evolves_to": []
   },
   {
     "id": 69,
@@ -894,7 +1110,11 @@
     "speed": 40,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png",
     "primary_type": "grass",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": null,
+    "evolves_to": [
+      70
+    ]
   },
   {
     "id": 70,
@@ -907,7 +1127,11 @@
     "speed": 55,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
     "primary_type": "grass",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": 69,
+    "evolves_to": [
+      71
+    ]
   },
   {
     "id": 71,
@@ -920,7 +1144,9 @@
     "speed": 70,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png",
     "primary_type": "grass",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": 70,
+    "evolves_to": []
   },
   {
     "id": 72,
@@ -933,7 +1159,11 @@
     "speed": 70,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
     "primary_type": "water",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": null,
+    "evolves_to": [
+      73
+    ]
   },
   {
     "id": 73,
@@ -946,7 +1176,9 @@
     "speed": 100,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png",
     "primary_type": "water",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": 72,
+    "evolves_to": []
   },
   {
     "id": 74,
@@ -959,7 +1191,11 @@
     "speed": 20,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png",
     "primary_type": "rock",
-    "secondary_type": "ground"
+    "secondary_type": "ground",
+    "evolves_from": null,
+    "evolves_to": [
+      75
+    ]
   },
   {
     "id": 75,
@@ -972,7 +1208,11 @@
     "speed": 35,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png",
     "primary_type": "rock",
-    "secondary_type": "ground"
+    "secondary_type": "ground",
+    "evolves_from": 74,
+    "evolves_to": [
+      76
+    ]
   },
   {
     "id": 76,
@@ -985,7 +1225,9 @@
     "speed": 45,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png",
     "primary_type": "rock",
-    "secondary_type": "ground"
+    "secondary_type": "ground",
+    "evolves_from": 75,
+    "evolves_to": []
   },
   {
     "id": 77,
@@ -998,7 +1240,11 @@
     "speed": 90,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/77.png",
     "primary_type": "fire",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      78
+    ]
   },
   {
     "id": 78,
@@ -1011,7 +1257,9 @@
     "speed": 105,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
     "primary_type": "fire",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 77,
+    "evolves_to": []
   },
   {
     "id": 79,
@@ -1024,7 +1272,11 @@
     "speed": 15,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png",
     "primary_type": "water",
-    "secondary_type": "psychic"
+    "secondary_type": "psychic",
+    "evolves_from": null,
+    "evolves_to": [
+      80
+    ]
   },
   {
     "id": 80,
@@ -1037,7 +1289,9 @@
     "speed": 30,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png",
     "primary_type": "water",
-    "secondary_type": "psychic"
+    "secondary_type": "psychic",
+    "evolves_from": 79,
+    "evolves_to": []
   },
   {
     "id": 81,
@@ -1050,7 +1304,11 @@
     "speed": 45,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
     "primary_type": "electric",
-    "secondary_type": "steel"
+    "secondary_type": "steel",
+    "evolves_from": null,
+    "evolves_to": [
+      82
+    ]
   },
   {
     "id": 82,
@@ -1063,7 +1321,9 @@
     "speed": 70,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png",
     "primary_type": "electric",
-    "secondary_type": "steel"
+    "secondary_type": "steel",
+    "evolves_from": 81,
+    "evolves_to": []
   },
   {
     "id": 83,
@@ -1076,7 +1336,9 @@
     "speed": 60,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/83.png",
     "primary_type": "normal",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 84,
@@ -1089,7 +1351,11 @@
     "speed": 75,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png",
     "primary_type": "normal",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": null,
+    "evolves_to": [
+      85
+    ]
   },
   {
     "id": 85,
@@ -1102,7 +1368,9 @@
     "speed": 110,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png",
     "primary_type": "normal",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": 84,
+    "evolves_to": []
   },
   {
     "id": 86,
@@ -1115,7 +1383,11 @@
     "speed": 45,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      87
+    ]
   },
   {
     "id": 87,
@@ -1128,7 +1400,9 @@
     "speed": 70,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/87.png",
     "primary_type": "water",
-    "secondary_type": "ice"
+    "secondary_type": "ice",
+    "evolves_from": 86,
+    "evolves_to": []
   },
   {
     "id": 88,
@@ -1141,7 +1415,11 @@
     "speed": 25,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png",
     "primary_type": "poison",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      89
+    ]
   },
   {
     "id": 89,
@@ -1154,7 +1432,9 @@
     "speed": 50,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png",
     "primary_type": "poison",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 88,
+    "evolves_to": []
   },
   {
     "id": 90,
@@ -1167,7 +1447,11 @@
     "speed": 40,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/90.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      91
+    ]
   },
   {
     "id": 91,
@@ -1180,7 +1464,9 @@
     "speed": 70,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/91.png",
     "primary_type": "water",
-    "secondary_type": "ice"
+    "secondary_type": "ice",
+    "evolves_from": 90,
+    "evolves_to": []
   },
   {
     "id": 92,
@@ -1193,7 +1479,11 @@
     "speed": 80,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png",
     "primary_type": "ghost",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": null,
+    "evolves_to": [
+      93
+    ]
   },
   {
     "id": 93,
@@ -1206,7 +1496,11 @@
     "speed": 95,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png",
     "primary_type": "ghost",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": 92,
+    "evolves_to": [
+      94
+    ]
   },
   {
     "id": 94,
@@ -1219,7 +1513,9 @@
     "speed": 110,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png",
     "primary_type": "ghost",
-    "secondary_type": "poison"
+    "secondary_type": "poison",
+    "evolves_from": 93,
+    "evolves_to": []
   },
   {
     "id": 95,
@@ -1232,7 +1528,9 @@
     "speed": 70,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
     "primary_type": "rock",
-    "secondary_type": "ground"
+    "secondary_type": "ground",
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 96,
@@ -1245,7 +1543,11 @@
     "speed": 42,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/96.png",
     "primary_type": "psychic",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      97
+    ]
   },
   {
     "id": 97,
@@ -1258,7 +1560,9 @@
     "speed": 67,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png",
     "primary_type": "psychic",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 96,
+    "evolves_to": []
   },
   {
     "id": 98,
@@ -1271,7 +1575,11 @@
     "speed": 50,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      99
+    ]
   },
   {
     "id": 99,
@@ -1284,7 +1592,9 @@
     "speed": 75,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/99.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 98,
+    "evolves_to": []
   },
   {
     "id": 100,
@@ -1297,7 +1607,11 @@
     "speed": 100,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
     "primary_type": "electric",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      101
+    ]
   },
   {
     "id": 101,
@@ -1310,7 +1624,9 @@
     "speed": 150,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/101.png",
     "primary_type": "electric",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 100,
+    "evolves_to": []
   },
   {
     "id": 102,
@@ -1323,7 +1639,11 @@
     "speed": 40,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png",
     "primary_type": "grass",
-    "secondary_type": "psychic"
+    "secondary_type": "psychic",
+    "evolves_from": null,
+    "evolves_to": [
+      103
+    ]
   },
   {
     "id": 103,
@@ -1336,7 +1656,9 @@
     "speed": 55,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png",
     "primary_type": "grass",
-    "secondary_type": "psychic"
+    "secondary_type": "psychic",
+    "evolves_from": 102,
+    "evolves_to": []
   },
   {
     "id": 104,
@@ -1349,7 +1671,11 @@
     "speed": 35,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/104.png",
     "primary_type": "ground",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      105
+    ]
   },
   {
     "id": 105,
@@ -1362,7 +1688,9 @@
     "speed": 45,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/105.png",
     "primary_type": "ground",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 104,
+    "evolves_to": []
   },
   {
     "id": 106,
@@ -1375,7 +1703,9 @@
     "speed": 87,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png",
     "primary_type": "fighting",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 107,
@@ -1388,7 +1718,9 @@
     "speed": 76,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/107.png",
     "primary_type": "fighting",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 108,
@@ -1401,7 +1733,9 @@
     "speed": 30,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/108.png",
     "primary_type": "normal",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 109,
@@ -1414,7 +1748,11 @@
     "speed": 35,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png",
     "primary_type": "poison",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      110
+    ]
   },
   {
     "id": 110,
@@ -1427,7 +1765,9 @@
     "speed": 60,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png",
     "primary_type": "poison",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 109,
+    "evolves_to": []
   },
   {
     "id": 111,
@@ -1440,7 +1780,11 @@
     "speed": 25,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/111.png",
     "primary_type": "ground",
-    "secondary_type": "rock"
+    "secondary_type": "rock",
+    "evolves_from": null,
+    "evolves_to": [
+      112
+    ]
   },
   {
     "id": 112,
@@ -1453,7 +1797,9 @@
     "speed": 40,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png",
     "primary_type": "ground",
-    "secondary_type": "rock"
+    "secondary_type": "rock",
+    "evolves_from": 111,
+    "evolves_to": []
   },
   {
     "id": 113,
@@ -1466,7 +1812,9 @@
     "speed": 50,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
     "primary_type": "normal",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 114,
@@ -1479,7 +1827,9 @@
     "speed": 60,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/114.png",
     "primary_type": "grass",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 115,
@@ -1492,7 +1842,9 @@
     "speed": 90,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/115.png",
     "primary_type": "normal",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 116,
@@ -1505,7 +1857,11 @@
     "speed": 60,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      117
+    ]
   },
   {
     "id": 117,
@@ -1518,7 +1874,9 @@
     "speed": 85,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 116,
+    "evolves_to": []
   },
   {
     "id": 118,
@@ -1531,7 +1889,11 @@
     "speed": 63,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/118.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      119
+    ]
   },
   {
     "id": 119,
@@ -1544,7 +1906,9 @@
     "speed": 68,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 118,
+    "evolves_to": []
   },
   {
     "id": 120,
@@ -1557,7 +1921,11 @@
     "speed": 85,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/120.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      121
+    ]
   },
   {
     "id": 121,
@@ -1570,7 +1938,9 @@
     "speed": 115,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png",
     "primary_type": "water",
-    "secondary_type": "psychic"
+    "secondary_type": "psychic",
+    "evolves_from": 120,
+    "evolves_to": []
   },
   {
     "id": 122,
@@ -1583,7 +1953,9 @@
     "speed": 90,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/122.png",
     "primary_type": "psychic",
-    "secondary_type": "fairy"
+    "secondary_type": "fairy",
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 123,
@@ -1596,7 +1968,9 @@
     "speed": 105,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png",
     "primary_type": "bug",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 124,
@@ -1609,7 +1983,9 @@
     "speed": 95,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
     "primary_type": "ice",
-    "secondary_type": "psychic"
+    "secondary_type": "psychic",
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 125,
@@ -1622,7 +1998,9 @@
     "speed": 105,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png",
     "primary_type": "electric",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 126,
@@ -1635,7 +2013,9 @@
     "speed": 93,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png",
     "primary_type": "fire",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 127,
@@ -1648,7 +2028,9 @@
     "speed": 85,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
     "primary_type": "bug",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 128,
@@ -1661,7 +2043,9 @@
     "speed": 110,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png",
     "primary_type": "normal",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 129,
@@ -1674,7 +2058,11 @@
     "speed": 80,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      130
+    ]
   },
   {
     "id": 130,
@@ -1687,7 +2075,9 @@
     "speed": 81,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png",
     "primary_type": "water",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": 129,
+    "evolves_to": []
   },
   {
     "id": 131,
@@ -1700,7 +2090,9 @@
     "speed": 60,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png",
     "primary_type": "water",
-    "secondary_type": "ice"
+    "secondary_type": "ice",
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 132,
@@ -1713,7 +2105,9 @@
     "speed": 48,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png",
     "primary_type": "normal",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 133,
@@ -1726,7 +2120,13 @@
     "speed": 55,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png",
     "primary_type": "normal",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      134,
+      135,
+      136
+    ]
   },
   {
     "id": 134,
@@ -1739,7 +2139,9 @@
     "speed": 65,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png",
     "primary_type": "water",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 133,
+    "evolves_to": []
   },
   {
     "id": 135,
@@ -1752,7 +2154,9 @@
     "speed": 130,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
     "primary_type": "electric",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 133,
+    "evolves_to": []
   },
   {
     "id": 136,
@@ -1765,7 +2169,9 @@
     "speed": 65,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/136.png",
     "primary_type": "fire",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 133,
+    "evolves_to": []
   },
   {
     "id": 137,
@@ -1778,7 +2184,9 @@
     "speed": 40,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
     "primary_type": "normal",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 138,
@@ -1791,7 +2199,11 @@
     "speed": 35,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/138.png",
     "primary_type": "rock",
-    "secondary_type": "water"
+    "secondary_type": "water",
+    "evolves_from": null,
+    "evolves_to": [
+      139
+    ]
   },
   {
     "id": 139,
@@ -1804,7 +2216,9 @@
     "speed": 55,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
     "primary_type": "rock",
-    "secondary_type": "water"
+    "secondary_type": "water",
+    "evolves_from": 138,
+    "evolves_to": []
   },
   {
     "id": 140,
@@ -1817,7 +2231,11 @@
     "speed": 55,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/140.png",
     "primary_type": "rock",
-    "secondary_type": "water"
+    "secondary_type": "water",
+    "evolves_from": null,
+    "evolves_to": [
+      141
+    ]
   },
   {
     "id": 141,
@@ -1830,7 +2248,9 @@
     "speed": 80,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/141.png",
     "primary_type": "rock",
-    "secondary_type": "water"
+    "secondary_type": "water",
+    "evolves_from": 140,
+    "evolves_to": []
   },
   {
     "id": 142,
@@ -1843,7 +2263,9 @@
     "speed": 130,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png",
     "primary_type": "rock",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 143,
@@ -1856,7 +2278,9 @@
     "speed": 30,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png",
     "primary_type": "normal",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 144,
@@ -1869,7 +2293,9 @@
     "speed": 85,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/144.png",
     "primary_type": "ice",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 145,
@@ -1882,7 +2308,9 @@
     "speed": 100,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/145.png",
     "primary_type": "electric",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 146,
@@ -1895,7 +2323,9 @@
     "speed": 90,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
     "primary_type": "fire",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 147,
@@ -1908,7 +2338,11 @@
     "speed": 50,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png",
     "primary_type": "dragon",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": [
+      148
+    ]
   },
   {
     "id": 148,
@@ -1921,7 +2355,11 @@
     "speed": 70,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
     "primary_type": "dragon",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": 147,
+    "evolves_to": [
+      149
+    ]
   },
   {
     "id": 149,
@@ -1934,7 +2372,9 @@
     "speed": 80,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png",
     "primary_type": "dragon",
-    "secondary_type": "flying"
+    "secondary_type": "flying",
+    "evolves_from": 148,
+    "evolves_to": []
   },
   {
     "id": 150,
@@ -1947,7 +2387,9 @@
     "speed": 130,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
     "primary_type": "psychic",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   },
   {
     "id": 151,
@@ -1960,6 +2402,8 @@
     "speed": 100,
     "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
     "primary_type": "psychic",
-    "secondary_type": null
+    "secondary_type": null,
+    "evolves_from": null,
+    "evolves_to": []
   }
 ]

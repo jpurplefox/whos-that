@@ -7,7 +7,7 @@ from domain.exceptions import (
     NotEnoughBattery,
 )
 from domain.game import Game
-from domain.hint import Comparison, ComparisonHint, StatHint
+from domain.hint import Comparison, ComparisonHint, FullyEvolvedHint, StatHint
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 
@@ -170,3 +170,27 @@ def test_guess_battery_does_not_exceed_max(bulbasaur: Pokemon, charmander: Pokem
     game.guess(charmander)
 
     assert game.battery == 100
+
+
+def test_fully_evolved_hint_create_with_fully_evolved_pokemon(raichu: Pokemon):
+    hint = FullyEvolvedHint.create(raichu)
+
+    assert hint.is_fully_evolved is True
+
+
+def test_fully_evolved_hint_create_with_non_fully_evolved_pokemon(pikachu: Pokemon):
+    hint = FullyEvolvedHint.create(pikachu)
+
+    assert hint.is_fully_evolved is False
+
+
+def test_fully_evolved_hint_is_available_when_not_revealed(pikachu: Pokemon):
+    hints = [StatHint.create(pikachu, Stat.HP)]
+
+    assert FullyEvolvedHint.is_available(hints) is True
+
+
+def test_fully_evolved_hint_is_not_available_when_already_revealed(pikachu: Pokemon):
+    hints = [FullyEvolvedHint.create(pikachu)]
+
+    assert FullyEvolvedHint.is_available(hints) is False

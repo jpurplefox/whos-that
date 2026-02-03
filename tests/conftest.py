@@ -18,6 +18,8 @@ def pikachu() -> Pokemon:
         image_url="https://example.com/pikachu.png",
         primary_type="electric",
         secondary_type=None,
+        evolves_from=None,
+        evolves_to=[26],
     )
 
 
@@ -35,6 +37,8 @@ def bulbasaur() -> Pokemon:
         image_url="https://example.com/bulbasaur.png",
         primary_type="grass",
         secondary_type="poison",
+        evolves_from=None,
+        evolves_to=[2],
     )
 
 
@@ -52,6 +56,27 @@ def charmander() -> Pokemon:
         image_url="https://example.com/charmander.png",
         primary_type="fire",
         secondary_type=None,
+        evolves_from=None,
+        evolves_to=[5],
+    )
+
+
+@pytest.fixture
+def raichu() -> Pokemon:
+    return Pokemon(
+        id=26,
+        name="raichu",
+        hp=60,
+        attack=90,
+        defense=55,
+        sp_attack=90,
+        sp_defense=80,
+        speed=110,
+        image_url="https://example.com/raichu.png",
+        primary_type="electric",
+        secondary_type=None,
+        evolves_from=25,
+        evolves_to=[],
     )
 
 

@@ -3,7 +3,7 @@ from enum import Enum
 from adapters.random_generator import RandomGenerator
 from domain.exceptions import HintAlreadyRevealed, HintNotAvailable
 from domain.game import Game
-from domain.hint import Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint
+from domain.hint import FullyEvolvedHint, Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint
 from domain.ports.repositories import GameRepository
 
 
@@ -11,6 +11,7 @@ class HintType(Enum):
     STAT = "stat"
     PRIMARY_TYPE = "primary_type"
     SECONDARY_TYPE = "secondary_type"
+    FULLY_EVOLVED = "fully_evolved"
 
 
 class ConsultPokedex:
@@ -37,6 +38,9 @@ class ConsultPokedex:
             case HintType.SECONDARY_TYPE:
                 hint = SecondaryTypeHint.create(game.pokemon)
                 cost = game.hint_costs.secondary_type
+            case HintType.FULLY_EVOLVED:
+                hint = FullyEvolvedHint.create(game.pokemon)
+                cost = game.hint_costs.fully_evolved
 
         if cost is None:
             raise HintNotAvailable()

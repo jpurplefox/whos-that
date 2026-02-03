@@ -8,6 +8,7 @@ class HintCosts(BaseModel):
     stat: int | None = None
     primary_type: int | None = None
     secondary_type: int | None = None
+    fully_evolved: int | None = None
 
 
 class Balance(BaseModel):
