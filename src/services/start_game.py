@@ -1,7 +1,8 @@
 from typing import Protocol
 
 from adapters.random_generator import RandomGenerator
-from domain.balance import Balance
+from domain.balance import DifficultyConfig
+from domain.difficulty import DifficultyLevel
 from domain.game import Game
 from domain.hint import FullyEvolvedHint, Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint
 from domain.pokemon import Pokemon
@@ -83,24 +84,25 @@ class StartGame:
         pokemon_selector: RandomPokemonSelector,
         random_generator: RandomGenerator,
         game_repository: GameRepository,
-        balance: Balance,
+        difficulty_config: DifficultyConfig,
     ):
         self.pokemon_selector = pokemon_selector
         self.random_generator = random_generator
         self.game_repository = game_repository
-        self.balance = balance
+        self.difficulty_config = difficulty_config
 
-    async def execute(self) -> Game:
+    async def execute(self, difficulty: DifficultyLevel = DifficultyLevel.MEDIUM) -> Game:
+        difficulty_settings = self.difficulty_config.get(difficulty)
         pokemon = await self.pokemon_selector.select()
         game = Game(
             pokemon=pokemon,
-            hint_costs=self.balance.hint_costs,
-            max_attempts=self.balance.max_attempts,
-            battery=self.balance.initial_battery,
-            max_battery=self.balance.max_battery,
-            battery_recovery=self.balance.battery_recovery,
+            hint_costs=difficulty_settings.hint_costs,
+            max_attempts=difficulty_settings.max_attempts,
+            battery=difficulty_settings.initial_battery,
+            max_battery=difficulty_settings.max_battery,
+            battery_recovery=difficulty_settings.battery_recovery,
         )
-        for hint_type_name in self.balance.initial_hints:
+        for hint_type_name in difficulty_settings.initial_hints:
             hint = hint_creator_registry.create(
                 hint_type_name, pokemon, game.hints, self.random_generator
             )

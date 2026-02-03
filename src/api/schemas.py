@@ -9,6 +9,16 @@ from domain.hint import CONSULTABLE_HINTS
 from domain.pokemon import Pokemon
 
 
+class DifficultyRequest(Enum):
+    EASY = "easy"
+    MEDIUM = "medium"
+    HARD = "hard"
+
+
+class CreateGameRequest(BaseModel):
+    difficulty: DifficultyRequest = DifficultyRequest.MEDIUM
+
+
 class HintTypeRequest(Enum):
     STAT = "stat"
     PRIMARY_TYPE = "primary_type"

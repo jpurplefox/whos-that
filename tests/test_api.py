@@ -2,6 +2,7 @@ from litestar.testing import TestClient
 
 from api.app import app
 from api.dependencies import container
+from domain.difficulty import DifficultyLevel
 from domain.exceptions import (
     GameNotFound,
     GameOver,
@@ -18,7 +19,7 @@ class FakeStartGame:
     def __init__(self, game: Game):
         self.game = game
 
-    async def execute(self) -> Game:
+    async def execute(self, difficulty: DifficultyLevel = DifficultyLevel.MEDIUM) -> Game:
         return self.game
 
 
@@ -49,7 +50,7 @@ def test_create_game_returns_game_with_hint(pikachu: Pokemon):
 
     with container.start_game.override(FakeStartGame(game)):
         with TestClient(app) as client:
-            response = client.post("/games")
+            response = client.post("/games", json={"difficulty": "medium"})
 
     assert response.status_code == 201
     data = response.json()
@@ -289,6 +290,47 @@ def test_list_pokemon_returns_all_pokemon():
     assert data[0]["id"] == 1
     assert data[0]["name"] == "bulbasaur"
     assert "image_url" in data[0]
+
+
+# --- Difficulty tests ---
+
+
+def test_create_game_with_easy_difficulty(pikachu: Pokemon):
+    game = Game(pokemon=pikachu, id="game-1", max_attempts=6, battery=150, max_battery=150)
+
+    with container.start_game.override(FakeStartGame(game)):
+        with TestClient(app) as client:
+            response = client.post("/games", json={"difficulty": "easy"})
+
+    assert response.status_code == 201
+    data = response.json()
+    assert data["attempts_remaining"] == 6
+    assert data["battery"] == 150
+    assert data["max_battery"] == 150
+
+
+def test_create_game_with_hard_difficulty(pikachu: Pokemon):
+    game = Game(pokemon=pikachu, id="game-1", max_attempts=3, battery=60, max_battery=60)
+
+    with container.start_game.override(FakeStartGame(game)):
+        with TestClient(app) as client:
+            response = client.post("/games", json={"difficulty": "hard"})
+
+    assert response.status_code == 201
+    data = response.json()
+    assert data["attempts_remaining"] == 3
+    assert data["battery"] == 60
+    assert data["max_battery"] == 60
+
+
+def test_create_game_defaults_to_medium_difficulty(pikachu: Pokemon):
+    game = Game(pokemon=pikachu, id="game-1")
+
+    with container.start_game.override(FakeStartGame(game)):
+        with TestClient(app) as client:
+            response = client.post("/games", json={})
+
+    assert response.status_code == 201
 
 
 # --- Pokemon reveal tests ---

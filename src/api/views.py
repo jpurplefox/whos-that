@@ -5,7 +5,8 @@ from litestar.openapi.datastructures import ResponseSpec
 from litestar.params import Dependency
 
 from api.dependencies import get_consult_pokedex, get_get_game, get_guess, get_pokemon_repository, get_start_game
-from api.schemas import ConsultRequest, GameResponse, GuessRequest, HintTypeRequest, PokemonResponse
+from api.schemas import ConsultRequest, CreateGameRequest, DifficultyRequest, GameResponse, GuessRequest, HintTypeRequest, PokemonResponse
+from domain.difficulty import DifficultyLevel
 from domain.ports.repositories import PokemonRepository
 from domain.exceptions import (
     AlreadyConsultedThisTurn,
@@ -36,16 +37,29 @@ def _serialize_hints(game: Game) -> list[dict[str, object]]:
     return [_serialize_hint(h) for h in game.hints]
 
 
+def _convert_difficulty(difficulty: DifficultyRequest) -> DifficultyLevel:
+    match difficulty:
+        case DifficultyRequest.EASY:
+            return DifficultyLevel.EASY
+        case DifficultyRequest.MEDIUM:
+            return DifficultyLevel.MEDIUM
+        case DifficultyRequest.HARD:
+            return DifficultyLevel.HARD
+
+
 @post("/games")
 async def create_game(
+    data: CreateGameRequest,
     start_game: StartGame = Dependency(skip_validation=True),
 ) -> GameResponse:
-    game = await start_game.execute()
+    difficulty = _convert_difficulty(data.difficulty)
+    game = await start_game.execute(difficulty)
     logger.info(
         "game_started",
         game_id=game.id,
         pokemon_id=game.pokemon.id,
         pokemon_name=game.pokemon.name,
+        difficulty=data.difficulty.value,
         hints=_serialize_hints(game),
     )
     return GameResponse.from_game(game)

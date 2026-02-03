@@ -1,13 +1,41 @@
 {
-  "max_attempts": 4,
-  "initial_battery": 100,
-  "max_battery": 100,
-  "battery_recovery": 25,
-  "hint_costs": {
-    "stat": 40,
-    "primary_type": 75,
-    "secondary_type": 75,
-    "fully_evolved": 30
+  "easy": {
+    "max_attempts": 5,
+    "initial_battery": 100,
+    "max_battery": 100,
+    "battery_recovery": 35,
+    "hint_costs": {
+      "stat": 30,
+      "primary_type": 50,
+      "secondary_type": 50,
+      "fully_evolved": 20
+    },
+    "initial_hints": ["stat", "stat"]
   },
-  "initial_hints": ["stat"]
+  "medium": {
+    "max_attempts": 4,
+    "initial_battery": 100,
+    "max_battery": 100,
+    "battery_recovery": 25,
+    "hint_costs": {
+      "stat": 40,
+      "primary_type": 75,
+      "secondary_type": 75,
+      "fully_evolved": 30
+    },
+    "initial_hints": ["stat"]
+  },
+  "hard": {
+    "max_attempts": 4,
+    "initial_battery": 75,
+    "max_battery": 100,
+    "battery_recovery": 20,
+    "hint_costs": {
+      "stat": 50,
+      "primary_type": 80,
+      "secondary_type": 80,
+      "fully_evolved": 40
+    },
+    "initial_hints": ["stat"]
+  }
 }

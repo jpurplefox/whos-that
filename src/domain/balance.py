@@ -3,6 +3,8 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
+from domain.difficulty import DifficultyLevel
+
 
 class HintCosts(BaseModel):
     stat: int | None = None
@@ -11,7 +13,7 @@ class HintCosts(BaseModel):
     fully_evolved: int | None = None
 
 
-class Balance(BaseModel):
+class Difficulty(BaseModel):
     max_attempts: int
     initial_battery: int
     max_battery: int
@@ -20,7 +22,18 @@ class Balance(BaseModel):
     initial_hints: list[str] = []
 
 
-def load_balance(path: Path) -> Balance:
+class DifficultyConfig(BaseModel):
+    difficulties: dict[DifficultyLevel, Difficulty]
+
+    def get(self, level: DifficultyLevel) -> Difficulty:
+        return self.difficulties[level]
+
+
+def load_difficulty_config(path: Path) -> DifficultyConfig:
     with open(path) as f:
         data = json.load(f)
-    return Balance.model_validate(data)
+    difficulties = {
+        DifficultyLevel(key): Difficulty.model_validate(value)
+        for key, value in data.items()
+    }
+    return DifficultyConfig(difficulties=difficulties)

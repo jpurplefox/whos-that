@@ -18,7 +18,7 @@ from adapters.postgres_game_repository import PostgresGameRepository
 from adapters.random_generator import SystemRandomGenerator
 from adapters.random_pokemon_selector import RandomPokemonSelector
 from config import Settings
-from domain.balance import load_balance
+from domain.balance import load_difficulty_config
 from services.consult_pokedex import ConsultPokedex
 from services.get_game import GetGame
 from services.guess import Guess
@@ -69,8 +69,8 @@ def _create_game_repository(
 class Container(containers.DeclarativeContainer):
     settings = providers.Singleton(Settings)
 
-    balance = providers.Singleton(
-        load_balance,
+    difficulty_config = providers.Singleton(
+        load_difficulty_config,
         path=settings.provided.balance_json_path,
     )
 
@@ -117,7 +117,7 @@ class Container(containers.DeclarativeContainer):
         pokemon_selector=pokemon_selector,
         random_generator=random_generator,
         game_repository=game_repository,
-        balance=balance,
+        difficulty_config=difficulty_config,
     )
 
     consult_pokedex = providers.Singleton(
