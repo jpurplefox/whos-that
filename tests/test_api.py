@@ -63,6 +63,7 @@ def test_create_game_returns_game_with_hint(pikachu: Pokemon):
     assert data["hints"][0]["value"] == 90
     assert data["battery"] == 100
     assert data["max_battery"] == 100
+    assert data["battery_recovery"] == 10
 
 
 def test_guess_correct_pokemon(pikachu: Pokemon):
@@ -198,6 +199,7 @@ def test_get_game_returns_game(pikachu: Pokemon):
     assert data["hints"][0]["value"] == 90
     assert data["battery"] == 100
     assert data["max_battery"] == 100
+    assert data["battery_recovery"] == 10
 
 
 def test_get_game_returns_404_when_not_found():

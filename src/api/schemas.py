@@ -40,6 +40,7 @@ class GameResponse(BaseModel):
     available_hints: list[AvailableHint]
     battery: int
     max_battery: int
+    battery_recovery: int
     pokemon: "PokemonResponse | None"
 
     @classmethod
@@ -54,6 +55,7 @@ class GameResponse(BaseModel):
             available_hints=cls._build_available_hints(game),
             battery=game.battery,
             max_battery=game.max_battery,
+            battery_recovery=game.battery_recovery,
             pokemon=PokemonResponse.from_pokemon(game.pokemon) if game.is_over else None,
         )
 
