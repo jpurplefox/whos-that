@@ -4,6 +4,7 @@ litestar
 psycopg[binary,pool]
 psycopg2-binary
 pydantic-settings
+PyJWT
 pypika
 sentry-sdk[litestar]
 sniffio

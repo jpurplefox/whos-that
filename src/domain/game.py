@@ -17,6 +17,7 @@ class Game(BaseModel):
     pokemon: Pokemon
     hint_costs: HintCosts = Field(default_factory=HintCosts)
     id: str | None = None
+    user_id: str | None = None
     max_attempts: int = 4
     hints: list[Hint] = Field(default_factory=list)
     attempts: list[Pokemon] = Field(default_factory=list)

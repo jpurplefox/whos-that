@@ -91,7 +91,11 @@ class StartGame:
         self.game_repository = game_repository
         self.difficulty_config = difficulty_config
 
-    async def execute(self, difficulty: DifficultyLevel = DifficultyLevel.MEDIUM) -> Game:
+    async def execute(
+        self,
+        difficulty: DifficultyLevel = DifficultyLevel.MEDIUM,
+        user_id: str | None = None,
+    ) -> Game:
         difficulty_settings = self.difficulty_config.get(difficulty)
         pokemon = await self.pokemon_selector.select()
         game = Game(
@@ -101,6 +105,7 @@ class StartGame:
             battery=difficulty_settings.initial_battery,
             max_battery=difficulty_settings.max_battery,
             battery_recovery=difficulty_settings.battery_recovery,
+            user_id=user_id,
         )
         for hint_type_name in difficulty_settings.initial_hints:
             hint = hint_creator_registry.create(

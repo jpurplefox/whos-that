@@ -32,3 +32,7 @@ class GameOver(DomainException):
 
 class HintNotAvailable(DomainException):
     pass
+
+
+class UserNotFound(DomainException):
+    pass

@@ -17,3 +17,13 @@ class Settings(BaseSettings):
     database_url: str = ""
     cors_allowed_origins: list[str] = ["*"]
     use_connection_pool: bool = True
+
+    # JWT
+    jwt_secret: str = ""
+    jwt_algorithm: str = "HS256"
+    jwt_expiration_hours: int = 168  # 1 week
+
+    # Google OAuth
+    google_client_id: str = ""
+    google_client_secret: str = ""
+    google_redirect_uri: str = ""

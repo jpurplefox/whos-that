@@ -19,7 +19,11 @@ class FakeStartGame:
     def __init__(self, game: Game):
         self.game = game
 
-    async def execute(self, difficulty: DifficultyLevel = DifficultyLevel.MEDIUM) -> Game:
+    async def execute(
+        self,
+        difficulty: DifficultyLevel = DifficultyLevel.MEDIUM,
+        user_id: str | None = None,
+    ) -> Game:
         return self.game
 
 
