@@ -3,7 +3,7 @@ from litestar.di import Provide
 from litestar.exceptions import HTTPException
 from litestar.params import Dependency
 
-from api.dependencies import get_current_user, get_get_history
+from api.dependencies import get_current_user, get_history_use_case
 from api.schemas import GameResponse
 from domain.user import User
 from services.get_history import GetHistory
@@ -25,7 +25,7 @@ history_router = Router(
     path="/",
     route_handlers=[get_history],
     dependencies={
-        "get_history_service": Provide(get_get_history),
+        "get_history_service": Provide(get_history_use_case),
         "current_user": Provide(get_current_user),
     },
 )
