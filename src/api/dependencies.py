@@ -5,7 +5,6 @@ from litestar import Request
 
 from api.containers import Container
 from auth.google_oauth import GoogleOAuthService
-from auth.jwt_service import JWTService
 from domain.exceptions import UserNotFound
 from domain.ports.repositories import PokemonRepository, UserRepository
 from domain.user import User
@@ -70,21 +69,13 @@ async def get_pokemon_repository() -> PokemonRepository:
     return await _resolve(container.pokemon_repository)
 
 
-async def get_jwt_service() -> JWTService:
-    return await _resolve(container.jwt_service)
-
-
 async def get_google_oauth() -> GoogleOAuthService:
     return await _resolve(container.google_oauth)
-
-
-async def get_user_repository() -> UserRepository:
-    return await _resolve(container.user_repository)
 
 
 async def get_authenticate() -> Authenticate:
     return await _resolve(container.authenticate)
 
 
-async def get_get_history() -> GetHistory:
+async def get_history_use_case() -> GetHistory:
     return await _resolve(container.get_history)
