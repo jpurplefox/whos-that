@@ -3,7 +3,7 @@ from litestar.di import Provide
 from litestar.exceptions import HTTPException
 from litestar.params import Dependency
 
-from api.dependencies import _resolve, container, get_current_user
+from api.dependencies import get_current_user, get_get_history
 from api.schemas import GameResponse
 from domain.user import User
 from services.get_history import GetHistory
@@ -19,10 +19,6 @@ async def get_history(
 
     games = await get_history_service.execute(current_user.id)
     return [GameResponse.from_game(game) for game in games]
-
-
-async def get_get_history() -> GetHistory:
-    return await _resolve(container.get_history)
 
 
 history_router = Router(
