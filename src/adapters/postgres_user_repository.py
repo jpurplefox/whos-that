@@ -6,6 +6,7 @@ from psycopg.rows import dict_row
 from pypika import Parameter, PostgreSQLQuery, Table
 
 from adapters.connection_provider import ConnectionProvider
+from domain.exceptions import UserNotFound
 from domain.user import User
 
 
@@ -41,22 +42,6 @@ def _select_user_by_google_id() -> str:
             _users.updated_at,
         )
         .where(_users.google_id == Parameter("%(google_id)s"))
-    )
-
-
-def _select_user_by_email() -> str:
-    return str(
-        PostgreSQLQuery.from_(_users)
-        .select(
-            _users.id,
-            _users.email,
-            _users.google_id,
-            _users.display_name,
-            _users.avatar_url,
-            _users.created_at,
-            _users.updated_at,
-        )
-        .where(_users.email == Parameter("%(email)s"))
     )
 
 
@@ -120,14 +105,14 @@ class PostgresUserRepository:
             }
         )
 
-    async def get_by_id(self, user_id: str) -> User | None:
+    async def get_by_id(self, user_id: str) -> User:
         async with self._connection_provider.connection() as conn:
             async with conn.cursor(row_factory=dict_row) as cursor:
                 await cursor.execute(_select_user_by_id(), {"id": user_id})
                 row = await cursor.fetchone()
 
         if row is None:
-            return None
+            raise UserNotFound(f"User '{user_id}' not found")
 
         return self._row_to_user(row)
 
@@ -135,17 +120,6 @@ class PostgresUserRepository:
         async with self._connection_provider.connection() as conn:
             async with conn.cursor(row_factory=dict_row) as cursor:
                 await cursor.execute(_select_user_by_google_id(), {"google_id": google_id})
-                row = await cursor.fetchone()
-
-        if row is None:
-            return None
-
-        return self._row_to_user(row)
-
-    async def get_by_email(self, email: str) -> User | None:
-        async with self._connection_provider.connection() as conn:
-            async with conn.cursor(row_factory=dict_row) as cursor:
-                await cursor.execute(_select_user_by_email(), {"email": email})
                 row = await cursor.fetchone()
 
         if row is None:

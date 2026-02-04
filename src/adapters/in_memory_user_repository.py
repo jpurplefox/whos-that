@@ -2,6 +2,7 @@ import uuid
 from copy import deepcopy
 from datetime import datetime, timezone
 
+from domain.exceptions import UserNotFound
 from domain.user import User
 
 
@@ -9,7 +10,6 @@ class InMemoryUserRepository:
     def __init__(self) -> None:
         self.users: dict[str, User] = {}
         self._by_google_id: dict[str, str] = {}
-        self._by_email: dict[str, str] = {}
 
     async def save(self, user: User) -> User:
         now = datetime.now(timezone.utc)
@@ -25,22 +25,17 @@ class InMemoryUserRepository:
 
         self.users[user_id] = deepcopy(saved_user)
         self._by_google_id[saved_user.google_id] = user_id
-        self._by_email[saved_user.email] = user_id
 
         return saved_user
 
-    async def get_by_id(self, user_id: str) -> User | None:
+    async def get_by_id(self, user_id: str) -> User:
         user = self.users.get(user_id)
-        return deepcopy(user) if user else None
+        if user is None:
+            raise UserNotFound(f"User '{user_id}' not found")
+        return deepcopy(user)
 
     async def get_by_google_id(self, google_id: str) -> User | None:
         user_id = self._by_google_id.get(google_id)
         if user_id is None:
             return None
-        return await self.get_by_id(user_id)
-
-    async def get_by_email(self, email: str) -> User | None:
-        user_id = self._by_email.get(email)
-        if user_id is None:
-            return None
-        return await self.get_by_id(user_id)
+        return deepcopy(self.users[user_id])

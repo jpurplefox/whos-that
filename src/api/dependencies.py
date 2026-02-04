@@ -6,6 +6,7 @@ from litestar import Request
 from api.containers import Container
 from auth.google_oauth import GoogleOAuthService
 from auth.jwt_service import JWTService
+from domain.exceptions import UserNotFound
 from domain.ports.repositories import PokemonRepository, UserRepository
 from domain.user import User
 from services.authenticate import Authenticate
@@ -42,8 +43,11 @@ async def get_current_user(request: Request[Any, Any, Any]) -> User | None:
         return None
 
     user_repository: UserRepository = await _resolve(container.user_repository)
-    user: User | None = await user_repository.get_by_id(payload.sub)
-    return user
+    try:
+        user: User = await user_repository.get_by_id(payload.sub)
+        return user
+    except UserNotFound:
+        return None
 
 
 async def get_start_game() -> StartGame:
