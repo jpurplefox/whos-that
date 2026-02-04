@@ -3,7 +3,7 @@ from litestar.di import Provide
 from litestar.params import Dependency
 from pydantic import BaseModel
 
-from api.dependencies import _resolve, container
+from api.dependencies import get_authenticate, get_google_oauth
 from auth.google_oauth import GoogleOAuthService
 from services.authenticate import Authenticate
 
@@ -45,14 +45,6 @@ async def google_callback(
         display_name=result.user.display_name,
         avatar_url=result.user.avatar_url,
     )
-
-
-async def get_google_oauth() -> GoogleOAuthService:
-    return await _resolve(container.google_oauth)
-
-
-async def get_authenticate() -> Authenticate:
-    return await _resolve(container.authenticate)
 
 
 auth_router = Router(
