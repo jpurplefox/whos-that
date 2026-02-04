@@ -1,6 +1,7 @@
 import pytest
 
 from adapters.in_memory_user_repository import InMemoryUserRepository
+from domain.exceptions import UserNotFound
 from domain.user import User
 
 
@@ -68,11 +69,11 @@ async def test_get_by_id_returns_user(
 
 
 @pytest.mark.asyncio
-async def test_get_by_id_returns_none_when_not_found(
+async def test_get_by_id_raises_when_not_found(
     user_repository: InMemoryUserRepository,
 ):
-    user = await user_repository.get_by_id("nonexistent")
-    assert user is None
+    with pytest.raises(UserNotFound):
+        await user_repository.get_by_id("nonexistent")
 
 
 @pytest.mark.asyncio
@@ -92,24 +93,4 @@ async def test_get_by_google_id_returns_none_when_not_found(
     user_repository: InMemoryUserRepository,
 ):
     user = await user_repository.get_by_google_id("nonexistent")
-    assert user is None
-
-
-@pytest.mark.asyncio
-async def test_get_by_email_returns_user(
-    user_repository: InMemoryUserRepository,
-    sample_user: User,
-):
-    await user_repository.save(sample_user)
-    retrieved_user = await user_repository.get_by_email(sample_user.email)
-
-    assert retrieved_user is not None
-    assert retrieved_user.email == sample_user.email
-
-
-@pytest.mark.asyncio
-async def test_get_by_email_returns_none_when_not_found(
-    user_repository: InMemoryUserRepository,
-):
-    user = await user_repository.get_by_email("nonexistent@example.com")
     assert user is None
