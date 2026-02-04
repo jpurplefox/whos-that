@@ -19,3 +19,10 @@ class InMemoryGameRepository:
         if game_id not in self.games:
             raise GameNotFound(f"Game '{game_id}' not found")
         return deepcopy(self.games[game_id])
+
+    async def get_by_user_id(self, user_id: str) -> list[Game]:
+        return [
+            deepcopy(game)
+            for game in self.games.values()
+            if game.user_id == user_id
+        ]

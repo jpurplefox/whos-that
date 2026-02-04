@@ -2,6 +2,7 @@ from typing import Protocol
 
 from domain.game import Game
 from domain.pokemon import Pokemon
+from domain.user import User
 
 
 class PokemonRepository(Protocol):
@@ -20,4 +21,21 @@ class GameRepository(Protocol):
         ...
 
     async def get(self, game_id: str) -> Game:
+        ...
+
+    async def get_by_user_id(self, user_id: str) -> list[Game]:
+        ...
+
+
+class UserRepository(Protocol):
+    async def save(self, user: User) -> User:
+        ...
+
+    async def get_by_id(self, user_id: str) -> User | None:
+        ...
+
+    async def get_by_google_id(self, google_id: str) -> User | None:
+        ...
+
+    async def get_by_email(self, email: str) -> User | None:
         ...

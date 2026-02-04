@@ -32,8 +32,30 @@ def _select_game_by_id() -> str:
             _games.max_battery,
             _games.battery_recovery,
             _games.consulted_this_turn,
+            _games.user_id,
         )
         .where(_games.id == Parameter("%(id)s"))
+    )
+
+
+def _select_games_by_user_id() -> str:
+    return str(
+        PostgreSQLQuery.from_(_games)
+        .select(
+            _games.id,
+            _games.pokemon_id,
+            _games.hint_costs,
+            _games.max_attempts,
+            _games.hints,
+            _games.attempts,
+            _games.battery,
+            _games.max_battery,
+            _games.battery_recovery,
+            _games.consulted_this_turn,
+            _games.user_id,
+        )
+        .where(_games.user_id == Parameter("%(user_id)s"))
+        .orderby(_games.id)
     )
 
 
@@ -51,6 +73,7 @@ def _upsert_game() -> str:
             "max_battery",
             "battery_recovery",
             "consulted_this_turn",
+            "user_id",
         )
         .insert(
             Parameter("%(id)s"),
@@ -63,6 +86,7 @@ def _upsert_game() -> str:
             Parameter("%(max_battery)s"),
             Parameter("%(battery_recovery)s"),
             Parameter("%(consulted_this_turn)s"),
+            Parameter("%(user_id)s"),
         )
         .on_conflict(_games.id)  # type: ignore[operator]
         .do_update(_games.pokemon_id, Parameter("%(pokemon_id)s"))
@@ -74,6 +98,7 @@ def _upsert_game() -> str:
         .do_update(_games.max_battery, Parameter("%(max_battery)s"))
         .do_update(_games.battery_recovery, Parameter("%(battery_recovery)s"))
         .do_update(_games.consulted_this_turn, Parameter("%(consulted_this_turn)s"))
+        .do_update(_games.user_id, Parameter("%(user_id)s"))
     )
 
 
@@ -102,6 +127,7 @@ class PostgresGameRepository:
             "max_battery": game.max_battery,
             "battery_recovery": game.battery_recovery,
             "consulted_this_turn": game.consulted_this_turn,
+            "user_id": game.user_id,
         }
 
         async with self._connection_provider.connection() as conn:
@@ -140,7 +166,43 @@ class PostgresGameRepository:
             max_battery=row["max_battery"],
             battery_recovery=row["battery_recovery"],
             consulted_this_turn=row["consulted_this_turn"],
+            user_id=row.get("user_id"),
         )
+
+    async def get_by_user_id(self, user_id: str) -> list[Game]:
+        async with self._connection_provider.connection() as conn:
+            async with conn.cursor(row_factory=dict_row) as cursor:
+                await cursor.execute(_select_games_by_user_id(), {"user_id": user_id})
+                rows = await cursor.fetchall()
+
+        games = []
+        for row in rows:
+            pokemon = await self._pokemon_repository.get_by_number(row["pokemon_id"])
+            hint_costs = (
+                HintCosts.model_validate(row["hint_costs"])
+                if row["hint_costs"]
+                else HintCosts()
+            )
+            hints = await self._deserialize_hints(row["hints"])
+            attempts = await self._deserialize_attempts(row["attempts"])
+
+            games.append(
+                Game(
+                    id=row["id"],
+                    pokemon=pokemon,
+                    hint_costs=hint_costs,
+                    max_attempts=row["max_attempts"],
+                    hints=hints,
+                    attempts=attempts,
+                    battery=row["battery"],
+                    max_battery=row["max_battery"],
+                    battery_recovery=row["battery_recovery"],
+                    consulted_this_turn=row["consulted_this_turn"],
+                    user_id=row.get("user_id"),
+                )
+            )
+
+        return games
 
     def _serialize_hints(self, hints: list[Hint]) -> list[dict[str, Any]]:
         return [self._hint_serializer.serialize(hint) for hint in hints]
