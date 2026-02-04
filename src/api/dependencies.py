@@ -35,7 +35,7 @@ async def get_current_user(request: Request[Any, Any, Any]) -> User | None:
     if not auth_header or not auth_header.startswith("Bearer "):
         return None
 
-    token = auth_header[7:]
+    token = auth_header.removeprefix("Bearer ")
     jwt_service = await _resolve(container.jwt_service)
     payload = jwt_service.decode_token(token)
 
