@@ -8,7 +8,7 @@ from auth.jwt_service import JWTService
 @pytest.fixture
 def jwt_service() -> JWTService:
     return JWTService(
-        secret="test-secret-key",
+        secret="test-secret-key-with-at-least-32-bytes",
         algorithm="HS256",
         expiration_hours=24,
     )
@@ -59,7 +59,7 @@ def test_decode_token_with_wrong_secret_returns_none(jwt_service: JWTService):
     token = jwt_service.create_token("user-123")
 
     other_service = JWTService(
-        secret="different-secret",
+        secret="different-secret-with-at-least-32-bytes",
         algorithm="HS256",
         expiration_hours=24,
     )
@@ -70,7 +70,7 @@ def test_decode_token_with_wrong_secret_returns_none(jwt_service: JWTService):
 
 def test_decode_expired_token_returns_none():
     service = JWTService(
-        secret="test-secret",
+        secret="test-secret-key-with-at-least-32-bytes",
         algorithm="HS256",
         expiration_hours=0,  # Expires immediately
     )

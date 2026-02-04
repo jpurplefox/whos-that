@@ -39,7 +39,7 @@ def fake_google_oauth(google_user_info: GoogleUserInfo) -> FakeGoogleOAuthServic
 @pytest.fixture
 def jwt_service() -> JWTService:
     return JWTService(
-        secret="test-secret",
+        secret="test-secret-key-with-at-least-32-bytes",
         algorithm="HS256",
         expiration_hours=24,
     )
