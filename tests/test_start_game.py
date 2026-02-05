@@ -48,7 +48,9 @@ async def test_creates_game_with_pokemon(
     pokemon_selector = FakePokemonSelector(pikachu)
     random_generator = FakeRandomGenerator(0)
 
-    start_game = StartGame(pokemon_selector, random_generator, game_repository, difficulty_config)
+    start_game = StartGame(
+        pokemon_selector, random_generator, game_repository, difficulty_config
+    )
     game = await start_game.execute()
 
     assert game.pokemon == pikachu
@@ -61,7 +63,9 @@ async def test_adds_initial_hints_from_difficulty(
     pokemon_selector = FakePokemonSelector(pikachu)
     random_generator = FakeRandomGenerator(0)
 
-    start_game = StartGame(pokemon_selector, random_generator, game_repository, difficulty_config)
+    start_game = StartGame(
+        pokemon_selector, random_generator, game_repository, difficulty_config
+    )
     game = await start_game.execute()
 
     assert len(game.hints) == 1
@@ -75,7 +79,9 @@ async def test_saves_game_with_id(
     pokemon_selector = FakePokemonSelector(pikachu)
     random_generator = FakeRandomGenerator(0)
 
-    start_game = StartGame(pokemon_selector, random_generator, game_repository, difficulty_config)
+    start_game = StartGame(
+        pokemon_selector, random_generator, game_repository, difficulty_config
+    )
     game = await start_game.execute()
 
     assert game.id is not None
@@ -97,7 +103,9 @@ async def test_no_initial_hints_when_list_empty(
     pokemon_selector = FakePokemonSelector(pikachu)
     random_generator = FakeRandomGenerator(0)
 
-    start_game = StartGame(pokemon_selector, random_generator, game_repository, difficulty_config)
+    start_game = StartGame(
+        pokemon_selector, random_generator, game_repository, difficulty_config
+    )
     game = await start_game.execute()
 
     assert len(game.hints) == 0
@@ -119,7 +127,9 @@ async def test_creates_game_with_easy_difficulty(
     pokemon_selector = FakePokemonSelector(pikachu)
     random_generator = FakeRandomGenerator(0)
 
-    start_game = StartGame(pokemon_selector, random_generator, game_repository, difficulty_config)
+    start_game = StartGame(
+        pokemon_selector, random_generator, game_repository, difficulty_config
+    )
     game = await start_game.execute(DifficultyLevel.EASY)
 
     assert game.max_attempts == 6
@@ -145,7 +155,9 @@ async def test_creates_game_with_hard_difficulty(
     pokemon_selector = FakePokemonSelector(pikachu)
     random_generator = FakeRandomGenerator(0)
 
-    start_game = StartGame(pokemon_selector, random_generator, game_repository, difficulty_config)
+    start_game = StartGame(
+        pokemon_selector, random_generator, game_repository, difficulty_config
+    )
     game = await start_game.execute(DifficultyLevel.HARD)
 
     assert game.max_attempts == 3

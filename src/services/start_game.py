@@ -1,81 +1,10 @@
-from typing import Protocol
-
-from domain.ports.random_generator import RandomGenerator
 from domain.balance import DifficultyConfig
 from domain.difficulty import DifficultyLevel
 from domain.game import Game
-from domain.hint import FullyEvolvedHint, Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint
-from domain.pokemon import Pokemon
+from domain.hint_factory import hint_registry
+from domain.ports.random_generator import RandomGenerator
 from domain.ports.random_pokemon_selector import RandomPokemonSelector
 from domain.ports.repositories import GameRepository
-
-
-class HintCreator(Protocol):
-    def create(
-        self, pokemon: Pokemon, hints: list[Hint], random_generator: RandomGenerator
-    ) -> Hint: ...
-
-
-class StatHintCreator:
-    def create(
-        self, pokemon: Pokemon, hints: list[Hint], random_generator: RandomGenerator
-    ) -> Hint:
-        available = StatHint.available_stats(hints)
-        index = random_generator.randint(0, len(available) - 1)
-        return StatHint.create(pokemon, available[index])
-
-
-class PrimaryTypeHintCreator:
-    def create(
-        self, pokemon: Pokemon, hints: list[Hint], random_generator: RandomGenerator
-    ) -> Hint:
-        return PrimaryTypeHint.create(pokemon)
-
-
-class SecondaryTypeHintCreator:
-    def create(
-        self, pokemon: Pokemon, hints: list[Hint], random_generator: RandomGenerator
-    ) -> Hint:
-        return SecondaryTypeHint.create(pokemon)
-
-
-class FullyEvolvedHintCreator:
-    def create(
-        self, pokemon: Pokemon, hints: list[Hint], random_generator: RandomGenerator
-    ) -> Hint:
-        return FullyEvolvedHint.create(pokemon)
-
-
-class HintCreatorRegistry:
-    def __init__(self) -> None:
-        self._creators: dict[str, HintCreator] = {}
-
-    def register(self, type_name: str, creator: HintCreator) -> None:
-        self._creators[type_name] = creator
-
-    def create(
-        self,
-        type_name: str,
-        pokemon: Pokemon,
-        hints: list[Hint],
-        random_generator: RandomGenerator,
-    ) -> Hint:
-        creator = self._creators.get(type_name)
-        if creator is None:
-            raise ValueError(f"No creator registered for type '{type_name}'")
-        return creator.create(pokemon, hints, random_generator)
-
-
-def _create_registry() -> HintCreatorRegistry:
-    registry = HintCreatorRegistry()
-    registry.register("stat", StatHintCreator())
-    registry.register("primary_type", PrimaryTypeHintCreator())
-    registry.register("secondary_type", SecondaryTypeHintCreator())
-    registry.register("fully_evolved", FullyEvolvedHintCreator())
-    return registry
-
-
-hint_creator_registry = _create_registry()
 
 
 class StartGame:
@@ -108,7 +37,7 @@ class StartGame:
             user_id=user_id,
         )
         for hint_type_name in difficulty_settings.initial_hints:
-            hint = hint_creator_registry.create(
+            hint = hint_registry.create(
                 hint_type_name, pokemon, game.hints, self.random_generator
             )
             game.hints.append(hint)
