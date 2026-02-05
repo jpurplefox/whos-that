@@ -34,5 +34,5 @@ class UserRepository(Protocol):
     async def get_by_id(self, user_id: str) -> User:
         ...
 
-    async def get_by_google_id(self, google_id: str) -> User | None:
+    async def get_by_provider_id(self, provider_id: str, provider_type: str) -> User | None:
         ...

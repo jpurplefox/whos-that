@@ -9,7 +9,7 @@ from domain.user import User
 class InMemoryUserRepository:
     def __init__(self) -> None:
         self.users: dict[str, User] = {}
-        self._by_google_id: dict[str, str] = {}
+        self._by_provider: dict[tuple[str, str], str] = {}
 
     async def save(self, user: User) -> User:
         now = datetime.now(timezone.utc)
@@ -24,7 +24,7 @@ class InMemoryUserRepository:
         )
 
         self.users[user_id] = deepcopy(saved_user)
-        self._by_google_id[saved_user.google_id] = user_id
+        self._by_provider[(saved_user.provider_id, saved_user.provider_type)] = user_id
 
         return saved_user
 
@@ -34,8 +34,8 @@ class InMemoryUserRepository:
             raise UserNotFound(f"User '{user_id}' not found")
         return deepcopy(user)
 
-    async def get_by_google_id(self, google_id: str) -> User | None:
-        user_id = self._by_google_id.get(google_id)
+    async def get_by_provider_id(self, provider_id: str, provider_type: str) -> User | None:
+        user_id = self._by_provider.get((provider_id, provider_type))
         if user_id is None:
             return None
         return deepcopy(self.users[user_id])

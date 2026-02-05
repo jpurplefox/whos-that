@@ -19,7 +19,8 @@ def _select_user_by_id() -> str:
         .select(
             _users.id,
             _users.email,
-            _users.google_id,
+            _users.provider_id,
+            _users.provider_type,
             _users.display_name,
             _users.avatar_url,
             _users.created_at,
@@ -29,19 +30,21 @@ def _select_user_by_id() -> str:
     )
 
 
-def _select_user_by_google_id() -> str:
+def _select_user_by_provider_id() -> str:
     return str(
         PostgreSQLQuery.from_(_users)
         .select(
             _users.id,
             _users.email,
-            _users.google_id,
+            _users.provider_id,
+            _users.provider_type,
             _users.display_name,
             _users.avatar_url,
             _users.created_at,
             _users.updated_at,
         )
-        .where(_users.google_id == Parameter("%(google_id)s"))
+        .where(_users.provider_id == Parameter("%(provider_id)s"))
+        .where(_users.provider_type == Parameter("%(provider_type)s"))
     )
 
 
@@ -51,7 +54,8 @@ def _upsert_user() -> str:
         .columns(
             "id",
             "email",
-            "google_id",
+            "provider_id",
+            "provider_type",
             "display_name",
             "avatar_url",
             "created_at",
@@ -60,7 +64,8 @@ def _upsert_user() -> str:
         .insert(
             Parameter("%(id)s"),
             Parameter("%(email)s"),
-            Parameter("%(google_id)s"),
+            Parameter("%(provider_id)s"),
+            Parameter("%(provider_type)s"),
             Parameter("%(display_name)s"),
             Parameter("%(avatar_url)s"),
             Parameter("%(created_at)s"),
@@ -85,7 +90,8 @@ class PostgresUserRepository:
         params = {
             "id": user_id,
             "email": user.email,
-            "google_id": user.google_id,
+            "provider_id": user.provider_id,
+            "provider_type": user.provider_type,
             "display_name": user.display_name,
             "avatar_url": user.avatar_url,
             "created_at": user.created_at or now,
@@ -116,10 +122,13 @@ class PostgresUserRepository:
 
         return self._row_to_user(row)
 
-    async def get_by_google_id(self, google_id: str) -> User | None:
+    async def get_by_provider_id(self, provider_id: str, provider_type: str) -> User | None:
         async with self._connection_provider.connection() as conn:
             async with conn.cursor(row_factory=dict_row) as cursor:
-                await cursor.execute(_select_user_by_google_id(), {"google_id": google_id})
+                await cursor.execute(
+                    _select_user_by_provider_id(),
+                    {"provider_id": provider_id, "provider_type": provider_type},
+                )
                 row = await cursor.fetchone()
 
         if row is None:
@@ -131,7 +140,8 @@ class PostgresUserRepository:
         return User(
             id=str(row["id"]),
             email=str(row["email"]),
-            google_id=str(row["google_id"]),
+            provider_id=str(row["provider_id"]),
+            provider_type=str(row["provider_type"]),
             display_name=row["display_name"] if row["display_name"] is None else str(row["display_name"]),
             avatar_url=row["avatar_url"] if row["avatar_url"] is None else str(row["avatar_url"]),
             created_at=row["created_at"],

@@ -14,7 +14,7 @@ class FakeRandomGenerator:
 
 
 @pytest.mark.asyncio
-async def test_select_returns_pokemon_with_random_number(pikachu: Pokemon):
+async def test_select_returns_pokemon_with_random_number(pikachu: Pokemon) -> None:
     repository = InMemoryPokemonRepository([pikachu])
     random_generator = FakeRandomGenerator(25)
 

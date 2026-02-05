@@ -33,7 +33,7 @@ def pikachu() -> Pokemon:
 
 
 @pytest.mark.asyncio
-async def test_returns_empty_list_when_no_games(get_history: GetHistory):
+async def test_returns_empty_list_when_no_games(get_history: GetHistory) -> None:
     games = await get_history.execute("user-123")
     assert games == []
 
@@ -43,7 +43,7 @@ async def test_returns_games_for_user(
     get_history: GetHistory,
     game_repository: InMemoryGameRepository,
     pikachu: Pokemon,
-):
+) -> None:
     game = Game(pokemon=pikachu, user_id="user-123")
     await game_repository.save(game)
 
@@ -58,7 +58,7 @@ async def test_does_not_return_other_users_games(
     get_history: GetHistory,
     game_repository: InMemoryGameRepository,
     pikachu: Pokemon,
-):
+) -> None:
     game1 = Game(pokemon=pikachu, user_id="user-123")
     game2 = Game(pokemon=pikachu, user_id="user-456")
     await game_repository.save(game1)
@@ -75,7 +75,7 @@ async def test_does_not_return_anonymous_games(
     get_history: GetHistory,
     game_repository: InMemoryGameRepository,
     pikachu: Pokemon,
-):
+) -> None:
     game_with_user = Game(pokemon=pikachu, user_id="user-123")
     game_anonymous = Game(pokemon=pikachu, user_id=None)
     await game_repository.save(game_with_user)
@@ -92,7 +92,7 @@ async def test_returns_multiple_games_for_user(
     get_history: GetHistory,
     game_repository: InMemoryGameRepository,
     pikachu: Pokemon,
-):
+) -> None:
     game1 = Game(pokemon=pikachu, user_id="user-123")
     game2 = Game(pokemon=pikachu, user_id="user-123")
     game3 = Game(pokemon=pikachu, user_id="user-123")

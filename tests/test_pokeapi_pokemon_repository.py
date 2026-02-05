@@ -1,3 +1,5 @@
+from typing import Any
+
 import httpx
 import pytest
 import respx
@@ -18,7 +20,7 @@ def make_pokemon_response(
     primary_type: str,
     secondary_type: str | None = None,
     image_url: str = "https://example.com/sprite.png",
-) -> dict:
+) -> dict[str, Any]:
     types = [{"slot": 1, "type": {"name": primary_type}}]
     if secondary_type:
         types.append({"slot": 2, "type": {"name": secondary_type}})
@@ -40,7 +42,7 @@ def make_pokemon_response(
 
 @pytest.mark.asyncio
 @respx.mock
-async def test_get_by_number_fetches_pokemon_by_id(pikachu: Pokemon):
+async def test_get_by_number_fetches_pokemon_by_id(pikachu: Pokemon) -> None:
     respx.get("https://pokeapi.co/api/v2/pokemon/25").mock(
         return_value=httpx.Response(
             200,
@@ -71,7 +73,7 @@ async def test_get_by_number_fetches_pokemon_by_id(pikachu: Pokemon):
 
 @pytest.mark.asyncio
 @respx.mock
-async def test_get_by_name_fetches_pokemon_by_name(bulbasaur: Pokemon):
+async def test_get_by_name_fetches_pokemon_by_name(bulbasaur: Pokemon) -> None:
     respx.get("https://pokeapi.co/api/v2/pokemon/bulbasaur").mock(
         return_value=httpx.Response(
             200,

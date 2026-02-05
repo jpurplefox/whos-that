@@ -48,7 +48,7 @@ class FakeGuess:
         return self.game
 
 
-def test_create_game_returns_game_with_hint(pikachu: Pokemon):
+def test_create_game_returns_game_with_hint(pikachu: Pokemon) -> None:
     game = Game(pokemon=pikachu, id="game-1")
     game.hints.append(StatHint.create(pikachu, Stat.SPEED))
 
@@ -71,7 +71,7 @@ def test_create_game_returns_game_with_hint(pikachu: Pokemon):
     assert data["battery_recovery"] == 10
 
 
-def test_guess_correct_pokemon(pikachu: Pokemon):
+def test_guess_correct_pokemon(pikachu: Pokemon) -> None:
     game = Game(pokemon=pikachu, id="game-1")
     game.hints.append(StatHint.create(pikachu, Stat.SPEED))
     game.guess(pikachu)
@@ -92,7 +92,7 @@ def test_guess_correct_pokemon(pikachu: Pokemon):
 
 def test_guess_incorrect_pokemon_returns_comparison_hint(
     pikachu: Pokemon, bulbasaur: Pokemon
-):
+) -> None:
     game = Game(pokemon=pikachu, id="game-1")
     game.hints.append(StatHint.create(pikachu, Stat.SPEED))
     game.guess(bulbasaur)
@@ -120,7 +120,7 @@ class FakeGuessNoAttempts:
         raise GameOver()
 
 
-def test_guess_returns_400_when_no_attempts_remaining():
+def test_guess_returns_400_when_no_attempts_remaining() -> None:
     with container.guess.override(FakeGuessNoAttempts()):
         with TestClient(app) as client:
             response = client.post(
@@ -136,7 +136,7 @@ class FakeGuessPokemonNotFound:
         raise PokemonNotFound()
 
 
-def test_guess_returns_400_when_pokemon_not_found():
+def test_guess_returns_400_when_pokemon_not_found() -> None:
     with container.guess.override(FakeGuessPokemonNotFound()):
         with TestClient(app) as client:
             response = client.post(
@@ -147,7 +147,7 @@ def test_guess_returns_400_when_pokemon_not_found():
     assert response.status_code == 400
 
 
-def test_guess_returns_400_when_pokemon_name_is_invalid():
+def test_guess_returns_400_when_pokemon_name_is_invalid() -> None:
     with TestClient(app) as client:
         response = client.post(
             "/games/game-1/guess",
@@ -162,7 +162,7 @@ class FakeGuessGameNotFound:
         raise GameNotFound()
 
 
-def test_guess_returns_404_when_game_not_found():
+def test_guess_returns_404_when_game_not_found() -> None:
     with container.guess.override(FakeGuessGameNotFound()):
         with TestClient(app) as client:
             response = client.post(
@@ -173,7 +173,7 @@ def test_guess_returns_404_when_game_not_found():
     assert response.status_code == 404
 
 
-def test_guess_returns_400_when_invalid_json():
+def test_guess_returns_400_when_invalid_json() -> None:
     with TestClient(app) as client:
         response = client.post(
             "/games/game-1/guess",
@@ -184,7 +184,7 @@ def test_guess_returns_400_when_invalid_json():
     assert response.status_code == 400
 
 
-def test_get_game_returns_game(pikachu: Pokemon):
+def test_get_game_returns_game(pikachu: Pokemon) -> None:
     game = Game(pokemon=pikachu, id="game-1")
     game.hints.append(StatHint.create(pikachu, Stat.SPEED))
 
@@ -207,7 +207,7 @@ def test_get_game_returns_game(pikachu: Pokemon):
     assert data["battery_recovery"] == 10
 
 
-def test_get_game_returns_404_when_not_found():
+def test_get_game_returns_404_when_not_found() -> None:
     with container.get_game.override(FakeGetGameNotFound()):
         with TestClient(app) as client:
             response = client.get("/games/nonexistent")
@@ -236,7 +236,7 @@ class FakeConsultPokedexNotEnoughBattery:
         raise NotEnoughBattery()
 
 
-def test_consult_returns_game(pikachu: Pokemon):
+def test_consult_returns_game(pikachu: Pokemon) -> None:
     game = Game(pokemon=pikachu, id="game-1", battery=70, max_battery=100)
     game.hints.append(StatHint.create(pikachu, Stat.SPEED))
 
@@ -252,7 +252,7 @@ def test_consult_returns_game(pikachu: Pokemon):
     assert len(data["hints"]) == 1
 
 
-def test_consult_returns_404_when_game_not_found():
+def test_consult_returns_404_when_game_not_found() -> None:
     with container.consult_pokedex.override(FakeConsultPokedexGameNotFound()):
         with TestClient(app) as client:
             response = client.post("/games/nonexistent/consult", json={"hint_type": "stat"})
@@ -260,7 +260,7 @@ def test_consult_returns_404_when_game_not_found():
     assert response.status_code == 404
 
 
-def test_consult_returns_400_when_not_enough_battery():
+def test_consult_returns_400_when_not_enough_battery() -> None:
     with container.consult_pokedex.override(FakeConsultPokedexNotEnoughBattery()):
         with TestClient(app) as client:
             response = client.post("/games/game-1/consult", json={"hint_type": "stat"})
@@ -273,7 +273,7 @@ class FakeConsultPokedexGameOver:
         raise GameOver()
 
 
-def test_consult_returns_400_when_game_is_over():
+def test_consult_returns_400_when_game_is_over() -> None:
     with container.consult_pokedex.override(FakeConsultPokedexGameOver()):
         with TestClient(app) as client:
             response = client.post("/games/game-1/consult", json={"hint_type": "stat"})
@@ -284,7 +284,7 @@ def test_consult_returns_400_when_game_is_over():
 # --- List Pokemon endpoint tests ---
 
 
-def test_list_pokemon_returns_all_pokemon():
+def test_list_pokemon_returns_all_pokemon() -> None:
     with TestClient(app) as client:
         response = client.get("/pokemon")
 
@@ -299,7 +299,7 @@ def test_list_pokemon_returns_all_pokemon():
 # --- Difficulty tests ---
 
 
-def test_create_game_with_easy_difficulty(pikachu: Pokemon):
+def test_create_game_with_easy_difficulty(pikachu: Pokemon) -> None:
     game = Game(pokemon=pikachu, id="game-1", max_attempts=6, battery=150, max_battery=150)
 
     with container.start_game.override(FakeStartGame(game)):
@@ -313,7 +313,7 @@ def test_create_game_with_easy_difficulty(pikachu: Pokemon):
     assert data["max_battery"] == 150
 
 
-def test_create_game_with_hard_difficulty(pikachu: Pokemon):
+def test_create_game_with_hard_difficulty(pikachu: Pokemon) -> None:
     game = Game(pokemon=pikachu, id="game-1", max_attempts=3, battery=60, max_battery=60)
 
     with container.start_game.override(FakeStartGame(game)):
@@ -327,7 +327,7 @@ def test_create_game_with_hard_difficulty(pikachu: Pokemon):
     assert data["max_battery"] == 60
 
 
-def test_create_game_defaults_to_medium_difficulty(pikachu: Pokemon):
+def test_create_game_defaults_to_medium_difficulty(pikachu: Pokemon) -> None:
     game = Game(pokemon=pikachu, id="game-1")
 
     with container.start_game.override(FakeStartGame(game)):
@@ -340,7 +340,7 @@ def test_create_game_defaults_to_medium_difficulty(pikachu: Pokemon):
 # --- Pokemon reveal tests ---
 
 
-def test_game_not_over_does_not_reveal_pokemon(pikachu: Pokemon):
+def test_game_not_over_does_not_reveal_pokemon(pikachu: Pokemon) -> None:
     game = Game(pokemon=pikachu, id="game-1")
 
     with container.get_game.override(FakeGetGame(game)):
@@ -353,7 +353,7 @@ def test_game_not_over_does_not_reveal_pokemon(pikachu: Pokemon):
     assert data["pokemon"] is None
 
 
-def test_game_won_reveals_pokemon(pikachu: Pokemon):
+def test_game_won_reveals_pokemon(pikachu: Pokemon) -> None:
     game = Game(pokemon=pikachu, id="game-1")
     game.guess(pikachu)
 
@@ -373,7 +373,7 @@ def test_game_won_reveals_pokemon(pikachu: Pokemon):
     assert data["pokemon"]["id"] == 25
 
 
-def test_game_lost_reveals_pokemon(pikachu: Pokemon, bulbasaur: Pokemon):
+def test_game_lost_reveals_pokemon(pikachu: Pokemon, bulbasaur: Pokemon) -> None:
     game = Game(pokemon=pikachu, id="game-1", max_attempts=1)
     game.guess(bulbasaur)
 

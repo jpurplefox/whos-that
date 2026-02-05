@@ -1,13 +1,8 @@
 from datetime import datetime, timedelta, timezone
 
 import jwt
-from pydantic import BaseModel
 
-
-class TokenPayload(BaseModel):
-    sub: str  # user_id
-    exp: datetime
-    iat: datetime
+from domain.ports.token_service import TokenPayload
 
 
 class JWTService:

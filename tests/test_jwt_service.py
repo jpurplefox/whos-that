@@ -14,13 +14,13 @@ def jwt_service() -> JWTService:
     )
 
 
-def test_create_token_returns_string(jwt_service: JWTService):
+def test_create_token_returns_string(jwt_service: JWTService) -> None:
     token = jwt_service.create_token("user-123")
     assert isinstance(token, str)
     assert len(token) > 0
 
 
-def test_decode_token_returns_payload(jwt_service: JWTService):
+def test_decode_token_returns_payload(jwt_service: JWTService) -> None:
     token = jwt_service.create_token("user-123")
     payload = jwt_service.decode_token(token)
 
@@ -28,7 +28,7 @@ def test_decode_token_returns_payload(jwt_service: JWTService):
     assert payload.sub == "user-123"
 
 
-def test_decode_token_has_valid_expiration(jwt_service: JWTService):
+def test_decode_token_has_valid_expiration(jwt_service: JWTService) -> None:
     token = jwt_service.create_token("user-123")
     payload = jwt_service.decode_token(token)
 
@@ -38,7 +38,7 @@ def test_decode_token_has_valid_expiration(jwt_service: JWTService):
     assert payload.exp < now + timedelta(hours=25)
 
 
-def test_decode_token_has_issued_at(jwt_service: JWTService):
+def test_decode_token_has_issued_at(jwt_service: JWTService) -> None:
     before = datetime.now(timezone.utc).replace(microsecond=0)
     token = jwt_service.create_token("user-123")
     after = datetime.now(timezone.utc).replace(microsecond=0) + timedelta(seconds=1)
@@ -50,12 +50,12 @@ def test_decode_token_has_issued_at(jwt_service: JWTService):
     assert before <= payload.iat <= after
 
 
-def test_decode_invalid_token_returns_none(jwt_service: JWTService):
+def test_decode_invalid_token_returns_none(jwt_service: JWTService) -> None:
     payload = jwt_service.decode_token("invalid-token")
     assert payload is None
 
 
-def test_decode_token_with_wrong_secret_returns_none(jwt_service: JWTService):
+def test_decode_token_with_wrong_secret_returns_none(jwt_service: JWTService) -> None:
     token = jwt_service.create_token("user-123")
 
     other_service = JWTService(
@@ -68,7 +68,7 @@ def test_decode_token_with_wrong_secret_returns_none(jwt_service: JWTService):
     assert payload is None
 
 
-def test_decode_expired_token_returns_none():
+def test_decode_expired_token_returns_none() -> None:
     service = JWTService(
         secret="test-secret-key-with-at-least-32-bytes",
         algorithm="HS256",

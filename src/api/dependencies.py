@@ -8,6 +8,7 @@ from api.containers import Container
 from auth.google_oauth import GoogleOAuthService
 from domain.exceptions import UserNotFound
 from domain.ports.repositories import PokemonRepository, UserRepository
+from domain.ports.token_service import TokenService
 from domain.user import User
 from services.authenticate import Authenticate
 from services.consult_pokedex import ConsultPokedex
@@ -36,8 +37,8 @@ async def get_current_user(request: Request[Any, Any, Any]) -> User | None:
         return None
 
     token = auth_header.removeprefix("Bearer ")
-    jwt_service = await _resolve(container.jwt_service)
-    payload = jwt_service.decode_token(token)
+    token_service: TokenService = await _resolve(container.jwt_service)
+    payload = token_service.decode_token(token)
 
     if payload is None:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
