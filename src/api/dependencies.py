@@ -2,6 +2,7 @@ import inspect
 from typing import Any, TypeVar, Callable, Awaitable, Union
 
 from litestar import Request
+from litestar.exceptions import HTTPException
 
 from api.containers import Container
 from auth.google_oauth import GoogleOAuthService
@@ -28,7 +29,7 @@ async def _resolve(provider: Callable[..., Union[T, Awaitable[T]]]) -> T:
 
 
 async def get_current_user(request: Request[Any, Any, Any]) -> User | None:
-    """Extract user from JWT token if present. Returns None if no valid token."""
+    """Extract user from JWT token if present. Raises 401 if token is invalid."""
     auth_header = request.headers.get("Authorization")
 
     if not auth_header or not auth_header.startswith("Bearer "):
@@ -39,14 +40,13 @@ async def get_current_user(request: Request[Any, Any, Any]) -> User | None:
     payload = jwt_service.decode_token(token)
 
     if payload is None:
-        return None
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     user_repository: UserRepository = await _resolve(container.user_repository)
     try:
-        user: User = await user_repository.get_by_id(payload.sub)
-        return user
+        return await user_repository.get_by_id(payload.sub)
     except UserNotFound:
-        return None
+        raise HTTPException(status_code=401, detail="User not found")
 
 
 async def get_start_game() -> StartGame:
