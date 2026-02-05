@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 from typing import Any
 
@@ -42,6 +43,7 @@ class AvailableHint(BaseModel):
 
 class GameResponse(BaseModel):
     id: str | None
+    created_at: datetime | None
     is_won: bool
     is_over: bool
     attempts_remaining: int
@@ -57,6 +59,7 @@ class GameResponse(BaseModel):
     def from_game(cls, game: Game) -> "GameResponse":
         return cls(
             id=game.id,
+            created_at=game.created_at,
             is_won=game.is_won,
             is_over=game.is_over,
             attempts_remaining=game.attempts_remaining,

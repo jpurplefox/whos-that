@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from litestar.testing import TestClient
 
 from api.app import app
@@ -49,7 +51,8 @@ class FakeGuess:
 
 
 def test_create_game_returns_game_with_hint(pikachu: Pokemon) -> None:
-    game = Game(pokemon=pikachu, id="game-1")
+    created_at = datetime(2024, 1, 15, 10, 30, 0, tzinfo=timezone.utc)
+    game = Game(pokemon=pikachu, id="game-1", created_at=created_at)
     game.hints.append(StatHint.create(pikachu, Stat.SPEED))
 
     with container.start_game.override(FakeStartGame(game)):
@@ -59,6 +62,7 @@ def test_create_game_returns_game_with_hint(pikachu: Pokemon) -> None:
     assert response.status_code == 201
     data = response.json()
     assert data["id"] == "game-1"
+    assert data["created_at"] == "2024-01-15T10:30:00Z"
     assert data["is_won"] is False
     assert data["attempts_remaining"] == 4
     assert data["attempts"] == []
@@ -185,7 +189,8 @@ def test_guess_returns_400_when_invalid_json() -> None:
 
 
 def test_get_game_returns_game(pikachu: Pokemon) -> None:
-    game = Game(pokemon=pikachu, id="game-1")
+    created_at = datetime(2024, 1, 15, 10, 30, 0, tzinfo=timezone.utc)
+    game = Game(pokemon=pikachu, id="game-1", created_at=created_at)
     game.hints.append(StatHint.create(pikachu, Stat.SPEED))
 
     with container.get_game.override(FakeGetGame(game)):
@@ -195,6 +200,7 @@ def test_get_game_returns_game(pikachu: Pokemon) -> None:
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == "game-1"
+    assert data["created_at"] == "2024-01-15T10:30:00Z"
     assert data["is_won"] is False
     assert data["attempts_remaining"] == 4
     assert data["attempts"] == []
