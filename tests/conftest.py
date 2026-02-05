@@ -81,5 +81,5 @@ def raichu() -> Pokemon:
 
 
 @pytest.fixture
-def game_repository():
+def game_repository() -> InMemoryGameRepository:
     return InMemoryGameRepository()

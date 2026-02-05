@@ -6,13 +6,13 @@ from adapters.hint_serializers import HintSerializerRegistry
 from adapters.postgres_game_repository import PostgresGameRepository
 from domain.exceptions import GameNotFound
 from domain.game import Game
-from domain.hint import Comparison, ComparisonHint, StatHint
+from domain.hint import Comparison, ComparisonHint, Hint, StatHint
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 
 
 @pytest.fixture
-def mock_connection_provider():
+def mock_connection_provider() -> MagicMock:
     provider = MagicMock()
     connection = AsyncMock()
     connection.cursor = MagicMock(return_value=AsyncMock())
@@ -21,29 +21,36 @@ def mock_connection_provider():
 
 
 @pytest.fixture
-def mock_connection(mock_connection_provider):
-    return mock_connection_provider.connection.return_value.__aenter__.return_value
+def mock_connection(mock_connection_provider: MagicMock) -> AsyncMock:
+    conn: AsyncMock = mock_connection_provider.connection.return_value.__aenter__.return_value
+    return conn
 
 
 @pytest.fixture
-def mock_pokemon_repository():
+def mock_pokemon_repository() -> AsyncMock:
     repository = AsyncMock()
     return repository
 
 
 @pytest.fixture
-def hint_serializer(mock_pokemon_repository):
+def hint_serializer(mock_pokemon_repository: AsyncMock) -> HintSerializerRegistry:
     return HintSerializerRegistry(mock_pokemon_repository)
 
 
 @pytest.fixture
-def repository(mock_connection_provider, mock_pokemon_repository, hint_serializer):
+def repository(
+    mock_connection_provider: MagicMock,
+    mock_pokemon_repository: AsyncMock,
+    hint_serializer: HintSerializerRegistry,
+) -> PostgresGameRepository:
     return PostgresGameRepository(mock_connection_provider, mock_pokemon_repository, hint_serializer)
 
 
 class TestSave:
     @pytest.mark.asyncio
-    async def test_assigns_id_to_new_game(self, repository, mock_connection, pikachu: Pokemon):
+    async def test_assigns_id_to_new_game(
+        self, repository: PostgresGameRepository, mock_connection: AsyncMock, pikachu: Pokemon
+    ) -> None:
         cursor = AsyncMock()
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
         game = Game(pokemon=pikachu)
@@ -53,7 +60,9 @@ class TestSave:
         assert saved_game.id is not None
 
     @pytest.mark.asyncio
-    async def test_preserves_existing_id(self, repository, mock_connection, pikachu: Pokemon):
+    async def test_preserves_existing_id(
+        self, repository: PostgresGameRepository, mock_connection: AsyncMock, pikachu: Pokemon
+    ) -> None:
         cursor = AsyncMock()
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
         game = Game(pokemon=pikachu, id="existing-id")
@@ -63,7 +72,9 @@ class TestSave:
         assert saved_game.id == "existing-id"
 
     @pytest.mark.asyncio
-    async def test_executes_upsert_query(self, repository, mock_connection, pikachu: Pokemon):
+    async def test_executes_upsert_query(
+        self, repository: PostgresGameRepository, mock_connection: AsyncMock, pikachu: Pokemon
+    ) -> None:
         cursor = AsyncMock()
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
         game = Game(pokemon=pikachu, id="test-id")
@@ -77,7 +88,9 @@ class TestSave:
         assert '"games"' in upsert_call
 
     @pytest.mark.asyncio
-    async def test_commits_transaction(self, repository, mock_connection, pikachu: Pokemon):
+    async def test_commits_transaction(
+        self, repository: PostgresGameRepository, mock_connection: AsyncMock, pikachu: Pokemon
+    ) -> None:
         cursor = AsyncMock()
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
         game = Game(pokemon=pikachu)
@@ -90,8 +103,12 @@ class TestSave:
 class TestGet:
     @pytest.mark.asyncio
     async def test_returns_saved_game(
-        self, repository, mock_connection, mock_pokemon_repository, pikachu: Pokemon
-    ):
+        self,
+        repository: PostgresGameRepository,
+        mock_connection: AsyncMock,
+        mock_pokemon_repository: AsyncMock,
+        pikachu: Pokemon,
+    ) -> None:
         mock_pokemon_repository.get_by_number.return_value = pikachu
         cursor = AsyncMock()
         cursor.fetchone = AsyncMock(
@@ -121,7 +138,9 @@ class TestGet:
         assert game.consulted_this_turn is False
 
     @pytest.mark.asyncio
-    async def test_raises_when_not_found(self, repository, mock_connection):
+    async def test_raises_when_not_found(
+        self, repository: PostgresGameRepository, mock_connection: AsyncMock
+    ) -> None:
         cursor = AsyncMock()
         cursor.fetchone = AsyncMock(return_value=None)
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
@@ -133,8 +152,12 @@ class TestGet:
 
     @pytest.mark.asyncio
     async def test_deserializes_stat_hints(
-        self, repository, mock_connection, mock_pokemon_repository, pikachu: Pokemon
-    ):
+        self,
+        repository: PostgresGameRepository,
+        mock_connection: AsyncMock,
+        mock_pokemon_repository: AsyncMock,
+        pikachu: Pokemon,
+    ) -> None:
         mock_pokemon_repository.get_by_number.return_value = pikachu
         cursor = AsyncMock()
         cursor.fetchone = AsyncMock(
@@ -163,12 +186,12 @@ class TestGet:
     @pytest.mark.asyncio
     async def test_deserializes_comparison_hints(
         self,
-        repository,
-        mock_connection,
-        mock_pokemon_repository,
+        repository: PostgresGameRepository,
+        mock_connection: AsyncMock,
+        mock_pokemon_repository: AsyncMock,
         pikachu: Pokemon,
         bulbasaur: Pokemon,
-    ):
+    ) -> None:
         mock_pokemon_repository.get_by_number.side_effect = (
             lambda n: pikachu if n == 25 else bulbasaur
         )
@@ -214,12 +237,12 @@ class TestGet:
     @pytest.mark.asyncio
     async def test_deserializes_attempts(
         self,
-        repository,
-        mock_connection,
-        mock_pokemon_repository,
+        repository: PostgresGameRepository,
+        mock_connection: AsyncMock,
+        mock_pokemon_repository: AsyncMock,
         pikachu: Pokemon,
         bulbasaur: Pokemon,
-    ):
+    ) -> None:
         mock_pokemon_repository.get_by_number.side_effect = (
             lambda n: pikachu if n == 25 else bulbasaur
         )
@@ -247,15 +270,17 @@ class TestGet:
 
 
 class TestSerializeHints:
-    def test_serializes_stat_hint(self, repository):
-        hints = [StatHint(stat=Stat.SPEED, value=90)]
+    def test_serializes_stat_hint(self, repository: PostgresGameRepository) -> None:
+        hints: list[Hint] = [StatHint(stat=Stat.SPEED, value=90)]
 
         result = repository._serialize_hints(hints)
 
         assert result == [{"type": "stat", "stat": "speed", "value": 90}]
 
-    def test_serializes_comparison_hint(self, repository, pikachu: Pokemon):
-        hints = [
+    def test_serializes_comparison_hint(
+        self, repository: PostgresGameRepository, pikachu: Pokemon
+    ) -> None:
+        hints: list[Hint] = [
             ComparisonHint(
                 pokemon=pikachu,
                 comparisons={
@@ -286,8 +311,10 @@ class TestSerializeHints:
             }
         ]
 
-    def test_serializes_multiple_hints(self, repository, pikachu: Pokemon):
-        hints = [
+    def test_serializes_multiple_hints(
+        self, repository: PostgresGameRepository, pikachu: Pokemon
+    ) -> None:
+        hints: list[Hint] = [
             StatHint(stat=Stat.HP, value=35),
             ComparisonHint(
                 pokemon=pikachu,

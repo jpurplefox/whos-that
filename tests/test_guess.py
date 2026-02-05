@@ -12,7 +12,7 @@ from services.guess import Guess
 @pytest.mark.asyncio
 async def test_returns_game_with_attempt(
     game_repository: GameRepository, pikachu: Pokemon, charmander: Pokemon
-):
+) -> None:
     pokemon_repository = InMemoryPokemonRepository([charmander])
 
     game = Game(pokemon=pikachu, id="game-1")

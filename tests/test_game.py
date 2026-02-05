@@ -7,24 +7,24 @@ from domain.exceptions import (
     NotEnoughBattery,
 )
 from domain.game import Game
-from domain.hint import Comparison, ComparisonHint, FullyEvolvedHint, StatHint
+from domain.hint import Comparison, ComparisonHint, FullyEvolvedHint, Hint, StatHint
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 
 
-def test_game_starts_with_no_hints(bulbasaur: Pokemon):
+def test_game_starts_with_no_hints(bulbasaur: Pokemon) -> None:
     game = Game(pokemon=bulbasaur)
     assert game.hints == []
 
 
-def test_stat_hint_create(bulbasaur: Pokemon):
+def test_stat_hint_create(bulbasaur: Pokemon) -> None:
     hint = StatHint.create(bulbasaur, Stat.HP)
 
     assert hint == StatHint(stat=Stat.HP, value=45)
 
 
-def test_stat_hint_available_stats(bulbasaur: Pokemon):
-    hints = [
+def test_stat_hint_available_stats(bulbasaur: Pokemon) -> None:
+    hints: list[Hint] = [
         StatHint.create(bulbasaur, Stat.HP),
         StatHint.create(bulbasaur, Stat.ATTACK),
     ]
@@ -39,7 +39,7 @@ def test_stat_hint_available_stats(bulbasaur: Pokemon):
     assert Stat.SPEED in available
 
 
-def test_guess_returns_true_when_correct(bulbasaur: Pokemon):
+def test_guess_returns_true_when_correct(bulbasaur: Pokemon) -> None:
     game = Game(pokemon=bulbasaur)
 
     result = game.guess(bulbasaur)
@@ -48,7 +48,7 @@ def test_guess_returns_true_when_correct(bulbasaur: Pokemon):
     assert len(game.hints) == 0
 
 
-def test_guess_returns_false_when_incorrect(bulbasaur: Pokemon, charmander: Pokemon):
+def test_guess_returns_false_when_incorrect(bulbasaur: Pokemon, charmander: Pokemon) -> None:
     game = Game(pokemon=bulbasaur)
 
     result = game.guess(charmander)
@@ -56,7 +56,7 @@ def test_guess_returns_false_when_incorrect(bulbasaur: Pokemon, charmander: Poke
     assert result is False
 
 
-def test_guess_adds_to_attempts(bulbasaur: Pokemon, charmander: Pokemon):
+def test_guess_adds_to_attempts(bulbasaur: Pokemon, charmander: Pokemon) -> None:
     game = Game(pokemon=bulbasaur)
 
     game.guess(charmander)
@@ -65,7 +65,7 @@ def test_guess_adds_to_attempts(bulbasaur: Pokemon, charmander: Pokemon):
     assert game.attempts[0] == charmander
 
 
-def test_guess_raises_when_no_attempts_remaining(bulbasaur: Pokemon, charmander: Pokemon):
+def test_guess_raises_when_no_attempts_remaining(bulbasaur: Pokemon, charmander: Pokemon) -> None:
     game = Game(pokemon=bulbasaur, max_attempts=1)
 
     game.guess(charmander)
@@ -74,7 +74,7 @@ def test_guess_raises_when_no_attempts_remaining(bulbasaur: Pokemon, charmander:
         game.guess(charmander)
 
 
-def test_guess_adds_comparison_hint(bulbasaur: Pokemon, charmander: Pokemon):
+def test_guess_adds_comparison_hint(bulbasaur: Pokemon, charmander: Pokemon) -> None:
     game = Game(pokemon=bulbasaur)
 
     game.guess(charmander)
@@ -91,7 +91,7 @@ def test_guess_adds_comparison_hint(bulbasaur: Pokemon, charmander: Pokemon):
     assert hint.comparisons[Stat.SPEED] == Comparison.LOWER
 
 
-def test_consult_subtracts_battery_and_adds_hint(bulbasaur: Pokemon):
+def test_consult_subtracts_battery_and_adds_hint(bulbasaur: Pokemon) -> None:
     game = Game(pokemon=bulbasaur, battery=100, max_battery=100)
     hint = StatHint.create(bulbasaur, Stat.HP)
 
@@ -102,7 +102,7 @@ def test_consult_subtracts_battery_and_adds_hint(bulbasaur: Pokemon):
     assert hint in game.hints
 
 
-def test_consult_raises_already_consulted_this_turn(bulbasaur: Pokemon):
+def test_consult_raises_already_consulted_this_turn(bulbasaur: Pokemon) -> None:
     game = Game(pokemon=bulbasaur, battery=100, max_battery=100)
     hint1 = StatHint.create(bulbasaur, Stat.HP)
     hint2 = StatHint.create(bulbasaur, Stat.ATTACK)
@@ -113,7 +113,7 @@ def test_consult_raises_already_consulted_this_turn(bulbasaur: Pokemon):
         game.consult(hint2, cost=30)
 
 
-def test_consult_raises_not_enough_battery(bulbasaur: Pokemon):
+def test_consult_raises_not_enough_battery(bulbasaur: Pokemon) -> None:
     game = Game(pokemon=bulbasaur, battery=10, max_battery=100)
     hint = StatHint.create(bulbasaur, Stat.HP)
 
@@ -121,7 +121,7 @@ def test_consult_raises_not_enough_battery(bulbasaur: Pokemon):
         game.consult(hint, cost=30)
 
 
-def test_consult_raises_hint_already_revealed(bulbasaur: Pokemon):
+def test_consult_raises_hint_already_revealed(bulbasaur: Pokemon) -> None:
     game = Game(pokemon=bulbasaur, battery=100, max_battery=100)
     hint = StatHint.create(bulbasaur, Stat.HP)
     game.hints.append(hint)
@@ -132,7 +132,7 @@ def test_consult_raises_hint_already_revealed(bulbasaur: Pokemon):
         game.consult(duplicate_hint, cost=30)
 
 
-def test_guess_recovers_battery_and_resets_consulted(bulbasaur: Pokemon, charmander: Pokemon):
+def test_guess_recovers_battery_and_resets_consulted(bulbasaur: Pokemon, charmander: Pokemon) -> None:
     game = Game(pokemon=bulbasaur, battery=70, max_battery=100, battery_recovery=10)
     game.consulted_this_turn = True
 
@@ -142,7 +142,7 @@ def test_guess_recovers_battery_and_resets_consulted(bulbasaur: Pokemon, charman
     assert game.consulted_this_turn is False
 
 
-def test_consult_raises_game_over_when_won(bulbasaur: Pokemon):
+def test_consult_raises_game_over_when_won(bulbasaur: Pokemon) -> None:
     game = Game(pokemon=bulbasaur, battery=100, max_battery=100)
     game.guess(bulbasaur)
     assert game.is_won
@@ -154,7 +154,7 @@ def test_consult_raises_game_over_when_won(bulbasaur: Pokemon):
 
 def test_consult_raises_game_over_when_no_attempts_remaining(
     bulbasaur: Pokemon, charmander: Pokemon
-):
+) -> None:
     game = Game(pokemon=bulbasaur, max_attempts=1, battery=100, max_battery=100)
     game.guess(charmander)
     assert game.attempts_remaining == 0
@@ -164,7 +164,7 @@ def test_consult_raises_game_over_when_no_attempts_remaining(
         game.consult(hint, cost=30)
 
 
-def test_guess_battery_does_not_exceed_max(bulbasaur: Pokemon, charmander: Pokemon):
+def test_guess_battery_does_not_exceed_max(bulbasaur: Pokemon, charmander: Pokemon) -> None:
     game = Game(pokemon=bulbasaur, battery=95, max_battery=100, battery_recovery=10)
 
     game.guess(charmander)
@@ -172,25 +172,25 @@ def test_guess_battery_does_not_exceed_max(bulbasaur: Pokemon, charmander: Pokem
     assert game.battery == 100
 
 
-def test_fully_evolved_hint_create_with_fully_evolved_pokemon(raichu: Pokemon):
+def test_fully_evolved_hint_create_with_fully_evolved_pokemon(raichu: Pokemon) -> None:
     hint = FullyEvolvedHint.create(raichu)
 
     assert hint.is_fully_evolved is True
 
 
-def test_fully_evolved_hint_create_with_non_fully_evolved_pokemon(pikachu: Pokemon):
+def test_fully_evolved_hint_create_with_non_fully_evolved_pokemon(pikachu: Pokemon) -> None:
     hint = FullyEvolvedHint.create(pikachu)
 
     assert hint.is_fully_evolved is False
 
 
-def test_fully_evolved_hint_is_available_when_not_revealed(pikachu: Pokemon):
-    hints = [StatHint.create(pikachu, Stat.HP)]
+def test_fully_evolved_hint_is_available_when_not_revealed(pikachu: Pokemon) -> None:
+    hints: list[Hint] = [StatHint.create(pikachu, Stat.HP)]
 
     assert FullyEvolvedHint.is_available(hints) is True
 
 
-def test_fully_evolved_hint_is_not_available_when_already_revealed(pikachu: Pokemon):
-    hints = [FullyEvolvedHint.create(pikachu)]
+def test_fully_evolved_hint_is_not_available_when_already_revealed(pikachu: Pokemon) -> None:
+    hints: list[Hint] = [FullyEvolvedHint.create(pikachu)]
 
     assert FullyEvolvedHint.is_available(hints) is False

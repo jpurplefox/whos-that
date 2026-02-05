@@ -172,8 +172,8 @@ class Container(containers.DeclarativeContainer):
 
     authenticate = providers.Singleton(
         Authenticate,
-        google_oauth=google_oauth,
-        jwt_service=jwt_service,
+        oauth_provider=google_oauth,
+        token_service=jwt_service,
         user_repository=user_repository,
     )
 

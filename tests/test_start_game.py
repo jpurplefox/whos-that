@@ -44,7 +44,7 @@ def difficulty_config() -> DifficultyConfig:
 @pytest.mark.asyncio
 async def test_creates_game_with_pokemon(
     game_repository: GameRepository, pikachu: Pokemon, difficulty_config: DifficultyConfig
-):
+) -> None:
     pokemon_selector = FakePokemonSelector(pikachu)
     random_generator = FakeRandomGenerator(0)
 
@@ -57,7 +57,7 @@ async def test_creates_game_with_pokemon(
 @pytest.mark.asyncio
 async def test_adds_initial_hints_from_difficulty(
     game_repository: GameRepository, pikachu: Pokemon, difficulty_config: DifficultyConfig
-):
+) -> None:
     pokemon_selector = FakePokemonSelector(pikachu)
     random_generator = FakeRandomGenerator(0)
 
@@ -71,7 +71,7 @@ async def test_adds_initial_hints_from_difficulty(
 @pytest.mark.asyncio
 async def test_saves_game_with_id(
     game_repository: GameRepository, pikachu: Pokemon, difficulty_config: DifficultyConfig
-):
+) -> None:
     pokemon_selector = FakePokemonSelector(pikachu)
     random_generator = FakeRandomGenerator(0)
 
@@ -84,7 +84,7 @@ async def test_saves_game_with_id(
 @pytest.mark.asyncio
 async def test_no_initial_hints_when_list_empty(
     game_repository: GameRepository, pikachu: Pokemon
-):
+) -> None:
     difficulty = Difficulty(
         max_attempts=4,
         initial_battery=100,
@@ -106,7 +106,7 @@ async def test_no_initial_hints_when_list_empty(
 @pytest.mark.asyncio
 async def test_creates_game_with_easy_difficulty(
     game_repository: GameRepository, pikachu: Pokemon
-):
+) -> None:
     easy_difficulty = Difficulty(
         max_attempts=6,
         initial_battery=150,
@@ -132,7 +132,7 @@ async def test_creates_game_with_easy_difficulty(
 @pytest.mark.asyncio
 async def test_creates_game_with_hard_difficulty(
     game_repository: GameRepository, pikachu: Pokemon
-):
+) -> None:
     hard_difficulty = Difficulty(
         max_attempts=3,
         initial_battery=60,

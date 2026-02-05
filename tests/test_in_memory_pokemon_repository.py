@@ -6,7 +6,7 @@ from domain.pokemon import Pokemon
 
 
 @pytest.mark.asyncio
-async def test_get_by_number_returns_pokemon(pikachu: Pokemon):
+async def test_get_by_number_returns_pokemon(pikachu: Pokemon) -> None:
     repository = InMemoryPokemonRepository([pikachu])
 
     result = await repository.get_by_number(25)
@@ -15,7 +15,7 @@ async def test_get_by_number_returns_pokemon(pikachu: Pokemon):
 
 
 @pytest.mark.asyncio
-async def test_get_by_number_raises_when_not_found(pikachu: Pokemon):
+async def test_get_by_number_raises_when_not_found(pikachu: Pokemon) -> None:
     repository = InMemoryPokemonRepository([pikachu])
 
     with pytest.raises(PokemonNotFound):
@@ -23,7 +23,7 @@ async def test_get_by_number_raises_when_not_found(pikachu: Pokemon):
 
 
 @pytest.mark.asyncio
-async def test_get_by_name_returns_pokemon(pikachu: Pokemon):
+async def test_get_by_name_returns_pokemon(pikachu: Pokemon) -> None:
     repository = InMemoryPokemonRepository([pikachu])
 
     result = await repository.get_by_name("pikachu")
@@ -32,7 +32,7 @@ async def test_get_by_name_returns_pokemon(pikachu: Pokemon):
 
 
 @pytest.mark.asyncio
-async def test_get_by_name_is_case_insensitive(pikachu: Pokemon):
+async def test_get_by_name_is_case_insensitive(pikachu: Pokemon) -> None:
     repository = InMemoryPokemonRepository([pikachu])
 
     result = await repository.get_by_name("PIKACHU")
@@ -41,7 +41,7 @@ async def test_get_by_name_is_case_insensitive(pikachu: Pokemon):
 
 
 @pytest.mark.asyncio
-async def test_get_by_name_raises_when_not_found(pikachu: Pokemon):
+async def test_get_by_name_raises_when_not_found(pikachu: Pokemon) -> None:
     repository = InMemoryPokemonRepository([pikachu])
 
     with pytest.raises(PokemonNotFound):
@@ -51,7 +51,7 @@ async def test_get_by_name_raises_when_not_found(pikachu: Pokemon):
 @pytest.mark.asyncio
 async def test_get_all_returns_all_pokemon_sorted_by_id(
     charmander: Pokemon, bulbasaur: Pokemon
-):
+) -> None:
     repository = InMemoryPokemonRepository([charmander, bulbasaur])
 
     result = await repository.get_all()

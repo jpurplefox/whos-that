@@ -20,7 +20,7 @@ class FakeAuthenticate:
         return AuthenticateResponse(user=self._user, token=self._token)
 
 
-def test_get_google_auth_url_returns_url():
+def test_get_google_auth_url_returns_url() -> None:
     with container.google_oauth.override(FakeGoogleOAuth()):
         with TestClient(app) as client:
             response = client.get("/auth/google/url")
@@ -31,11 +31,12 @@ def test_get_google_auth_url_returns_url():
     assert data["url"].startswith("https://accounts.google.com")
 
 
-def test_google_callback_returns_token_and_user():
+def test_google_callback_returns_token_and_user() -> None:
     user = User(
         id="user-123",
         email="test@example.com",
-        google_id="google-123",
+        provider_id="google-123",
+        provider_type="google",
         display_name="Test User",
         avatar_url="https://example.com/avatar.png",
     )
@@ -57,7 +58,7 @@ def test_google_callback_returns_token_and_user():
     assert data["avatar_url"] == "https://example.com/avatar.png"
 
 
-def test_invalid_token_returns_401():
+def test_invalid_token_returns_401() -> None:
     with TestClient(app) as client:
         response = client.get(
             "/history",

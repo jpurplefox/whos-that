@@ -2,7 +2,8 @@ import pytest
 import respx
 from httpx import Response
 
-from auth.google_oauth import GoogleOAuthService, GoogleUserInfo
+from auth.google_oauth import GoogleOAuthService
+from domain.ports.oauth_provider import OAuthUserInfo
 
 
 @pytest.fixture
@@ -14,7 +15,7 @@ def google_oauth() -> GoogleOAuthService:
     )
 
 
-def test_get_authorization_url_includes_client_id(google_oauth: GoogleOAuthService):
+def test_get_authorization_url_includes_client_id(google_oauth: GoogleOAuthService) -> None:
     url = google_oauth.get_authorization_url()
 
     assert "client_id=test-client-id" in url
@@ -23,13 +24,13 @@ def test_get_authorization_url_includes_client_id(google_oauth: GoogleOAuthServi
     assert "scope=openid" in url
 
 
-def test_get_authorization_url_includes_state_when_provided(google_oauth: GoogleOAuthService):
+def test_get_authorization_url_includes_state_when_provided(google_oauth: GoogleOAuthService) -> None:
     url = google_oauth.get_authorization_url(state="random-state")
 
     assert "state=random-state" in url
 
 
-def test_get_authorization_url_without_state(google_oauth: GoogleOAuthService):
+def test_get_authorization_url_without_state(google_oauth: GoogleOAuthService) -> None:
     url = google_oauth.get_authorization_url()
 
     assert "state=" not in url
@@ -37,7 +38,7 @@ def test_get_authorization_url_without_state(google_oauth: GoogleOAuthService):
 
 @pytest.mark.asyncio
 @respx.mock
-async def test_exchange_code_returns_access_token(google_oauth: GoogleOAuthService):
+async def test_exchange_code_returns_access_token(google_oauth: GoogleOAuthService) -> None:
     respx.post("https://oauth2.googleapis.com/token").mock(
         return_value=Response(
             200,
@@ -56,7 +57,7 @@ async def test_exchange_code_returns_access_token(google_oauth: GoogleOAuthServi
 
 @pytest.mark.asyncio
 @respx.mock
-async def test_get_user_info_returns_user_info(google_oauth: GoogleOAuthService):
+async def test_get_user_info_returns_user_info(google_oauth: GoogleOAuthService) -> None:
     respx.get("https://www.googleapis.com/oauth2/v2/userinfo").mock(
         return_value=Response(
             200,
@@ -71,7 +72,7 @@ async def test_get_user_info_returns_user_info(google_oauth: GoogleOAuthService)
 
     user_info = await google_oauth.get_user_info("access-token")
 
-    assert user_info.google_id == "123456789"
+    assert user_info.provider_id == "123456789"
     assert user_info.email == "user@example.com"
     assert user_info.name == "John Doe"
     assert user_info.picture == "https://example.com/photo.jpg"
@@ -79,7 +80,7 @@ async def test_get_user_info_returns_user_info(google_oauth: GoogleOAuthService)
 
 @pytest.mark.asyncio
 @respx.mock
-async def test_get_user_info_handles_missing_optional_fields(google_oauth: GoogleOAuthService):
+async def test_get_user_info_handles_missing_optional_fields(google_oauth: GoogleOAuthService) -> None:
     respx.get("https://www.googleapis.com/oauth2/v2/userinfo").mock(
         return_value=Response(
             200,
@@ -92,7 +93,7 @@ async def test_get_user_info_handles_missing_optional_fields(google_oauth: Googl
 
     user_info = await google_oauth.get_user_info("access-token")
 
-    assert user_info.google_id == "123456789"
+    assert user_info.provider_id == "123456789"
     assert user_info.email == "user@example.com"
     assert user_info.name is None
     assert user_info.picture is None

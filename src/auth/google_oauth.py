@@ -1,14 +1,8 @@
 from urllib.parse import urlencode
 
 import httpx
-from pydantic import BaseModel
 
-
-class GoogleUserInfo(BaseModel):
-    google_id: str
-    email: str
-    name: str | None = None
-    picture: str | None = None
+from domain.ports.oauth_provider import OAuthUserInfo
 
 
 class GoogleOAuthService:
@@ -20,6 +14,10 @@ class GoogleOAuthService:
         self._client_id = client_id
         self._client_secret = client_secret
         self._redirect_uri = redirect_uri
+
+    @property
+    def provider_type(self) -> str:
+        return "google"
 
     def get_authorization_url(self, state: str | None = None) -> str:
         params = {
@@ -50,7 +48,7 @@ class GoogleOAuthService:
             access_token: str = data["access_token"]
             return access_token
 
-    async def get_user_info(self, access_token: str) -> GoogleUserInfo:
+    async def get_user_info(self, access_token: str) -> OAuthUserInfo:
         async with httpx.AsyncClient() as client:
             response = await client.get(
                 self.USERINFO_URL,
@@ -58,8 +56,8 @@ class GoogleOAuthService:
             )
             response.raise_for_status()
             data = response.json()
-            return GoogleUserInfo(
-                google_id=data["id"],
+            return OAuthUserInfo(
+                provider_id=data["id"],
                 email=data["email"],
                 name=data.get("name"),
                 picture=data.get("picture"),
