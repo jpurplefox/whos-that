@@ -103,3 +103,21 @@ async def test_returns_multiple_games_for_user(
     games = await get_history.execute("user-123")
 
     assert len(games) == 3
+
+
+@pytest.mark.asyncio
+async def test_returns_games_ordered_by_created_at_desc(
+    get_history: GetHistory,
+    game_repository: InMemoryGameRepository,
+    pikachu: Pokemon,
+) -> None:
+    game1 = await game_repository.save(Game(pokemon=pikachu, user_id="user-123"))
+    game2 = await game_repository.save(Game(pokemon=pikachu, user_id="user-123"))
+    game3 = await game_repository.save(Game(pokemon=pikachu, user_id="user-123"))
+
+    games = await get_history.execute("user-123")
+
+    assert len(games) == 3
+    assert games[0].id == game3.id
+    assert games[1].id == game2.id
+    assert games[2].id == game1.id

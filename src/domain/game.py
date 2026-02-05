@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field
 
 from domain.balance import HintCosts
@@ -18,6 +20,7 @@ class Game(BaseModel):
     hint_costs: HintCosts = Field(default_factory=HintCosts)
     id: str | None = None
     user_id: str | None = None
+    created_at: datetime | None = None
     max_attempts: int = 4
     hints: list[Hint] = Field(default_factory=list)
     attempts: list[Pokemon] = Field(default_factory=list)

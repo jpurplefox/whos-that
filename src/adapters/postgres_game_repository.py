@@ -3,7 +3,7 @@ import uuid
 from typing import Any
 
 from psycopg.rows import dict_row
-from pypika import Parameter, PostgreSQLQuery, Table
+from pypika import Order, Parameter, PostgreSQLQuery, Table
 
 from adapters.connection_provider import ConnectionProvider
 from adapters.hint_serializers import HintSerializerRegistry
@@ -33,6 +33,7 @@ def _select_game_by_id() -> str:
             _games.battery_recovery,
             _games.consulted_this_turn,
             _games.user_id,
+            _games.created_at,
         )
         .where(_games.id == Parameter("%(id)s"))
     )
@@ -53,9 +54,10 @@ def _select_games_by_user_id() -> str:
             _games.battery_recovery,
             _games.consulted_this_turn,
             _games.user_id,
+            _games.created_at,
         )
         .where(_games.user_id == Parameter("%(user_id)s"))
-        .orderby(_games.id)
+        .orderby(_games.created_at, order=Order.desc)
     )
 
 
@@ -178,6 +180,7 @@ class PostgresGameRepository:
             battery_recovery=row["battery_recovery"],
             consulted_this_turn=row["consulted_this_turn"],
             user_id=row.get("user_id"),
+            created_at=row.get("created_at"),
         )
 
     def _serialize_hints(self, hints: list[Hint]) -> list[dict[str, Any]]:

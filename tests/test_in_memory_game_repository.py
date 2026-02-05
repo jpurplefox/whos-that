@@ -56,10 +56,10 @@ async def test_get_returns_copy_not_reference(pikachu: Pokemon) -> None:
 async def test_save_stores_copy_not_reference(pikachu: Pokemon) -> None:
     repository = InMemoryGameRepository()
     game = Game(pokemon=pikachu)
-    await repository.save(game)
+    saved_game = await repository.save(game)
 
-    game.max_attempts = 10
+    saved_game.max_attempts = 10
 
-    assert game.id is not None
-    retrieved_game = await repository.get(game.id)
+    assert saved_game.id is not None
+    retrieved_game = await repository.get(saved_game.id)
     assert retrieved_game.max_attempts == 4
