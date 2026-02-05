@@ -1,5 +1,5 @@
 from domain.stat import Stat
-from adapters.random_generator import RandomGenerator
+from domain.ports.random_generator import RandomGenerator
 
 
 class RandomStatSelector:

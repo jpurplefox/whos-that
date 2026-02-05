@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from adapters.random_generator import RandomGenerator
+from domain.ports.random_generator import RandomGenerator
 from domain.balance import DifficultyConfig
 from domain.difficulty import DifficultyLevel
 from domain.game import Game

@@ -1,6 +1,6 @@
 from enum import Enum
 
-from adapters.random_generator import RandomGenerator
+from domain.ports.random_generator import RandomGenerator
 from domain.exceptions import HintAlreadyRevealed, HintNotAvailable
 from domain.game import Game
 from domain.hint import FullyEvolvedHint, Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint

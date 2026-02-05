@@ -1,6 +1,6 @@
 from domain.pokemon import Pokemon
 from domain.ports.repositories import PokemonRepository
-from adapters.random_generator import RandomGenerator
+from domain.ports.random_generator import RandomGenerator
 
 
 class RandomPokemonSelector:
