@@ -4,7 +4,7 @@ from litestar.exceptions import HTTPException
 from litestar.openapi.datastructures import ResponseSpec
 from litestar.params import Dependency
 
-from api.dependencies import get_consult_pokedex, get_current_user, get_get_game, get_guess, get_pokemon_repository, get_start_game
+from api.dependencies import get_consult_pokedex, get_get_game, get_guess, get_optional_user, get_pokemon_repository, get_start_game
 from api.schemas import ConsultRequest, CreateGameRequest, DifficultyRequest, GameResponse, GuessRequest, HintTypeRequest, PokemonResponse
 from domain.difficulty import DifficultyLevel
 from domain.ports.repositories import PokemonRepository
@@ -52,9 +52,9 @@ def _convert_difficulty(difficulty: DifficultyRequest) -> DifficultyLevel:
 async def create_game(
     data: CreateGameRequest,
     start_game: StartGame = Dependency(skip_validation=True),
-    current_user: User | None = Dependency(skip_validation=True),
+    optional_user: User | None = Dependency(skip_validation=True),
 ) -> GameResponse:
-    user_id = current_user.id if current_user else None
+    user_id = optional_user.id if optional_user else None
 
     difficulty = _convert_difficulty(data.difficulty)
     game = await start_game.execute(difficulty, user_id=user_id)
@@ -198,6 +198,6 @@ router = Router(
         "get_game_use_case": Provide(get_get_game),
         "consult_pokedex": Provide(get_consult_pokedex),
         "pokemon_repository": Provide(get_pokemon_repository),
-        "current_user": Provide(get_current_user),
+        "optional_user": Provide(get_optional_user),
     },
 )
