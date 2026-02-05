@@ -36,3 +36,7 @@ class HintNotAvailable(DomainException):
 
 class UserNotFound(DomainException):
     pass
+
+
+class InvalidToken(DomainException):
+    pass

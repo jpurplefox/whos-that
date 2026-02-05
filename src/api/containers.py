@@ -28,6 +28,7 @@ from services.consult_pokedex import ConsultPokedex
 from services.get_game import GetGame
 from services.get_history import GetHistory
 from services.guess import Guess
+from services.resolve_user import ResolveUser
 from services.start_game import StartGame
 
 
@@ -173,6 +174,12 @@ class Container(containers.DeclarativeContainer):
     authenticate = providers.Singleton(
         Authenticate,
         oauth_provider=google_oauth,
+        token_service=jwt_service,
+        user_repository=user_repository,
+    )
+
+    resolve_user = providers.Singleton(
+        ResolveUser,
         token_service=jwt_service,
         user_repository=user_repository,
     )
