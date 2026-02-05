@@ -29,7 +29,7 @@ async def _resolve(provider: Callable[..., Union[T, Awaitable[T]]]) -> T:
     return result
 
 
-async def get_current_user(request: Request[Any, Any, Any]) -> User | None:
+async def get_optional_user(request: Request[Any, Any, Any]) -> User | None:
     """Extract user from JWT token if present. Raises 401 if token is invalid."""
     auth_header = request.headers.get("Authorization")
 
@@ -42,6 +42,14 @@ async def get_current_user(request: Request[Any, Any, Any]) -> User | None:
         return await resolve_user.execute(token)
     except (InvalidToken, UserNotFound):
         raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+
+async def get_required_user(request: Request[Any, Any, Any]) -> User:
+    """Extract user from JWT token. Raises 401 if no token or invalid."""
+    user = await get_optional_user(request)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication required")
+    return user
 
 
 async def get_start_game() -> StartGame:
