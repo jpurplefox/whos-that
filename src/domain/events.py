@@ -4,6 +4,9 @@ from typing import Awaitable, Callable, TypeVar, cast
 from pydantic import BaseModel
 
 from domain.game import Game
+from structlog_config import get_logger
+
+logger = get_logger()
 
 
 class DomainEvent(BaseModel):
@@ -34,4 +37,7 @@ class EventBus:
         """Publish an event to all registered handlers."""
         handlers = cast(list[EventHandler[T]], self._handlers[type(event)])
         for handler in handlers:
-            await handler(event)
+            try:
+                await handler(event)
+            except Exception:
+                logger.exception("event_handler_failed", event_type=type(event).__name__)
