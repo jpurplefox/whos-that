@@ -22,6 +22,11 @@ class TestEffectivenessHintAPI:
             game_data = create_response.json()
             game_id = game_data["id"]
 
+            # Count initial effectiveness hints (may exist due to randomized initial hints)
+            initial_effectiveness_count = len(
+                [h for h in game_data["hints"] if h["type"] == "effectiveness"]
+            )
+
             # Consult effectiveness hint
             consult_response = await client.post(
                 f"/games/{game_id}/consult",
@@ -34,13 +39,13 @@ class TestEffectivenessHintAPI:
             assert "hints" in result
             assert len(result["hints"]) > 0
 
-            # Find the effectiveness hint
+            # Find the effectiveness hints
             effectiveness_hints = [
                 h for h in result["hints"] if h["type"] == "effectiveness"
             ]
-            assert len(effectiveness_hints) == 1
+            assert len(effectiveness_hints) == initial_effectiveness_count + 1
 
-            hint = effectiveness_hints[0]
+            hint = effectiveness_hints[-1]
             assert "relation" in hint
             assert "element" in hint
             assert "multiplier" in hint
