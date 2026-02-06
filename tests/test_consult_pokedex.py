@@ -160,7 +160,7 @@ async def test_consult_effectiveness_all_exhausted(
     game.hint_costs.effectiveness = 10
     
     # Reveal all effectiveness attributes
-    all_attributes = EffectivenessHint.available_attributes(pikachu, [])
+    all_attributes = EffectivenessHint.unrevealed_effectiveness(pikachu, [])
     for attr in all_attributes:
         hint = EffectivenessHint(
             relation=attr.relation.value,

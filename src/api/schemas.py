@@ -79,7 +79,7 @@ class GameResponse(BaseModel):
         for hint_class in CONSULTABLE_HINTS:
             hint_type = hint_class.hint_type_name
             cost = getattr(game.hint_costs, hint_type)
-            available = cost is not None and hint_class.is_available(game.hints)
+            available = cost is not None and hint_class.is_available(game.pokemon, game.hints)
             result.append(AvailableHint(type=hint_type, cost=cost, available=available))
         return result
 

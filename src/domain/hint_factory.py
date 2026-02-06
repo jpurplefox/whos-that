@@ -52,7 +52,7 @@ class EffectivenessHintCreator:
     ) -> Hint:
         from domain.hint import EffectivenessHint
         
-        available = EffectivenessHint.available_attributes(pokemon, hints)
+        available = EffectivenessHint.unrevealed_effectiveness(pokemon, hints)
         if not available:
             raise HintAlreadyRevealed("All effectiveness attributes already revealed")
         
