@@ -8,7 +8,7 @@ class Guess:
         self,
         pokemon_repository: PokemonRepository,
         game_repository: GameRepository,
-        event_bus: EventBus | None = None,
+        event_bus: EventBus,
     ):
         self.pokemon_repository = pokemon_repository
         self.game_repository = game_repository
@@ -20,7 +20,7 @@ class Guess:
         is_correct = game.guess(pokemon)
         saved_game = await self.game_repository.save(game)
 
-        if is_correct and self._event_bus:
+        if is_correct:
             await self._event_bus.publish(GameWon(game=saved_game))
 
         return saved_game

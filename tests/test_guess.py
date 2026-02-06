@@ -24,7 +24,10 @@ def _create_event_bus_with_capture(
 
 @pytest.mark.asyncio
 async def test_returns_game_with_attempt(
-    game_repository: GameRepository, pikachu: Pokemon, charmander: Pokemon
+    game_repository: GameRepository,
+    event_bus: EventBus,
+    pikachu: Pokemon,
+    charmander: Pokemon,
 ) -> None:
     pokemon_repository = InMemoryPokemonRepository([charmander])
 
@@ -32,7 +35,7 @@ async def test_returns_game_with_attempt(
     game.hints.append(StatHint.create(pikachu, Stat.SPEED))
     await game_repository.save(game)
 
-    guess = Guess(pokemon_repository, game_repository)
+    guess = Guess(pokemon_repository, game_repository, event_bus)
     result = await guess.execute("game-1", "charmander")
 
     assert len(result.attempts) == 1
