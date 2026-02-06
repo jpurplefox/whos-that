@@ -56,7 +56,7 @@ async def test_captures_pokemon_when_authenticated_user_wins(
 
     captured = await collection_repository.get_by_user_id("user-1")
     assert len(captured) == 1
-    assert captured[0].pokemon_id == pikachu.id
+    assert captured[0].pokemon.id == pikachu.id
 
 
 @pytest.mark.asyncio

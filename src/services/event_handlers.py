@@ -11,6 +11,6 @@ def create_capture_pokemon_handler(capture_pokemon: CapturePokemon) -> EventHand
         game = event.game
         if game.user_id is None:
             return
-        await capture_pokemon.execute(game.user_id, game.pokemon.id)
+        await capture_pokemon.execute(game.user_id, game.pokemon)
 
     return handle
