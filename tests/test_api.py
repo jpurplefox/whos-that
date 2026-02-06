@@ -405,3 +405,69 @@ def test_game_lost_reveals_pokemon(pikachu: Pokemon, bulbasaur: Pokemon) -> None
     assert data["pokemon"] is not None
     assert data["pokemon"]["name"] == "pikachu"
     assert data["pokemon"]["id"] == 25
+
+
+# --- Score in API response tests ---
+
+
+def test_score_is_null_for_in_progress_game(pikachu: Pokemon) -> None:
+    game = Game(pokemon=pikachu, id="game-1")
+    game.hints.append(StatHint.create(pikachu, Stat.SPEED))
+
+    with container.get_game.override(FakeGetGame(game)):
+        with TestClient(app) as client:
+            response = client.get("/games/game-1")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["score"] is None
+
+
+def test_score_is_present_when_game_won(pikachu: Pokemon) -> None:
+    game = Game(pokemon=pikachu, id="game-1", max_attempts=4, battery=90, max_battery=100, battery_recovery=10)
+    game.guess(pikachu)
+
+    with container.guess.override(FakeGuess(game)):
+        with TestClient(app) as client:
+            response = client.post(
+                "/games/game-1/guess",
+                json={"pokemon_name": "pikachu"},
+            )
+
+    assert response.status_code == 201
+    data = response.json()
+    assert data["is_won"] is True
+    # attempts_remaining = 3, battery = min(90+10, 100) = 100
+    # score = (3 * 1000) + (100 * 10) = 4000
+    assert data["score"] == 4000
+
+
+def test_score_is_zero_when_game_lost(pikachu: Pokemon, bulbasaur: Pokemon) -> None:
+    game = Game(pokemon=pikachu, id="game-1", max_attempts=1, battery=80, max_battery=100)
+    game.guess(bulbasaur)
+
+    with container.guess.override(FakeGuess(game)):
+        with TestClient(app) as client:
+            response = client.post(
+                "/games/game-1/guess",
+                json={"pokemon_name": "bulbasaur"},
+            )
+
+    assert response.status_code == 201
+    data = response.json()
+    assert data["is_won"] is False
+    assert data["is_over"] is True
+    assert data["score"] == 0
+
+
+def test_create_game_response_includes_score_null(pikachu: Pokemon) -> None:
+    game = Game(pokemon=pikachu, id="game-1")
+    game.hints.append(StatHint.create(pikachu, Stat.SPEED))
+
+    with container.start_game.override(FakeStartGame(game)):
+        with TestClient(app) as client:
+            response = client.post("/games", json={"difficulty": "medium"})
+
+    assert response.status_code == 201
+    data = response.json()
+    assert data["score"] is None

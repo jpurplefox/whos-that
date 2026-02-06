@@ -54,6 +54,14 @@ class Game(BaseModel):
     def attempts_remaining(self) -> int:
         return self.max_attempts - len(self.attempts)
 
+    @property
+    def score(self) -> int | None:
+        if not self.is_over:
+            return None
+        if not self.is_won:
+            return 0
+        return (self.attempts_remaining * 1000) + (self.battery * 10)
+
     def guess(self, pokemon: Pokemon) -> bool:
         if self.is_over:
             raise GameOver()
