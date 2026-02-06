@@ -197,3 +197,96 @@ def test_fully_evolved_hint_is_not_available_when_already_revealed(pikachu: Poke
     creator = FullyEvolvedHintCreator()
 
     assert creator.is_available(pikachu, hints) is False
+
+# --- Score tests ---
+
+
+def test_score_is_none_when_game_in_progress(bulbasaur: Pokemon) -> None:
+    game = Game(pokemon=bulbasaur)
+
+    assert game.score is None
+
+
+def test_score_is_zero_when_game_lost(bulbasaur: Pokemon, charmander: Pokemon) -> None:
+    game = Game(pokemon=bulbasaur, max_attempts=1, battery=80, max_battery=100)
+
+    game.guess(charmander)
+
+    assert game.is_over is True
+    assert game.is_won is False
+    assert game.score == 0
+
+
+def test_score_is_zero_when_lost_regardless_of_battery(
+    bulbasaur: Pokemon, charmander: Pokemon
+) -> None:
+    game = Game(pokemon=bulbasaur, max_attempts=1, battery=100, max_battery=100)
+
+    game.guess(charmander)
+
+    assert game.score == 0
+
+
+def test_score_when_won_with_remaining_attempts_and_battery(
+    bulbasaur: Pokemon,
+) -> None:
+    game = Game(pokemon=bulbasaur, max_attempts=4, battery=70, max_battery=100, battery_recovery=10)
+
+    game.guess(bulbasaur)
+
+    # attempts_remaining = 4 - 1 = 3, battery after recovery = min(70+10, 100) = 80
+    # score = (3 * 1000) + (80 * 10) = 3000 + 800 = 3800
+    assert game.is_won is True
+    assert game.attempts_remaining == 3
+    assert game.battery == 80
+    assert game.score == 3800
+
+
+def test_score_matches_issue_example(bulbasaur: Pokemon, charmander: Pokemon) -> None:
+    # Issue example: 2 attempts remaining and 80% battery = 2,800 points
+    game = Game(pokemon=bulbasaur, max_attempts=4, battery=60, max_battery=100, battery_recovery=10)
+
+    # Make 1 wrong guess: battery goes 60 -> 70, attempts 4 -> 3
+    game.guess(charmander)
+    # Make correct guess: battery goes 70 -> 80, attempts 3 -> 2 remaining
+    game.guess(bulbasaur)
+
+    assert game.is_won is True
+    assert game.attempts_remaining == 2
+    assert game.battery == 80
+    assert game.score == 2800
+
+
+def test_score_on_first_attempt_win(bulbasaur: Pokemon) -> None:
+    game = Game(pokemon=bulbasaur, max_attempts=4, battery=90, max_battery=100, battery_recovery=10)
+
+    game.guess(bulbasaur)
+
+    # attempts_remaining = 3, battery = min(90+10, 100) = 100
+    # score = (3 * 1000) + (100 * 10) = 4000
+    assert game.score == 4000
+
+
+def test_score_on_last_attempt_win(
+    bulbasaur: Pokemon, charmander: Pokemon
+) -> None:
+    game = Game(pokemon=bulbasaur, max_attempts=2, battery=50, max_battery=100, battery_recovery=10)
+
+    game.guess(charmander)  # battery -> 60
+    game.guess(bulbasaur)   # battery -> 70
+
+    # attempts_remaining = 0, battery = 70
+    # score = (0 * 1000) + (70 * 10) = 700
+    assert game.attempts_remaining == 0
+    assert game.is_won is True
+    assert game.score == 700
+
+
+def test_score_with_zero_battery_on_win(bulbasaur: Pokemon) -> None:
+    game = Game(pokemon=bulbasaur, max_attempts=4, battery=0, max_battery=100, battery_recovery=0)
+
+    game.guess(bulbasaur)
+
+    # attempts_remaining = 3, battery = 0 (no recovery)
+    # score = (3 * 1000) + (0 * 10) = 3000
+    assert game.score == 3000

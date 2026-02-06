@@ -54,6 +54,7 @@ class GameResponse(BaseModel):
     battery: int
     max_battery: int
     battery_recovery: int
+    score: int | None
     pokemon: "PokemonResponse | None"
 
     @classmethod
@@ -70,6 +71,7 @@ class GameResponse(BaseModel):
             battery=game.battery,
             max_battery=game.max_battery,
             battery_recovery=game.battery_recovery,
+            score=game.score,
             pokemon=PokemonResponse.from_pokemon(game.pokemon) if game.is_over else None,
         )
 
