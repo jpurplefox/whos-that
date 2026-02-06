@@ -20,7 +20,7 @@ class Difficulty(BaseModel):
     max_battery: int
     battery_recovery: int
     hint_costs: HintCosts
-    initial_hints: list[str] = []
+    initial_hints: list[list[str]] = []
 
 
 class DifficultyConfig(BaseModel):
