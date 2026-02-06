@@ -1,12 +1,9 @@
-from __future__ import annotations
-
 from collections import defaultdict
-from typing import TYPE_CHECKING, Callable, Awaitable
+from typing import Awaitable, Callable
 
 from pydantic import BaseModel
 
-if TYPE_CHECKING:
-    from domain.game import Game
+from domain.game import Game
 
 
 class DomainEvent(BaseModel):
@@ -17,11 +14,6 @@ class DomainEvent(BaseModel):
 class GameWon(DomainEvent):
     """Emitted when a game is won."""
     game: Game
-
-
-# Rebuild model to resolve forward reference
-from domain.game import Game  # noqa: E402
-GameWon.model_rebuild()
 
 
 EventHandler = Callable[[DomainEvent], Awaitable[None]]
