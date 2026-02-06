@@ -11,6 +11,7 @@ from domain.ports.repositories import PokemonRepository
 from domain.user import User
 from services.authenticate import Authenticate
 from services.consult_pokedex import ConsultPokedex
+from services.get_collection import GetCollection
 from services.get_game import GetGame
 from services.get_history import GetHistory
 from services.guess import Guess
@@ -82,3 +83,7 @@ async def get_authenticate() -> Authenticate:
 
 async def get_history_use_case() -> GetHistory:
     return await _resolve(container.get_history)
+
+
+async def get_collection_use_case() -> GetCollection:
+    return await _resolve(container.get_collection)

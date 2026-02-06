@@ -95,3 +95,11 @@ class PokemonResponse(BaseModel):
             name=pokemon.name,
             image_url=pokemon.image_url,
         )
+
+
+class CapturedPokemonResponse(BaseModel):
+    pokemon_id: int
+    pokemon_name: str
+    pokemon_image_url: str
+    first_caught_at: datetime
+    times_caught: int

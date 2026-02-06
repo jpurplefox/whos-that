@@ -1,5 +1,6 @@
 from typing import Protocol
 
+from domain.captured_pokemon import CapturedPokemon
 from domain.game import Game
 from domain.pokemon import Pokemon
 from domain.user import User
@@ -35,4 +36,12 @@ class UserRepository(Protocol):
         ...
 
     async def get_by_provider_id(self, provider_id: str, provider_type: str) -> User | None:
+        ...
+
+
+class CollectionRepository(Protocol):
+    async def capture(self, user_id: str, pokemon_id: int) -> CapturedPokemon:
+        ...
+
+    async def get_by_user_id(self, user_id: str) -> list[CapturedPokemon]:
         ...
