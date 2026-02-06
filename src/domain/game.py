@@ -69,6 +69,6 @@ class Game(BaseModel):
         if not self.is_won:
             hint = ComparisonHint.create(self.pokemon, pokemon)
             self.hints.append(hint)
-        self.battery = min(self.battery + self.battery_recovery, self.max_battery)
+            self.battery = min(self.battery + self.battery_recovery, self.max_battery)
         self.consulted_this_turn = False
         return self.is_won
