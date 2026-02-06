@@ -44,6 +44,28 @@ class FullyEvolvedHintCreator:
         return FullyEvolvedHint.create(pokemon)
 
 
+
+
+class EffectivenessHintCreator:
+    def create(
+        self, pokemon: Pokemon, hints: list[Hint], random_generator: RandomGenerator
+    ) -> Hint:
+        from domain.hint import EffectivenessHint
+        
+        available = EffectivenessHint.available_attributes(pokemon, hints)
+        if not available:
+            raise HintAlreadyRevealed("All effectiveness attributes already revealed")
+        
+        index = random_generator.randint(0, len(available) - 1)
+        selected = available[index]
+        
+        return EffectivenessHint.create(
+            pokemon,
+            relation=selected.relation.value,
+            element=selected.element,
+            multiplier=selected.multiplier,
+        )
+
 class HintCreatorRegistry:
     def __init__(self) -> None:
         self._creators: dict[str, HintCreator] = {}
@@ -70,6 +92,7 @@ def _create_registry() -> HintCreatorRegistry:
     registry.register("primary_type", PrimaryTypeHintCreator())
     registry.register("secondary_type", SecondaryTypeHintCreator())
     registry.register("fully_evolved", FullyEvolvedHintCreator())
+    registry.register("effectiveness", EffectivenessHintCreator())
     return registry
 
 

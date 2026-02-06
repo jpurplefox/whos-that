@@ -119,9 +119,65 @@ class FullyEvolvedHint(Hint):
         return cls(is_fully_evolved=pokemon.is_fully_evolved)
 
 
+
+class EffectivenessHint(Hint):
+    hint_type_name: ClassVar[str] = "effectiveness"
+    relation: str
+    element: str
+    multiplier: float
+
+    def is_already_revealed(self, hints: list[Hint]) -> bool:
+        return any(
+            isinstance(h, EffectivenessHint)
+            and h.relation == self.relation
+            and h.element == self.element
+            and h.multiplier == self.multiplier
+            for h in hints
+        )
+
+    @classmethod
+    def is_available(cls, hints: list[Hint]) -> bool:
+        from domain.type_effectiveness import TypeEffectiveness
+        # We need pokemon to calculate available effectiveness
+        # This will be checked in the hint creator instead
+        return True
+
+    @classmethod
+    def available_attributes(
+        cls, pokemon: Pokemon, hints: list[Hint]
+    ) -> list["EffectivenessAttribute"]:
+        from domain.type_effectiveness import TypeEffectiveness, EffectivenessAttribute
+        
+        all_attributes = TypeEffectiveness.calculate_effectiveness(
+            pokemon.primary_type, pokemon.secondary_type
+        )
+        
+        # Filter out already revealed
+        revealed = {
+            (h.relation, h.element, h.multiplier)
+            for h in hints
+            if isinstance(h, EffectivenessHint)
+        }
+        
+        available = [
+            attr
+            for attr in all_attributes
+            if (attr.relation.value, attr.element, attr.multiplier) not in revealed
+        ]
+        
+        return available
+
+    @classmethod
+    def create(
+        cls, pokemon: Pokemon, relation: str, element: str, multiplier: float
+    ) -> "EffectivenessHint":
+        return cls(relation=relation, element=element, multiplier=multiplier)
+
+
 CONSULTABLE_HINTS: list[type[Hint]] = [
     StatHint,
     PrimaryTypeHint,
     SecondaryTypeHint,
     FullyEvolvedHint,
+    EffectivenessHint,
 ]

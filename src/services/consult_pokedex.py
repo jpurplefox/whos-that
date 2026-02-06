@@ -12,6 +12,7 @@ class HintType(Enum):
     PRIMARY_TYPE = "primary_type"
     SECONDARY_TYPE = "secondary_type"
     FULLY_EVOLVED = "fully_evolved"
+    EFFECTIVENESS = "effectiveness"
 
 
 class ConsultPokedex:
