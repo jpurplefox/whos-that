@@ -234,8 +234,8 @@ def test_score_when_won_with_remaining_attempts_and_battery(
 
     assert game.is_won is True
     assert game.attempts_remaining == 3
-    assert game.battery == 80
-    assert game.score == 3800
+    assert game.battery == 70
+    assert game.score == 3700
 
 
 def test_score_matches_issue_example(bulbasaur: Pokemon, charmander: Pokemon) -> None:
@@ -246,8 +246,8 @@ def test_score_matches_issue_example(bulbasaur: Pokemon, charmander: Pokemon) ->
 
     assert game.is_won is True
     assert game.attempts_remaining == 2
-    assert game.battery == 80
-    assert game.score == 2800
+    assert game.battery == 70
+    assert game.score == 2700
 
 
 def test_score_on_first_attempt_win(bulbasaur: Pokemon) -> None:
@@ -255,7 +255,7 @@ def test_score_on_first_attempt_win(bulbasaur: Pokemon) -> None:
 
     game.guess(bulbasaur)
 
-    assert game.score == 4000
+    assert game.score == 3900
 
 
 def test_score_on_last_attempt_win(
@@ -268,7 +268,7 @@ def test_score_on_last_attempt_win(
 
     assert game.attempts_remaining == 0
     assert game.is_won is True
-    assert game.score == 700
+    assert game.score == 600
 
 
 def test_score_with_zero_battery_on_win(bulbasaur: Pokemon) -> None:
