@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 from domain.pokemon import Pokemon
 from domain.stat import Stat
+from domain.type_effectiveness import EffectivenessAttribute, TypeEffectiveness
 
 
 class Comparison(Enum):
@@ -137,7 +138,6 @@ class EffectivenessHint(Hint):
 
     @classmethod
     def is_available(cls, hints: list[Hint]) -> bool:
-        from domain.type_effectiveness import TypeEffectiveness
         # We need pokemon to calculate available effectiveness
         # This will be checked in the hint creator instead
         return True
@@ -145,9 +145,7 @@ class EffectivenessHint(Hint):
     @classmethod
     def available_attributes(
         cls, pokemon: Pokemon, hints: list[Hint]
-    ) -> list["EffectivenessAttribute"]:
-        from domain.type_effectiveness import TypeEffectiveness, EffectivenessAttribute
-        
+    ) -> list[EffectivenessAttribute]:
         all_attributes = TypeEffectiveness.calculate_effectiveness(
             pokemon.primary_type, pokemon.secondary_type
         )
