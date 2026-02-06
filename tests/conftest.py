@@ -1,6 +1,7 @@
 import pytest
 
 from adapters.in_memory_game_repository import InMemoryGameRepository
+from domain.events import EventBus
 from domain.pokemon import Pokemon
 
 
@@ -83,3 +84,8 @@ def raichu() -> Pokemon:
 @pytest.fixture
 def game_repository() -> InMemoryGameRepository:
     return InMemoryGameRepository()
+
+
+@pytest.fixture
+def event_bus() -> EventBus:
+    return EventBus()
