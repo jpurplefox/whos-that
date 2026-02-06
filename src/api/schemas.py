@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 from api.hint_serializers import hint_registry
 from domain.game import Game
-from domain.hint import CONSULTABLE_HINTS
+from domain.hint_factory import HintCreatorRegistry
 from domain.pokemon import Pokemon
 
 
@@ -57,7 +57,7 @@ class GameResponse(BaseModel):
     pokemon: "PokemonResponse | None"
 
     @classmethod
-    def from_game(cls, game: Game) -> "GameResponse":
+    def from_game(cls, game: Game, hint_creator_registry: HintCreatorRegistry) -> "GameResponse":
         return cls(
             id=game.id,
             created_at=game.created_at,
@@ -66,7 +66,7 @@ class GameResponse(BaseModel):
             attempts_remaining=game.attempts_remaining,
             attempts=[attempt.name for attempt in game.attempts],
             hints=[hint_registry.serialize(hint) for hint in game.hints],
-            available_hints=cls._build_available_hints(game),
+            available_hints=cls._build_available_hints(game, hint_creator_registry),
             battery=game.battery,
             max_battery=game.max_battery,
             battery_recovery=game.battery_recovery,
@@ -74,12 +74,15 @@ class GameResponse(BaseModel):
         )
 
     @classmethod
-    def _build_available_hints(cls, game: Game) -> list[AvailableHint]:
+    def _build_available_hints(
+        cls, game: Game, hint_creator_registry: HintCreatorRegistry
+    ) -> list[AvailableHint]:
         result = []
-        for hint_class in CONSULTABLE_HINTS:
-            hint_type = hint_class.hint_type_name
+        for hint_type in hint_creator_registry.type_names:
             cost = getattr(game.hint_costs, hint_type)
-            available = cost is not None and hint_class.is_available(game.pokemon, game.hints)
+            available = cost is not None and hint_creator_registry.is_available(
+                hint_type, game.pokemon, game.hints
+            )
             result.append(AvailableHint(type=hint_type, cost=cost, available=available))
         return result
 

@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _DEFAULT_POKEMON_JSON = Path(__file__).parent / "data" / "pokemon.json"
 _DEFAULT_BALANCE_JSON = Path(__file__).parent / "data" / "balance.json"
+_DEFAULT_TYPE_CHART_JSON = Path(__file__).parent / "data" / "type_chart.json"
 
 
 class Settings(BaseSettings):
@@ -12,6 +13,7 @@ class Settings(BaseSettings):
     max_pokemon_number: int = 151
     pokemon_json_path: Path = _DEFAULT_POKEMON_JSON
     balance_json_path: Path = _DEFAULT_BALANCE_JSON
+    type_chart_json_path: Path = _DEFAULT_TYPE_CHART_JSON
     sentry_dsn: str = ""
     sentry_traces_sample_rate: float = 1.0
     database_url: str = ""

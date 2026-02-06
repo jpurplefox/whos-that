@@ -1,7 +1,7 @@
 from domain.balance import DifficultyConfig
 from domain.difficulty import DifficultyLevel
 from domain.game import Game
-from domain.hint_factory import hint_registry
+from domain.hint_factory import HintCreatorRegistry
 from domain.ports.random_generator import RandomGenerator
 from domain.ports.random_pokemon_selector import RandomPokemonSelector
 from domain.ports.repositories import GameRepository
@@ -14,11 +14,13 @@ class StartGame:
         random_generator: RandomGenerator,
         game_repository: GameRepository,
         difficulty_config: DifficultyConfig,
+        hint_registry: HintCreatorRegistry,
     ):
         self.pokemon_selector = pokemon_selector
         self.random_generator = random_generator
         self.game_repository = game_repository
         self.difficulty_config = difficulty_config
+        self.hint_registry = hint_registry
 
     async def execute(
         self,
@@ -37,7 +39,7 @@ class StartGame:
             user_id=user_id,
         )
         for hint_type_name in difficulty_settings.initial_hints:
-            hint = hint_registry.create(
+            hint = self.hint_registry.create(
                 hint_type_name, pokemon, game.hints, self.random_generator
             )
             game.hints.append(hint)

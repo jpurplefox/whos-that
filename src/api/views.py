@@ -4,7 +4,7 @@ from litestar.exceptions import HTTPException
 from litestar.openapi.datastructures import ResponseSpec
 from litestar.params import Dependency
 
-from api.dependencies import get_consult_pokedex, get_get_game, get_guess, get_optional_user, get_pokemon_repository, get_start_game
+from api.dependencies import get_consult_pokedex, get_get_game, get_guess, get_hint_registry, get_optional_user, get_pokemon_repository, get_start_game
 from api.schemas import ConsultRequest, CreateGameRequest, DifficultyRequest, GameResponse, GuessRequest, HintTypeRequest, PokemonResponse
 from domain.difficulty import DifficultyLevel
 from domain.ports.repositories import PokemonRepository
@@ -20,6 +20,7 @@ from domain.exceptions import (
 )
 from domain.game import Game
 from domain.hint import Hint
+from domain.hint_factory import HintCreatorRegistry
 from domain.user import User
 from api.hint_serializers import hint_registry
 from structlog_config import get_logger
@@ -54,6 +55,7 @@ async def create_game(
     data: CreateGameRequest,
     start_game: StartGame = Dependency(skip_validation=True),
     optional_user: User | None = Dependency(skip_validation=True),
+    hint_registry: HintCreatorRegistry = Dependency(skip_validation=True),
 ) -> GameResponse:
     user_id = optional_user.id if optional_user else None
 
@@ -68,7 +70,7 @@ async def create_game(
         user_id=user_id,
         hints=_serialize_hints(game),
     )
-    return GameResponse.from_game(game)
+    return GameResponse.from_game(game, hint_registry)
 
 
 @get(
@@ -78,13 +80,14 @@ async def create_game(
 async def get_game(
     game_id: str,
     get_game_use_case: GetGame = Dependency(skip_validation=True),
+    hint_registry: HintCreatorRegistry = Dependency(skip_validation=True),
 ) -> GameResponse:
     try:
         game = await get_game_use_case.execute(game_id)
     except GameNotFound:
         raise HTTPException(status_code=404, detail="Game not found")
 
-    return GameResponse.from_game(game)
+    return GameResponse.from_game(game, hint_registry)
 
 
 def _convert_hint_type(hint_type: HintTypeRequest) -> HintType:
@@ -112,6 +115,7 @@ async def consult(
     game_id: str,
     data: ConsultRequest,
     consult_pokedex: ConsultPokedex = Dependency(skip_validation=True),
+    hint_registry: HintCreatorRegistry = Dependency(skip_validation=True),
 ) -> GameResponse:
     hint_type = _convert_hint_type(data.hint_type)
     try:
@@ -137,7 +141,7 @@ async def consult(
         turn_number=len(game.attempts) + 1,
         hints=_serialize_hints(game),
     )
-    return GameResponse.from_game(game)
+    return GameResponse.from_game(game, hint_registry)
 
 
 @post(
@@ -153,6 +157,7 @@ async def guess(
     data: GuessRequest,
     guess_use_case: Guess = Dependency(skip_validation=True),
     optional_user: User | None = Dependency(skip_validation=True),
+    hint_registry: HintCreatorRegistry = Dependency(skip_validation=True),
 ) -> GameResponse:
     user_id = optional_user.id if optional_user else None
     try:
@@ -186,7 +191,7 @@ async def guess(
             pokemon_id=game.pokemon.id,
             pokemon_name=game.pokemon.name,
         )
-    return GameResponse.from_game(game)
+    return GameResponse.from_game(game, hint_registry)
 
 
 @get("/pokemon")
@@ -207,5 +212,6 @@ router = Router(
         "consult_pokedex": Provide(get_consult_pokedex),
         "pokemon_repository": Provide(get_pokemon_repository),
         "optional_user": Provide(get_optional_user),
+        "hint_registry": Provide(get_hint_registry),
     },
 )

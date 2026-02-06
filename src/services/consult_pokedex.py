@@ -2,7 +2,7 @@ from enum import Enum
 
 from domain.exceptions import HintNotAvailable
 from domain.game import Game
-from domain.hint_factory import hint_registry
+from domain.hint_factory import HintCreatorRegistry
 from domain.ports.random_generator import RandomGenerator
 from domain.ports.repositories import GameRepository
 
@@ -20,9 +20,11 @@ class ConsultPokedex:
         self,
         game_repository: GameRepository,
         random_generator: RandomGenerator,
+        hint_registry: HintCreatorRegistry,
     ):
         self.game_repository = game_repository
         self.random_generator = random_generator
+        self.hint_registry = hint_registry
 
     async def execute(self, game_id: str, hint_type: HintType) -> Game:
         game = await self.game_repository.get(game_id)
@@ -31,7 +33,7 @@ class ConsultPokedex:
         if cost is None:
             raise HintNotAvailable()
 
-        hint = hint_registry.create(
+        hint = self.hint_registry.create(
             hint_type.value, game.pokemon, game.hints, self.random_generator
         )
 
