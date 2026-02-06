@@ -80,9 +80,9 @@ class TestEffectivenessHint:
         
         assert not hint1.is_already_revealed([hint2])
 
-    def test_available_attributes_all_available(self, pikachu: Pokemon) -> None:
+    def test_unrevealed_effectiveness_all_available(self, pikachu: Pokemon) -> None:
         """Test getting available attributes when none are revealed."""
-        available = EffectivenessHint.available_attributes(pikachu, [])
+        available = EffectivenessHint.unrevealed_effectiveness(pikachu, [])
         
         # Pikachu (Electric) should have weaknesses, resistances, but no immunities
         assert len(available) > 0
@@ -92,21 +92,21 @@ class TestEffectivenessHint:
         assert len(ground_attrs) == 1
         assert ground_attrs[0].relation == EffectivenessRelation.WEAKNESS
 
-    def test_available_attributes_filters_revealed(self, pikachu: Pokemon) -> None:
+    def test_unrevealed_effectiveness_filters_revealed(self, pikachu: Pokemon) -> None:
         """Test that revealed attributes are filtered out."""
         revealed_hint = EffectivenessHint(
             relation="weakness", element="ground", multiplier=2.0
         )
         
-        available = EffectivenessHint.available_attributes(pikachu, [revealed_hint])
+        available = EffectivenessHint.unrevealed_effectiveness(pikachu, [revealed_hint])
         
         # Ground weakness should not be available
         ground_attrs = [a for a in available if a.element == "ground"]
         assert len(ground_attrs) == 0
 
-    def test_available_attributes_dual_type(self, bulbasaur: Pokemon) -> None:
+    def test_unrevealed_effectiveness_dual_type(self, bulbasaur: Pokemon) -> None:
         """Test available attributes for dual-type Pokemon."""
-        available = EffectivenessHint.available_attributes(bulbasaur, [])
+        available = EffectivenessHint.unrevealed_effectiveness(bulbasaur, [])
         
         # Bulbasaur (Grass/Poison) should have various effectiveness
         assert len(available) > 0
@@ -116,16 +116,27 @@ class TestEffectivenessHint:
         assert len(fire_attrs) == 1
         assert fire_attrs[0].relation == EffectivenessRelation.WEAKNESS
 
-    def test_is_available_returns_true(self, pikachu: Pokemon) -> None:
-        """Test that is_available always returns True (checked in creator)."""
-        # The is_available method returns True because availability
-        # is determined in the creator which has access to the pokemon
-        assert EffectivenessHint.is_available([])
+    def test_is_available_with_unrevealed_attributes(self, pikachu: Pokemon) -> None:
+        """Test that is_available returns True when attributes remain."""
+        assert EffectivenessHint.is_available(pikachu, [])
 
-    def test_available_attributes_exhausted(self, pikachu: Pokemon) -> None:
+    def test_is_available_returns_false_when_exhausted(self, pikachu: Pokemon) -> None:
+        """Test that is_available returns False when all attributes are revealed."""
+        all_attributes = EffectivenessHint.unrevealed_effectiveness(pikachu, [])
+        revealed_hints: list[Hint] = [
+            EffectivenessHint(
+                relation=attr.relation.value,
+                element=attr.element,
+                multiplier=attr.multiplier,
+            )
+            for attr in all_attributes
+        ]
+        assert EffectivenessHint.is_available(pikachu, revealed_hints) is False
+
+    def test_unrevealed_effectiveness_exhausted(self, pikachu: Pokemon) -> None:
         """Test when all attributes are revealed."""
         # Get all possible attributes
-        all_attributes = EffectivenessHint.available_attributes(pikachu, [])
+        all_attributes = EffectivenessHint.unrevealed_effectiveness(pikachu, [])
         
         # Create hints for all attributes
         revealed_hints: list[Hint] = [
@@ -138,5 +149,5 @@ class TestEffectivenessHint:
         ]
         
         # Now available should be empty
-        available = EffectivenessHint.available_attributes(pikachu, revealed_hints)
+        available = EffectivenessHint.unrevealed_effectiveness(pikachu, revealed_hints)
         assert len(available) == 0

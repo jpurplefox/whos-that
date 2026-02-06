@@ -21,7 +21,7 @@ class Hint(BaseModel):
         raise NotImplementedError
 
     @classmethod
-    def is_available(cls, hints: list["Hint"]) -> bool:
+    def is_available(cls, pokemon: Pokemon, hints: list["Hint"]) -> bool:
         raise NotImplementedError
 
 
@@ -34,7 +34,7 @@ class StatHint(Hint):
         return any(isinstance(h, StatHint) and h.stat == self.stat for h in hints)
 
     @classmethod
-    def is_available(cls, hints: list[Hint]) -> bool:
+    def is_available(cls, pokemon: Pokemon, hints: list[Hint]) -> bool:
         return len(cls.available_stats(hints)) > 0
 
     @classmethod
@@ -80,7 +80,7 @@ class PrimaryTypeHint(Hint):
         return any(isinstance(h, PrimaryTypeHint) for h in hints)
 
     @classmethod
-    def is_available(cls, hints: list[Hint]) -> bool:
+    def is_available(cls, pokemon: Pokemon, hints: list[Hint]) -> bool:
         return not any(isinstance(h, PrimaryTypeHint) for h in hints)
 
     @classmethod
@@ -96,7 +96,7 @@ class SecondaryTypeHint(Hint):
         return any(isinstance(h, SecondaryTypeHint) for h in hints)
 
     @classmethod
-    def is_available(cls, hints: list[Hint]) -> bool:
+    def is_available(cls, pokemon: Pokemon, hints: list[Hint]) -> bool:
         return not any(isinstance(h, SecondaryTypeHint) for h in hints)
 
     @classmethod
@@ -112,7 +112,7 @@ class FullyEvolvedHint(Hint):
         return any(isinstance(h, FullyEvolvedHint) for h in hints)
 
     @classmethod
-    def is_available(cls, hints: list[Hint]) -> bool:
+    def is_available(cls, pokemon: Pokemon, hints: list[Hint]) -> bool:
         return not any(isinstance(h, FullyEvolvedHint) for h in hints)
 
     @classmethod
@@ -137,13 +137,11 @@ class EffectivenessHint(Hint):
         )
 
     @classmethod
-    def is_available(cls, hints: list[Hint]) -> bool:
-        # We need pokemon to calculate available effectiveness
-        # This will be checked in the hint creator instead
-        return True
+    def is_available(cls, pokemon: Pokemon, hints: list[Hint]) -> bool:
+        return len(cls.unrevealed_effectiveness(pokemon, hints)) > 0
 
     @classmethod
-    def available_attributes(
+    def unrevealed_effectiveness(
         cls, pokemon: Pokemon, hints: list[Hint]
     ) -> list[EffectivenessAttribute]:
         all_attributes = TypeEffectiveness.calculate_effectiveness(
