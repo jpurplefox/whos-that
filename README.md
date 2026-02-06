@@ -13,16 +13,60 @@ git clone https://github.com/jpurplefox/whos-that.git
 cd whos-that
 ```
 
+## Architecture
+
+The project follows a hexagonal (ports & adapters) architecture:
+
+```
+src/
+├── domain/           # Core business logic
+│   ├── ports/        # Interfaces (protocols) for external dependencies
+│   ├── game.py       # Game entity and rules
+│   ├── hint.py       # Hint types and logic
+│   └── ...
+├── services/         # Application use cases
+│   ├── start_game.py
+│   ├── guess.py
+│   ├── authenticate.py
+│   └── ...
+├── adapters/         # Implementations of ports
+│   ├── postgres_game_repository.py
+│   ├── in_memory_game_repository.py
+│   └── ...
+├── auth/             # Authentication implementations
+│   ├── google_oauth.py
+│   └── jwt_service.py
+└── api/              # HTTP layer (Litestar)
+    ├── views.py
+    ├── schemas.py
+    └── dependencies.py
+```
+
 ## Configuration
 
-Create a `.env` file in the project root (optional):
+Create a `.env` file in the project root:
 
 ```env
-MAX_ATTEMPTS=4
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/whos_that
+USE_CONNECTION_POOL=true
+
+# JWT Authentication
+JWT_SECRET=your-secret-key-at-least-32-characters
+JWT_ALGORITHM=HS256
+JWT_EXPIRATION_HOURS=168
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+GOOGLE_REDIRECT_URI=http://localhost:8000/auth/callback
+
+# Game settings
 MAX_POKEMON_NUMBER=151
-POKEAPI_BASE_URL=https://pokeapi.co/api/v2/pokemon
-HTTP_TIMEOUT=10.0
+
+# Optional
 SENTRY_DSN=https://your-key@o12345.ingest.sentry.io/12345
+CORS_ALLOWED_ORIGINS=["http://localhost:3000"]
 ```
 
 ## Running
