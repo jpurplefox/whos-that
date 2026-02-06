@@ -2,6 +2,7 @@ from typing import Any, Protocol
 
 from domain.hint import (
     ComparisonHint,
+    EffectivenessHint,
     FullyEvolvedHint,
     Hint,
     PrimaryTypeHint,
@@ -71,6 +72,20 @@ class FullyEvolvedHintSerializer:
         return FullyEvolvedHint.model_validate(data)
 
 
+class EffectivenessHintSerializer:
+    def serialize(self, hint: Hint) -> dict[str, Any]:
+        assert isinstance(hint, EffectivenessHint)
+        return {
+            "type": "effectiveness",
+            "relation": hint.relation,
+            "element": hint.element,
+            "multiplier": hint.multiplier,
+        }
+
+    async def deserialize(self, data: dict[str, Any]) -> EffectivenessHint:
+        return EffectivenessHint.model_validate(data)
+
+
 class HintSerializerRegistry:
     def __init__(self, pokemon_repository: PokemonRepository) -> None:
         self._serializers: dict[type[Hint], HintSerializer] = {}
@@ -83,6 +98,7 @@ class HintSerializerRegistry:
         self._register(PrimaryTypeHint, "primary_type", PrimaryTypeHintSerializer())
         self._register(SecondaryTypeHint, "secondary_type", SecondaryTypeHintSerializer())
         self._register(FullyEvolvedHint, "fully_evolved", FullyEvolvedHintSerializer())
+        self._register(EffectivenessHint, "effectiveness", EffectivenessHintSerializer())
 
     def _register(self, hint_type: type[Hint], type_name: str, serializer: HintSerializer) -> None:
         self._serializers[hint_type] = serializer
