@@ -407,8 +407,6 @@ def test_game_lost_reveals_pokemon(pikachu: Pokemon, bulbasaur: Pokemon) -> None
     assert data["pokemon"]["id"] == 25
 
 
-# --- Score in API response tests ---
-
 
 def test_score_is_null_for_in_progress_game(pikachu: Pokemon) -> None:
     game = Game(pokemon=pikachu, id="game-1")
@@ -437,8 +435,6 @@ def test_score_is_present_when_game_won(pikachu: Pokemon) -> None:
     assert response.status_code == 201
     data = response.json()
     assert data["is_won"] is True
-    # attempts_remaining = 3, battery = min(90+10, 100) = 100
-    # score = (3 * 1000) + (100 * 10) = 4000
     assert data["score"] == 4000
 
 
