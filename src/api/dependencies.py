@@ -8,6 +8,7 @@ from api.containers import Container
 from auth.google_oauth import GoogleOAuthService
 from domain.exceptions import InvalidToken, UserNotFound
 from domain.ports.repositories import PokemonRepository
+from domain.hint_factory import HintCreatorRegistry
 from domain.user import User
 from services.authenticate import Authenticate
 from services.consult_pokedex import ConsultPokedex
@@ -83,6 +84,10 @@ async def get_authenticate() -> Authenticate:
 
 async def get_history_use_case() -> GetHistory:
     return await _resolve(container.get_history)
+
+
+async def get_hint_registry() -> HintCreatorRegistry:
+    return await _resolve(container.hint_registry)
 
 
 async def get_collection_use_case() -> GetCollection:

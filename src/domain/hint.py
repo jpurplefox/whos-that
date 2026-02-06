@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 from domain.pokemon import Pokemon
 from domain.stat import Stat
-from domain.type_effectiveness import EffectivenessAttribute, TypeEffectiveness
 
 
 class Comparison(Enum):
@@ -20,10 +19,6 @@ class Hint(BaseModel):
     def is_already_revealed(self, hints: list["Hint"]) -> bool:
         raise NotImplementedError
 
-    @classmethod
-    def is_available(cls, pokemon: Pokemon, hints: list["Hint"]) -> bool:
-        raise NotImplementedError
-
 
 class StatHint(Hint):
     hint_type_name: ClassVar[str] = "stat"
@@ -32,10 +27,6 @@ class StatHint(Hint):
 
     def is_already_revealed(self, hints: list[Hint]) -> bool:
         return any(isinstance(h, StatHint) and h.stat == self.stat for h in hints)
-
-    @classmethod
-    def is_available(cls, pokemon: Pokemon, hints: list[Hint]) -> bool:
-        return len(cls.available_stats(hints)) > 0
 
     @classmethod
     def create(cls, pokemon: Pokemon, stat: Stat) -> "StatHint":
@@ -80,10 +71,6 @@ class PrimaryTypeHint(Hint):
         return any(isinstance(h, PrimaryTypeHint) for h in hints)
 
     @classmethod
-    def is_available(cls, pokemon: Pokemon, hints: list[Hint]) -> bool:
-        return not any(isinstance(h, PrimaryTypeHint) for h in hints)
-
-    @classmethod
     def create(cls, pokemon: Pokemon) -> "PrimaryTypeHint":
         return cls(primary_type=pokemon.primary_type)
 
@@ -94,10 +81,6 @@ class SecondaryTypeHint(Hint):
 
     def is_already_revealed(self, hints: list[Hint]) -> bool:
         return any(isinstance(h, SecondaryTypeHint) for h in hints)
-
-    @classmethod
-    def is_available(cls, pokemon: Pokemon, hints: list[Hint]) -> bool:
-        return not any(isinstance(h, SecondaryTypeHint) for h in hints)
 
     @classmethod
     def create(cls, pokemon: Pokemon) -> "SecondaryTypeHint":
@@ -112,13 +95,8 @@ class FullyEvolvedHint(Hint):
         return any(isinstance(h, FullyEvolvedHint) for h in hints)
 
     @classmethod
-    def is_available(cls, pokemon: Pokemon, hints: list[Hint]) -> bool:
-        return not any(isinstance(h, FullyEvolvedHint) for h in hints)
-
-    @classmethod
     def create(cls, pokemon: Pokemon) -> "FullyEvolvedHint":
         return cls(is_fully_evolved=pokemon.is_fully_evolved)
-
 
 
 class EffectivenessHint(Hint):
@@ -137,52 +115,9 @@ class EffectivenessHint(Hint):
         )
 
     @classmethod
-    def is_available(cls, pokemon: Pokemon, hints: list[Hint]) -> bool:
-        if cls.unrevealed_effectiveness(pokemon, hints):
-            return True
-        return not cls._is_completion_revealed(hints)
-
-    @classmethod
-    def _is_completion_revealed(cls, hints: list[Hint]) -> bool:
-        return any(
-            isinstance(h, EffectivenessHint) and h.element is None
-            for h in hints
-        )
-
-    @classmethod
-    def unrevealed_effectiveness(
-        cls, pokemon: Pokemon, hints: list[Hint]
-    ) -> list[EffectivenessAttribute]:
-        all_attributes = TypeEffectiveness.calculate_effectiveness(
-            pokemon.primary_type, pokemon.secondary_type
-        )
-        
-        # Filter out already revealed
-        revealed = {
-            (h.relation, h.element, h.multiplier)
-            for h in hints
-            if isinstance(h, EffectivenessHint)
-        }
-        
-        available = [
-            attr
-            for attr in all_attributes
-            if (attr.relation.value, attr.element, attr.multiplier) not in revealed
-        ]
-        
-        return available
-
-    @classmethod
     def create(
         cls, pokemon: Pokemon, relation: str, element: str, multiplier: float
     ) -> "EffectivenessHint":
         return cls(relation=relation, element=element, multiplier=multiplier)
 
 
-CONSULTABLE_HINTS: list[type[Hint]] = [
-    StatHint,
-    PrimaryTypeHint,
-    SecondaryTypeHint,
-    FullyEvolvedHint,
-    EffectivenessHint,
-]

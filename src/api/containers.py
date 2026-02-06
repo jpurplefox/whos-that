@@ -26,6 +26,8 @@ from auth.google_oauth import GoogleOAuthService
 from auth.jwt_service import JWTService
 from config import Settings
 from domain.balance import load_difficulty_config
+from domain.hint_factory import HintCreatorRegistry, create_hint_registry
+from domain.type_effectiveness import TypeEffectiveness, load_type_chart
 from domain.events import EventBus, GameWon
 from services.authenticate import Authenticate
 from services.capture_pokemon import CapturePokemon
@@ -111,6 +113,21 @@ class Container(containers.DeclarativeContainer):
         path=settings.provided.balance_json_path,
     )
 
+    type_chart = providers.Singleton(
+        load_type_chart,
+        path=settings.provided.type_chart_json_path,
+    )
+
+    type_effectiveness = providers.Singleton(
+        TypeEffectiveness,
+        type_chart=type_chart,
+    )
+
+    hint_registry = providers.Singleton(
+        create_hint_registry,
+        type_effectiveness=type_effectiveness,
+    )
+
     random_generator = providers.Singleton(SystemRandomGenerator)
 
     pokemon_repository = providers.Singleton(
@@ -180,12 +197,14 @@ class Container(containers.DeclarativeContainer):
         random_generator=random_generator,
         game_repository=game_repository,
         difficulty_config=difficulty_config,
+        hint_registry=hint_registry,
     )
 
     consult_pokedex = providers.Singleton(
         ConsultPokedex,
         game_repository=game_repository,
         random_generator=random_generator,
+        hint_registry=hint_registry,
     )
 
     capture_pokemon = providers.Singleton(

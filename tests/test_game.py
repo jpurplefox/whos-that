@@ -8,6 +8,7 @@ from domain.exceptions import (
 )
 from domain.game import Game
 from domain.hint import Comparison, ComparisonHint, FullyEvolvedHint, Hint, StatHint
+from domain.hint_factory import FullyEvolvedHintCreator
 from domain.pokemon import Pokemon
 from domain.stat import Stat
 
@@ -186,11 +187,13 @@ def test_fully_evolved_hint_create_with_non_fully_evolved_pokemon(pikachu: Pokem
 
 def test_fully_evolved_hint_is_available_when_not_revealed(pikachu: Pokemon) -> None:
     hints: list[Hint] = [StatHint.create(pikachu, Stat.HP)]
+    creator = FullyEvolvedHintCreator()
 
-    assert FullyEvolvedHint.is_available(pikachu, hints) is True
+    assert creator.is_available(pikachu, hints) is True
 
 
 def test_fully_evolved_hint_is_not_available_when_already_revealed(pikachu: Pokemon) -> None:
     hints: list[Hint] = [FullyEvolvedHint.create(pikachu)]
+    creator = FullyEvolvedHintCreator()
 
-    assert FullyEvolvedHint.is_available(pikachu, hints) is False
+    assert creator.is_available(pikachu, hints) is False

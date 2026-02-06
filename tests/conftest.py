@@ -1,8 +1,18 @@
+from pathlib import Path
+
 import pytest
 
 from adapters.in_memory_game_repository import InMemoryGameRepository
 from domain.events import EventBus
 from domain.pokemon import Pokemon
+from domain.type_effectiveness import TypeEffectiveness, load_type_chart
+
+_TYPE_CHART_PATH = Path(__file__).parent.parent / "src" / "data" / "type_chart.json"
+
+
+@pytest.fixture
+def type_effectiveness() -> TypeEffectiveness:
+    return TypeEffectiveness(load_type_chart(_TYPE_CHART_PATH))
 
 
 @pytest.fixture
