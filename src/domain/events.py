@@ -21,13 +21,15 @@ class GameWon(DomainEvent):
 
 T = TypeVar("T", bound=DomainEvent)
 EventHandler = Callable[[T], Awaitable[None]]
+ErrorHandler = Callable[[Exception], None]
 
 
 class EventBus:
     """Simple in-memory event bus for domain events."""
 
-    def __init__(self) -> None:
+    def __init__(self, on_error: ErrorHandler | None = None) -> None:
         self._handlers: dict[type, list[EventHandler[DomainEvent]]] = defaultdict(list)
+        self._on_error = on_error
 
     def subscribe(self, event_type: type[T], handler: EventHandler[T]) -> None:
         """Register a handler for an event type."""
@@ -39,5 +41,7 @@ class EventBus:
         for handler in handlers:
             try:
                 await handler(event)
-            except Exception:
+            except Exception as e:
                 logger.exception("event_handler_failed", event_type=type(event).__name__)
+                if self._on_error:
+                    self._on_error(e)

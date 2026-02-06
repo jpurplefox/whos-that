@@ -2,6 +2,7 @@ from collections.abc import AsyncIterator
 from pathlib import Path
 from typing import Any
 
+import sentry_sdk
 from dependency_injector import containers, providers
 from psycopg_pool import AsyncConnectionPool
 
@@ -97,7 +98,7 @@ def _create_collection_repository(
 
 
 def _create_event_bus(capture_pokemon: CapturePokemon) -> EventBus:
-    event_bus = EventBus()
+    event_bus = EventBus(on_error=sentry_sdk.capture_exception)
     event_bus.subscribe(GameWon, create_capture_pokemon_handler(capture_pokemon))
     return event_bus
 
