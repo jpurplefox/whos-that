@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Awaitable, Callable
+from typing import Awaitable, Callable, TypeVar, cast
 
 from pydantic import BaseModel
 
@@ -16,23 +16,22 @@ class GameWon(DomainEvent):
     game: Game
 
 
-EventHandler = Callable[[DomainEvent], Awaitable[None]]
+T = TypeVar("T", bound=DomainEvent)
+EventHandler = Callable[[T], Awaitable[None]]
 
 
 class EventBus:
     """Simple in-memory event bus for domain events."""
 
     def __init__(self) -> None:
-        self._handlers: dict[type[DomainEvent], list[EventHandler]] = defaultdict(list)
+        self._handlers: dict[type, list[EventHandler[DomainEvent]]] = defaultdict(list)
 
-    def subscribe(
-        self, event_type: type[DomainEvent], handler: EventHandler
-    ) -> None:
+    def subscribe(self, event_type: type[T], handler: EventHandler[T]) -> None:
         """Register a handler for an event type."""
-        self._handlers[event_type].append(handler)
+        self._handlers[event_type].append(cast(EventHandler[DomainEvent], handler))
 
-    async def publish(self, event: DomainEvent) -> None:
+    async def publish(self, event: T) -> None:
         """Publish an event to all registered handlers."""
-        handlers = self._handlers[type(event)]
+        handlers = cast(list[EventHandler[T]], self._handlers[type(event)])
         for handler in handlers:
             await handler(event)
