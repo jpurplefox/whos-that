@@ -2,7 +2,7 @@ import pytest
 
 from domain.balance import Difficulty, DifficultyConfig, HintCosts
 from domain.difficulty import DifficultyLevel
-from domain.hint import StatHint
+from domain.hint import EffectivenessHint, StatHint
 from domain.hint_factory import HintCreatorRegistry, create_hint_registry
 from domain.pokemon import Pokemon
 from domain.ports.repositories import GameRepository
@@ -43,7 +43,7 @@ def difficulty_config() -> DifficultyConfig:
         max_battery=100,
         battery_recovery=10,
         hint_costs=HintCosts(stat=40, primary_type=30, secondary_type=30),
-        initial_hints=["stat"],
+        initial_hints=[["stat"]],
     )
     return _create_difficulty_config(difficulty)
 
@@ -133,7 +133,7 @@ async def test_creates_game_with_easy_difficulty(
         max_battery=150,
         battery_recovery=35,
         hint_costs=HintCosts(stat=30),
-        initial_hints=["stat", "stat"],
+        initial_hints=[["stat", "stat"]],
     )
     difficulty_config = DifficultyConfig(difficulties={DifficultyLevel.EASY: easy_difficulty})
     pokemon_selector = FakePokemonSelector(pikachu)
@@ -178,3 +178,85 @@ async def test_creates_game_with_hard_difficulty(
     assert game.max_battery == 60
     assert game.battery_recovery == 15
     assert len(game.hints) == 0
+
+
+@pytest.mark.asyncio
+async def test_randomly_selects_hint_set(
+    game_repository: GameRepository, pikachu: Pokemon,
+    hint_registry: HintCreatorRegistry,
+) -> None:
+    difficulty = Difficulty(
+        max_attempts=4,
+        initial_battery=100,
+        max_battery=100,
+        battery_recovery=10,
+        hint_costs=HintCosts(stat=40, effectiveness=35),
+        initial_hints=[["stat", "stat"], ["effectiveness"]],
+    )
+    difficulty_config = _create_difficulty_config(difficulty)
+    pokemon_selector = FakePokemonSelector(pikachu)
+
+    # Select index 1 -> ["effectiveness"]
+    random_generator = FakeRandomGenerator(1)
+
+    start_game = StartGame(
+        pokemon_selector, random_generator, game_repository, difficulty_config, hint_registry
+    )
+    game = await start_game.execute()
+
+    assert len(game.hints) == 1
+    assert isinstance(game.hints[0], EffectivenessHint)
+
+
+@pytest.mark.asyncio
+async def test_selects_first_hint_set_when_index_zero(
+    game_repository: GameRepository, pikachu: Pokemon,
+    hint_registry: HintCreatorRegistry,
+) -> None:
+    difficulty = Difficulty(
+        max_attempts=4,
+        initial_battery=100,
+        max_battery=100,
+        battery_recovery=10,
+        hint_costs=HintCosts(stat=40, effectiveness=35),
+        initial_hints=[["stat", "stat"], ["effectiveness"]],
+    )
+    difficulty_config = _create_difficulty_config(difficulty)
+    pokemon_selector = FakePokemonSelector(pikachu)
+
+    # Select index 0 -> ["stat", "stat"]
+    random_generator = FakeRandomGenerator(0)
+
+    start_game = StartGame(
+        pokemon_selector, random_generator, game_repository, difficulty_config, hint_registry
+    )
+    game = await start_game.execute()
+
+    assert len(game.hints) == 2
+    assert all(isinstance(h, StatHint) for h in game.hints)
+
+
+@pytest.mark.asyncio
+async def test_single_hint_set_always_selected(
+    game_repository: GameRepository, pikachu: Pokemon,
+    hint_registry: HintCreatorRegistry,
+) -> None:
+    difficulty = Difficulty(
+        max_attempts=4,
+        initial_battery=100,
+        max_battery=100,
+        battery_recovery=10,
+        hint_costs=HintCosts(stat=40),
+        initial_hints=[["stat"]],
+    )
+    difficulty_config = _create_difficulty_config(difficulty)
+    pokemon_selector = FakePokemonSelector(pikachu)
+    random_generator = FakeRandomGenerator(0)
+
+    start_game = StartGame(
+        pokemon_selector, random_generator, game_repository, difficulty_config, hint_registry
+    )
+    game = await start_game.execute()
+
+    assert len(game.hints) == 1
+    assert isinstance(game.hints[0], StatHint)
