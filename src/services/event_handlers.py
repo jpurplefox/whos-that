@@ -1,13 +1,11 @@
-from domain.events import DomainEvent, EventHandler, GameWon
+from domain.events import EventHandler, GameWon
 from services.capture_pokemon import CapturePokemon
 
 
-def create_capture_pokemon_handler(capture_pokemon: CapturePokemon) -> EventHandler:
+def create_capture_pokemon_handler(capture_pokemon: CapturePokemon) -> EventHandler[GameWon]:
     """Creates a handler that captures pokemon when a game is won by an authenticated user."""
 
-    async def handle(event: DomainEvent) -> None:
-        if not isinstance(event, GameWon):
-            return
+    async def handle(event: GameWon) -> None:
         game = event.game
         if game.user_id is None:
             return
