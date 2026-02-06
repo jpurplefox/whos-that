@@ -103,6 +103,7 @@ async def test_consult_effectiveness_hint_success(
     game.hint_costs.effectiveness = 20
     game = await game_repository.save(game)
 
+    assert game.id is not None
     random_gen = FakeRandomGenerator(0)  # Select first available attribute
     consult = ConsultPokedex(game_repository, random_gen)
 
@@ -133,6 +134,7 @@ async def test_consult_effectiveness_does_not_repeat(
     game.hints.append(ground_hint)
     game = await game_repository.save(game)
 
+    assert game.id is not None
     random_gen = FakeRandomGenerator(0)
     consult = ConsultPokedex(game_repository, random_gen)
 
@@ -169,6 +171,7 @@ async def test_consult_effectiveness_all_exhausted(
     
     game = await game_repository.save(game)
 
+    assert game.id is not None
     random_gen = FakeRandomGenerator(0)
     consult = ConsultPokedex(game_repository, random_gen)
 
@@ -187,6 +190,7 @@ async def test_consult_effectiveness_dual_type_pokemon(
     game.hint_costs.effectiveness = 15
     game = await game_repository.save(game)
 
+    assert game.id is not None
     random_gen = FakeRandomGenerator(0)
     consult = ConsultPokedex(game_repository, random_gen)
 
@@ -209,6 +213,7 @@ async def test_consult_effectiveness_cost_none_raises_not_available(
     game.hint_costs.effectiveness = None  # Not available in this difficulty
     game = await game_repository.save(game)
 
+    assert game.id is not None
     random_gen = FakeRandomGenerator(0)
     consult = ConsultPokedex(game_repository, random_gen)
 

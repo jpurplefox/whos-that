@@ -45,10 +45,10 @@ def pikachu() -> Pokemon:
 
 
 class TestEffectivenessHint:
-    def test_create_effectiveness_hint(self) -> None:
+    def test_create_effectiveness_hint(self, pikachu: Pokemon) -> None:
         """Test creating an effectiveness hint."""
         hint = EffectivenessHint.create(
-            pokemon=None,  # Not needed for create
+            pokemon=pikachu,
             relation="weakness",
             element="fire",
             multiplier=2.0,
