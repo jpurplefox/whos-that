@@ -120,8 +120,8 @@ class TestEffectivenessHint:
         """Test that is_available returns True when attributes remain."""
         assert EffectivenessHint.is_available(pikachu, [])
 
-    def test_is_available_returns_false_when_exhausted(self, pikachu: Pokemon) -> None:
-        """Test that is_available returns False when all attributes are revealed."""
+    def test_is_available_after_individual_exhausted(self, pikachu: Pokemon) -> None:
+        """Test that is_available returns True when all individual attributes are revealed but completion is not."""
         all_attributes = EffectivenessHint.unrevealed_effectiveness(pikachu, [])
         revealed_hints: list[Hint] = [
             EffectivenessHint(
@@ -131,7 +131,33 @@ class TestEffectivenessHint:
             )
             for attr in all_attributes
         ]
+        assert EffectivenessHint.is_available(pikachu, revealed_hints) is True
+
+    def test_is_available_returns_false_when_exhausted(self, pikachu: Pokemon) -> None:
+        """Test that is_available returns False when all attributes and completion are revealed."""
+        all_attributes = EffectivenessHint.unrevealed_effectiveness(pikachu, [])
+        revealed_hints: list[Hint] = [
+            EffectivenessHint(
+                relation=attr.relation.value,
+                element=attr.element,
+                multiplier=attr.multiplier,
+            )
+            for attr in all_attributes
+        ]
+        revealed_hints.append(EffectivenessHint())
         assert EffectivenessHint.is_available(pikachu, revealed_hints) is False
+
+    def test_completion_hint_is_already_revealed(self) -> None:
+        """Test that a completion hint detects itself as already revealed."""
+        completion = EffectivenessHint()
+        assert completion.is_already_revealed([EffectivenessHint()])
+
+    def test_completion_hint_not_confused_with_individual(self) -> None:
+        """Test that a completion hint is not confused with individual hints."""
+        completion = EffectivenessHint()
+        individual = EffectivenessHint(relation="weakness", element="ground", multiplier=2.0)
+        assert not completion.is_already_revealed([individual])
+        assert not individual.is_already_revealed([completion])
 
     def test_unrevealed_effectiveness_exhausted(self, pikachu: Pokemon) -> None:
         """Test when all attributes are revealed."""

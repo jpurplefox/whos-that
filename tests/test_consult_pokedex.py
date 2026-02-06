@@ -151,15 +151,15 @@ async def test_consult_effectiveness_does_not_repeat(
 
 
 @pytest.mark.asyncio
-async def test_consult_effectiveness_all_exhausted(
+async def test_consult_effectiveness_completion_hint(
     pikachu: Pokemon,
     game_repository: GameRepository,
 ) -> None:
-    """Test that consulting fails when all effectiveness attributes are revealed."""
+    """Test that a completion hint is returned after all individual attributes are revealed."""
     game = Game(pokemon=pikachu, battery=100)
     game.hint_costs.effectiveness = 10
-    
-    # Reveal all effectiveness attributes
+
+    # Reveal all individual effectiveness attributes
     all_attributes = EffectivenessHint.unrevealed_effectiveness(pikachu, [])
     for attr in all_attributes:
         hint = EffectivenessHint(
@@ -168,7 +168,43 @@ async def test_consult_effectiveness_all_exhausted(
             multiplier=attr.multiplier,
         )
         game.hints.append(hint)
-    
+
+    game = await game_repository.save(game)
+
+    assert game.id is not None
+    random_gen = FakeRandomGenerator(0)
+    consult = ConsultPokedex(game_repository, random_gen)
+
+    result = await consult.execute(game.id, HintType.EFFECTIVENESS)
+
+    completion = result.hints[-1]
+    assert isinstance(completion, EffectivenessHint)
+    assert completion.element is None
+    assert completion.multiplier is None
+
+
+@pytest.mark.asyncio
+async def test_consult_effectiveness_all_exhausted(
+    pikachu: Pokemon,
+    game_repository: GameRepository,
+) -> None:
+    """Test that consulting fails when all effectiveness attributes and completion are revealed."""
+    game = Game(pokemon=pikachu, battery=100)
+    game.hint_costs.effectiveness = 10
+
+    # Reveal all individual effectiveness attributes
+    all_attributes = EffectivenessHint.unrevealed_effectiveness(pikachu, [])
+    for attr in all_attributes:
+        hint = EffectivenessHint(
+            relation=attr.relation.value,
+            element=attr.element,
+            multiplier=attr.multiplier,
+        )
+        game.hints.append(hint)
+
+    # Also reveal the completion hint
+    game.hints.append(EffectivenessHint())
+
     game = await game_repository.save(game)
 
     assert game.id is not None
