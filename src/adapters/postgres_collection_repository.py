@@ -2,6 +2,7 @@ from typing import Any
 
 from psycopg.rows import dict_row
 from pypika import Parameter, PostgreSQLQuery, Table
+from pypika import functions as fn
 
 from adapters.connection_provider import ConnectionProvider
 from domain.captured_pokemon import CapturedPokemon
@@ -24,13 +25,27 @@ def _select_by_user_id() -> str:
 
 
 def _upsert_capture() -> str:
-    return """
-        INSERT INTO user_collection (user_id, pokemon_id, first_caught_at, times_caught)
-        VALUES (%(user_id)s, %(pokemon_id)s, NOW(), 1)
-        ON CONFLICT (user_id, pokemon_id)
-        DO UPDATE SET times_caught = user_collection.times_caught + 1
-        RETURNING user_id, pokemon_id, first_caught_at, times_caught
-    """
+    return str(
+        PostgreSQLQuery.into(_user_collection)
+        .columns("user_id", "pokemon_id", "first_caught_at", "times_caught")
+        .insert(
+            Parameter("%(user_id)s"),
+            Parameter("%(pokemon_id)s"),
+            fn.Now(),  # type: ignore[no-untyped-call]
+            1,
+        )
+        .on_conflict(_user_collection.user_id, _user_collection.pokemon_id)  # type: ignore[operator]
+        .do_update(
+            _user_collection.times_caught,
+            _user_collection.times_caught + 1,
+        )
+        .returning(
+            _user_collection.user_id,
+            _user_collection.pokemon_id,
+            _user_collection.first_caught_at,
+            _user_collection.times_caught,
+        )
+    )
 
 
 class PostgresCollectionRepository:
