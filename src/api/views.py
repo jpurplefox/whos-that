@@ -97,6 +97,8 @@ def _convert_hint_type(hint_type: HintTypeRequest) -> HintType:
             return HintType.SECONDARY_TYPE
         case HintTypeRequest.FULLY_EVOLVED:
             return HintType.FULLY_EVOLVED
+        case HintTypeRequest.EFFECTIVENESS:
+            return HintType.EFFECTIVENESS
 
 
 @post(

@@ -8,9 +8,13 @@
       "stat": 30,
       "primary_type": 50,
       "secondary_type": 50,
-      "fully_evolved": 20
+      "fully_evolved": 20,
+      "effectiveness": 25
     },
-    "initial_hints": ["stat", "stat"]
+    "initial_hints": [
+      "stat",
+      "stat"
+    ]
   },
   "medium": {
     "max_attempts": 4,
@@ -21,9 +25,12 @@
       "stat": 40,
       "primary_type": 75,
       "secondary_type": 75,
-      "fully_evolved": 30
+      "fully_evolved": 30,
+      "effectiveness": 35
     },
-    "initial_hints": ["stat"]
+    "initial_hints": [
+      "stat"
+    ]
   },
   "hard": {
     "max_attempts": 4,
@@ -34,8 +41,11 @@
       "stat": 50,
       "primary_type": 80,
       "secondary_type": 80,
-      "fully_evolved": 40
+      "fully_evolved": 40,
+      "effectiveness": 45
     },
-    "initial_hints": ["stat"]
+    "initial_hints": [
+      "stat"
+    ]
   }
 }

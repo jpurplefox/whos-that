@@ -7,6 +7,7 @@ from domain.hint import (
     PrimaryTypeHint,
     SecondaryTypeHint,
     StatHint,
+    EffectivenessHint,
 )
 
 
@@ -48,6 +49,18 @@ class FullyEvolvedHintSerializer:
         return {"type": "fully_evolved", "is_fully_evolved": hint.is_fully_evolved}
 
 
+
+class EffectivenessHintSerializer:
+    def serialize(self, hint: Hint) -> dict[str, Any]:
+        assert isinstance(hint, EffectivenessHint)
+        return {
+            "type": "effectiveness",
+            "relation": hint.relation,
+            "element": hint.element,
+            "multiplier": hint.multiplier,
+        }
+
+
 class HintSerializerRegistry:
     def __init__(self) -> None:
         self._serializers: dict[type[Hint], HintSerializer] = {}
@@ -69,6 +82,7 @@ def _create_registry() -> HintSerializerRegistry:
     registry.register(PrimaryTypeHint, PrimaryTypeHintSerializer())
     registry.register(SecondaryTypeHint, SecondaryTypeHintSerializer())
     registry.register(FullyEvolvedHint, FullyEvolvedHintSerializer())
+    registry.register(EffectivenessHint, EffectivenessHintSerializer())
     return registry
 
 
