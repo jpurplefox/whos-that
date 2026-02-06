@@ -40,3 +40,7 @@ class UserNotFound(DomainException):
 
 class InvalidToken(DomainException):
     pass
+
+
+class GameAccessDenied(DomainException):
+    pass

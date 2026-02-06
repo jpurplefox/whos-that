@@ -10,6 +10,7 @@ from domain.difficulty import DifficultyLevel
 from domain.ports.repositories import PokemonRepository
 from domain.exceptions import (
     AlreadyConsultedThisTurn,
+    GameAccessDenied,
     GameNotFound,
     GameOver,
     HintAlreadyRevealed,
@@ -141,6 +142,7 @@ async def consult(
     "/games/{game_id:str}/guess",
     responses={
         400: ResponseSpec(data_container=None, description="Game is over or pokemon not found"),
+        403: ResponseSpec(data_container=None, description="Access denied"),
         404: ResponseSpec(data_container=None, description="Game not found"),
     },
 )
@@ -148,11 +150,15 @@ async def guess(
     game_id: str,
     data: GuessRequest,
     guess_use_case: Guess = Dependency(skip_validation=True),
+    optional_user: User | None = Dependency(skip_validation=True),
 ) -> GameResponse:
+    user_id = optional_user.id if optional_user else None
     try:
-        game = await guess_use_case.execute(game_id, data.pokemon_name)
+        game = await guess_use_case.execute(game_id, data.pokemon_name, user_id)
     except GameNotFound:
         raise HTTPException(status_code=404, detail="Game not found")
+    except GameAccessDenied:
+        raise HTTPException(status_code=403, detail="Access denied")
     except GameOver:
         raise HTTPException(status_code=400, detail="Game is over")
     except PokemonNotFound:
