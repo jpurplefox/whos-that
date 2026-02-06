@@ -38,9 +38,18 @@ class StartGame:
             battery_recovery=difficulty_settings.battery_recovery,
             user_id=user_id,
         )
-        for hint_type_name in difficulty_settings.initial_hints:
-            hint = self.hint_registry.create(
-                hint_type_name, pokemon, game.hints, self.random_generator
-            )
-            game.hints.append(hint)
+        
+        # Select one random hint set from the available sets
+        if difficulty_settings.initial_hints:
+            num_hint_sets = len(difficulty_settings.initial_hints)
+            selected_index = self.random_generator.randint(0, num_hint_sets - 1)
+            selected_hint_set = difficulty_settings.initial_hints[selected_index]
+            
+            # Create hints from the selected set
+            for hint_type_name in selected_hint_set:
+                hint = self.hint_registry.create(
+                    hint_type_name, pokemon, game.hints, self.random_generator
+                )
+                game.hints.append(hint)
+        
         return await self.game_repository.save(game)

@@ -12,8 +12,9 @@
       "effectiveness": 25
     },
     "initial_hints": [
-      "stat",
-      "stat"
+      ["stat", "stat"],
+      ["stat", "effectiveness"],
+      ["stat", "fully_evolved"]
     ]
   },
   "medium": {
@@ -29,7 +30,8 @@
       "effectiveness": 35
     },
     "initial_hints": [
-      "stat"
+      ["stat"],
+      ["fully_evolved"]
     ]
   },
   "hard": {
@@ -45,7 +47,8 @@
       "effectiveness": 45
     },
     "initial_hints": [
-      "stat"
+      ["stat"],
+      []
     ]
   }
 }
