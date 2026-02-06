@@ -21,7 +21,7 @@ class GameWon(DomainEvent):
 
 T = TypeVar("T", bound=DomainEvent)
 EventHandler = Callable[[T], Awaitable[None]]
-ErrorHandler = Callable[[Exception], None]
+ErrorHandler = Callable[..., object]
 
 
 class EventBus:
