@@ -46,7 +46,9 @@ class FakeGuess:
     def __init__(self, game: Game):
         self.game = game
 
-    async def execute(self, game_id: str, pokemon_name: str) -> Game:
+    async def execute(
+        self, game_id: str, pokemon_name: str, user_id: str | None = None
+    ) -> Game:
         return self.game
 
 
@@ -120,7 +122,9 @@ def test_guess_incorrect_pokemon_returns_comparison_hint(
 
 
 class FakeGuessNoAttempts:
-    async def execute(self, game_id: str, pokemon_name: str) -> Game:
+    async def execute(
+        self, game_id: str, pokemon_name: str, user_id: str | None = None
+    ) -> Game:
         raise GameOver()
 
 
@@ -136,7 +140,9 @@ def test_guess_returns_400_when_no_attempts_remaining() -> None:
 
 
 class FakeGuessPokemonNotFound:
-    async def execute(self, game_id: str, pokemon_name: str) -> Game:
+    async def execute(
+        self, game_id: str, pokemon_name: str, user_id: str | None = None
+    ) -> Game:
         raise PokemonNotFound()
 
 
@@ -162,7 +168,9 @@ def test_guess_returns_400_when_pokemon_name_is_invalid() -> None:
 
 
 class FakeGuessGameNotFound:
-    async def execute(self, game_id: str, pokemon_name: str) -> Game:
+    async def execute(
+        self, game_id: str, pokemon_name: str, user_id: str | None = None
+    ) -> Game:
         raise GameNotFound()
 
 

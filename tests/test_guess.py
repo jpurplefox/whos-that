@@ -3,6 +3,7 @@ import pytest
 from adapters.in_memory_collection_repository import InMemoryCollectionRepository
 from adapters.in_memory_pokemon_repository import InMemoryPokemonRepository
 from domain.events import EventBus, GameWon
+from domain.exceptions import GameAccessDenied
 from domain.game import Game
 from domain.hint import StatHint
 from domain.pokemon import Pokemon
@@ -55,11 +56,47 @@ async def test_captures_pokemon_when_authenticated_user_wins(
     await game_repository.save(game)
 
     guess = Guess(pokemon_repository, game_repository, event_bus)
-    await guess.execute("game-1", "pikachu")
+    await guess.execute("game-1", "pikachu", user_id="user-1")
 
     captured = await collection_repository.get_by_user_id("user-1")
     assert len(captured) == 1
     assert captured[0].pokemon.id == pikachu.id
+
+
+@pytest.mark.asyncio
+async def test_denies_guess_on_other_users_game(
+    game_repository: GameRepository,
+    event_bus: EventBus,
+    pikachu: Pokemon,
+    charmander: Pokemon,
+) -> None:
+    pokemon_repository = InMemoryPokemonRepository([charmander])
+
+    game = Game(pokemon=pikachu, id="game-1", user_id="user-1")
+    game.hints.append(StatHint.create(pikachu, Stat.SPEED))
+    await game_repository.save(game)
+
+    guess = Guess(pokemon_repository, game_repository, event_bus)
+    with pytest.raises(GameAccessDenied):
+        await guess.execute("game-1", "charmander", user_id="user-2")
+
+
+@pytest.mark.asyncio
+async def test_denies_anonymous_guess_on_authenticated_game(
+    game_repository: GameRepository,
+    event_bus: EventBus,
+    pikachu: Pokemon,
+    charmander: Pokemon,
+) -> None:
+    pokemon_repository = InMemoryPokemonRepository([charmander])
+
+    game = Game(pokemon=pikachu, id="game-1", user_id="user-1")
+    game.hints.append(StatHint.create(pikachu, Stat.SPEED))
+    await game_repository.save(game)
+
+    guess = Guess(pokemon_repository, game_repository, event_bus)
+    with pytest.raises(GameAccessDenied):
+        await guess.execute("game-1", "charmander")
 
 
 @pytest.mark.asyncio
@@ -94,7 +131,7 @@ async def test_does_not_capture_pokemon_on_incorrect_guess(
     await game_repository.save(game)
 
     guess = Guess(pokemon_repository, game_repository, event_bus)
-    await guess.execute("game-1", "charmander")
+    await guess.execute("game-1", "charmander", user_id="user-1")
 
     captured = await collection_repository.get_by_user_id("user-1")
     assert len(captured) == 0
