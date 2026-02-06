@@ -123,9 +123,9 @@ class FullyEvolvedHint(Hint):
 
 class EffectivenessHint(Hint):
     hint_type_name: ClassVar[str] = "effectiveness"
-    relation: str
-    element: str
-    multiplier: float
+    relation: str = "completion"
+    element: str | None = None
+    multiplier: float | None = None
 
     def is_already_revealed(self, hints: list[Hint]) -> bool:
         return any(
@@ -138,7 +138,16 @@ class EffectivenessHint(Hint):
 
     @classmethod
     def is_available(cls, pokemon: Pokemon, hints: list[Hint]) -> bool:
-        return len(cls.unrevealed_effectiveness(pokemon, hints)) > 0
+        if cls.unrevealed_effectiveness(pokemon, hints):
+            return True
+        return not cls._is_completion_revealed(hints)
+
+    @classmethod
+    def _is_completion_revealed(cls, hints: list[Hint]) -> bool:
+        return any(
+            isinstance(h, EffectivenessHint) and h.element is None
+            for h in hints
+        )
 
     @classmethod
     def unrevealed_effectiveness(

@@ -51,20 +51,22 @@ class EffectivenessHintCreator:
         self, pokemon: Pokemon, hints: list[Hint], random_generator: RandomGenerator
     ) -> Hint:
         from domain.hint import EffectivenessHint
-        
+
         available = EffectivenessHint.unrevealed_effectiveness(pokemon, hints)
-        if not available:
-            raise HintAlreadyRevealed("All effectiveness attributes already revealed")
-        
-        index = random_generator.randint(0, len(available) - 1)
-        selected = available[index]
-        
-        return EffectivenessHint.create(
-            pokemon,
-            relation=selected.relation.value,
-            element=selected.element,
-            multiplier=selected.multiplier,
-        )
+        if available:
+            index = random_generator.randint(0, len(available) - 1)
+            selected = available[index]
+            return EffectivenessHint.create(
+                pokemon,
+                relation=selected.relation.value,
+                element=selected.element,
+                multiplier=selected.multiplier,
+            )
+
+        if EffectivenessHint.is_available(pokemon, hints):
+            return EffectivenessHint()
+
+        raise HintAlreadyRevealed("All effectiveness attributes already revealed")
 
 class HintCreatorRegistry:
     def __init__(self) -> None:
