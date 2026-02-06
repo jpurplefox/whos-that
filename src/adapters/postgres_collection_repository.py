@@ -6,6 +6,8 @@ from pypika import functions as fn
 
 from adapters.connection_provider import ConnectionProvider
 from domain.captured_pokemon import CapturedPokemon
+from domain.pokemon import Pokemon
+from domain.ports.repositories import PokemonRepository
 
 
 _user_collection = Table("user_collection")
@@ -49,13 +51,18 @@ def _upsert_capture() -> str:
 
 
 class PostgresCollectionRepository:
-    def __init__(self, connection_provider: ConnectionProvider) -> None:
+    def __init__(
+        self,
+        connection_provider: ConnectionProvider,
+        pokemon_repository: PokemonRepository,
+    ) -> None:
         self._connection_provider = connection_provider
+        self._pokemon_repository = pokemon_repository
 
-    async def capture(self, user_id: str, pokemon_id: int) -> CapturedPokemon:
+    async def capture(self, user_id: str, pokemon: Pokemon) -> CapturedPokemon:
         params = {
             "user_id": user_id,
-            "pokemon_id": pokemon_id,
+            "pokemon_id": pokemon.id,
         }
 
         async with self._connection_provider.connection() as conn:
@@ -65,7 +72,7 @@ class PostgresCollectionRepository:
                 await conn.commit()
 
         assert row is not None
-        return self._row_to_captured_pokemon(row)
+        return self._row_to_captured_pokemon(row, pokemon)
 
     async def get_by_user_id(self, user_id: str) -> list[CapturedPokemon]:
         async with self._connection_provider.connection() as conn:
@@ -73,12 +80,18 @@ class PostgresCollectionRepository:
                 await cursor.execute(_select_by_user_id(), {"user_id": user_id})
                 rows = await cursor.fetchall()
 
-        return [self._row_to_captured_pokemon(row) for row in rows]
+        result = []
+        for row in rows:
+            pokemon = await self._pokemon_repository.get_by_number(row["pokemon_id"])
+            result.append(self._row_to_captured_pokemon(row, pokemon))
+        return result
 
-    def _row_to_captured_pokemon(self, row: dict[str, Any]) -> CapturedPokemon:
+    def _row_to_captured_pokemon(
+        self, row: dict[str, Any], pokemon: Pokemon
+    ) -> CapturedPokemon:
         return CapturedPokemon(
             user_id=str(row["user_id"]),
-            pokemon_id=int(row["pokemon_id"]),
+            pokemon=pokemon,
             first_caught_at=row["first_caught_at"],
             times_caught=int(row["times_caught"]),
         )

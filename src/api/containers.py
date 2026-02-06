@@ -89,9 +89,10 @@ def _create_user_repository(
 
 def _create_collection_repository(
     connection_provider: ConnectionProvider | None,
+    pokemon_repository: InMemoryPokemonRepository,
 ) -> Any:
     if connection_provider is not None:
-        return PostgresCollectionRepository(connection_provider)
+        return PostgresCollectionRepository(connection_provider, pokemon_repository)
     return InMemoryCollectionRepository()
 
 
@@ -155,6 +156,7 @@ class Container(containers.DeclarativeContainer):
     collection_repository = providers.Singleton(
         _create_collection_repository,
         connection_provider=connection_provider,
+        pokemon_repository=pokemon_repository,
     )
 
     jwt_service = providers.Singleton(

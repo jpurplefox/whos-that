@@ -40,7 +40,7 @@ class UserRepository(Protocol):
 
 
 class CollectionRepository(Protocol):
-    async def capture(self, user_id: str, pokemon_id: int) -> CapturedPokemon:
+    async def capture(self, user_id: str, pokemon: Pokemon) -> CapturedPokemon:
         ...
 
     async def get_by_user_id(self, user_id: str) -> list[CapturedPokemon]:
