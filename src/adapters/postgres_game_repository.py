@@ -1,5 +1,6 @@
 import json
 import uuid
+from datetime import datetime, timezone
 from typing import Any
 
 from psycopg.rows import dict_row
@@ -116,7 +117,8 @@ class PostgresGameRepository:
         self._hint_serializer = hint_serializer
 
     async def save(self, game: Game) -> Game:
-        game_id = game.id if game.id is not None else str(uuid.uuid4())
+        is_new = game.id is None
+        game_id = game.id if not is_new else str(uuid.uuid4())
 
         params = {
             "id": game_id,
@@ -137,7 +139,10 @@ class PostgresGameRepository:
                 await cursor.execute(_upsert_game(), params)
                 await conn.commit()
 
-        return game.model_copy(update={"id": game_id})
+        update: dict[str, Any] = {"id": game_id}
+        if is_new:
+            update["created_at"] = datetime.now(timezone.utc)
+        return game.model_copy(update=update)
 
     async def get(self, game_id: str) -> Game:
         async with self._connection_provider.connection() as conn:
