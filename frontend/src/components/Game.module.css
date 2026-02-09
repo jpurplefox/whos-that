@@ -60,12 +60,12 @@
   max-width: 1000px;
   margin: 0 auto;
   font-family: 'Courier New', monospace;
-  /* Ultra compact spacing overrides */
-  --spacing-xs: 2px;
-  --spacing-sm: 4px;
-  --spacing-md: 6px;
-  --spacing-lg: 8px;
-  --spacing-xl: 12px;
+  /* Compact spacing overrides */
+  --spacing-xs: 3px;
+  --spacing-sm: 6px;
+  --spacing-md: 8px;
+  --spacing-lg: 10px;
+  --spacing-xl: 14px;
 }
 
 /* UPPER SECTION */
@@ -192,7 +192,7 @@
 
 .batteryLabel,
 .attemptsLabel {
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   color: rgba(16, 185, 129, 0.7);
   letter-spacing: 0.5px;
   margin-bottom: 2px;
@@ -200,7 +200,7 @@
 
 .batteryValue,
 .attemptsValue {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: bold;
   color: var(--screen-glow);
   text-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
@@ -254,7 +254,7 @@
 .mysteryLabel {
   margin-top: var(--spacing-xs);
   color: var(--screen-glow);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   letter-spacing: 1px;
   text-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
   z-index: 1;
@@ -321,7 +321,7 @@
   padding: var(--spacing-sm);
   box-shadow: inset 0 0 40px rgba(16, 185, 129, 0.1);
   position: relative;
-  max-height: 140px;
+  height: 240px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -384,7 +384,7 @@
 
 .sectionTitle {
   color: var(--screen-glow);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   letter-spacing: 1px;
   text-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
   margin-bottom: var(--spacing-xs);
@@ -407,7 +407,7 @@
 
 .controlTitle {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   letter-spacing: 0.5px;
   margin-bottom: var(--spacing-xs);
   text-align: center;
@@ -421,8 +421,8 @@
 }
 
 .hintButton {
-  padding: 3px 4px;
-  font-size: 0.7rem;
+  padding: 4px 6px;
+  font-size: 0.75rem;
   font-family: 'Courier New', monospace;
   font-weight: bold;
   display: flex;
@@ -465,12 +465,12 @@
 }
 
 .hintLabel {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   line-height: 1.1;
 }
 
 .hintCost {
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   color: rgba(251, 191, 36, 0.9);
   text-shadow: 0 0 4px rgba(251, 191, 36, 0.5);
 }
@@ -498,7 +498,7 @@
 
 .inputTitle {
   color: var(--screen-glow);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   letter-spacing: 1px;
   text-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
   margin-bottom: var(--spacing-xs);
