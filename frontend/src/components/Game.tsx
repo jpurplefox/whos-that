@@ -154,17 +154,16 @@ export function Game({ initialGame, onGameOver }: GameProps) {
             <h3 className={styles.inputTitle}>IDENTIFY POKÉMON</h3>
             <PokemonSearch onSelect={handleGuess} disabled={isLoading} />
             {error && <div className="error">{error}</div>}
+            {game.attempts.length > 0 && (
+              <div className={styles.previousGuesses}>
+                <span className={styles.guessesTitle}>Previous:</span>
+                <span className={styles.guessesList}>
+                  {game.attempts.map((attempt) => attempt.toUpperCase()).join(', ')}
+                </span>
+              </div>
+            )}
           </div>
         </div>
-
-        {game.attempts.length > 0 && (
-          <div className={styles.previousGuesses}>
-            <h3 className={styles.guessesTitle}>PREVIOUS ATTEMPTS</h3>
-            <p className={styles.guessesList}>
-              {game.attempts.map((attempt) => attempt.toUpperCase()).join(' | ')}
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
