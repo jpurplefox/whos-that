@@ -8,21 +8,53 @@
   box-sizing: border-box;
 }
 
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .dropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 0.5rem);
   left: 0;
   right: 0;
   margin: 0;
-  padding: 0;
+  padding: 0.5rem;
   list-style: none;
-  background: var(--color-surface-light);
-  border: 2px solid var(--color-primary);
-  border-top: none;
-  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  background: rgba(39, 39, 42, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   max-height: 300px;
   overflow-y: auto;
   z-index: 10;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
+              0 4px 12px rgba(220, 38, 38, 0.1);
+  animation: dropdownSlideIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
+}
+
+.dropdown::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-light);
 }
 
 .option {
@@ -31,18 +63,30 @@
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
   cursor: pointer;
-  transition: background 0.15s;
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.option:hover,
+.option:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateX(4px);
+}
+
 .option.active {
-  background: var(--color-primary);
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+  transform: translateX(4px);
 }
 
 .sprite {
   width: 40px;
   height: 40px;
   image-rendering: pixelated;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 2px;
 }
 
 .name {
