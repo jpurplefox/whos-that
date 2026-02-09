@@ -1,0 +1,123 @@
+.gameOver {
+  text-align: center;
+}
+
+.title {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.title.won {
+  color: var(--color-success);
+}
+
+.title.lost {
+  color: var(--color-error);
+}
+
+.message {
+  font-size: 1.3rem;
+  margin-bottom: var(--spacing-xl);
+  color: var(--color-text-secondary);
+}
+
+.pokemonReveal {
+  background: var(--color-surface-light);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.pokemonImage {
+  max-width: 300px;
+  height: auto;
+  margin: 0 auto var(--spacing-md);
+  display: block;
+}
+
+.pokemonName {
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: capitalize;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.pokemonId {
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+}
+
+.score {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.scoreLabel {
+  font-size: 1.2rem;
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text-secondary);
+}
+
+.scoreValue {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--color-text);
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.playAgainButton {
+  min-width: 200px;
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: 1.2rem;
+}
+
+@keyframes celebrate {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.1) rotate(-5deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(5deg);
+  }
+}
+
+.title.won {
+  animation: celebrate 0.5s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .pokemonImage {
+    max-width: 200px;
+  }
+
+  .pokemonName {
+    font-size: 1.5rem;
+  }
+
+  .scoreValue {
+    font-size: 2rem;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .playAgainButton {
+    width: 100%;
+  }
+}
