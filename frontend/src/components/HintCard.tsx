@@ -21,12 +21,13 @@ const COMPARISON_ICONS: Record<Comparison, string> = {
 
 interface HintCardProps {
   hint: Hint;
+  isNew?: boolean;
 }
 
-export function HintCard({ hint }: HintCardProps) {
+export function HintCard({ hint, isNew = false }: HintCardProps) {
   if (hint.type === 'stat') {
     return (
-      <div className={`${styles.hintCard} ${styles.stat}`}>
+      <div className={`${styles.hintCard} ${styles.stat} ${isNew ? styles.newCard : ''}`}>
         <div className={styles.hintContent}>
           <div className={styles.statName}>{hint.stat.replace('_', ' ')}</div>
           <div className={styles.statValue}>{hint.value}</div>
@@ -38,7 +39,7 @@ export function HintCard({ hint }: HintCardProps) {
   if (hint.type === 'comparison') {
     const pokemonData = findPokemonByName(hint.pokemon);
     return (
-      <div className={`${styles.hintCard} ${styles.comparison}`}>
+      <div className={`${styles.hintCard} ${styles.comparison} ${isNew ? styles.newCard : ''}`}>
         <div className={styles.comparisonPokemonHeader}>
           {pokemonData && (
             <img src={pokemonData.image_url} alt={hint.pokemon} className={styles.comparisonSprite} />
@@ -65,7 +66,7 @@ export function HintCard({ hint }: HintCardProps) {
 
   if (hint.type === 'primary_type') {
     return (
-      <div className={`${styles.hintCard} ${styles.type}`}>
+      <div className={`${styles.hintCard} ${styles.type} ${isNew ? styles.newCard : ''}`}>
         <div className={styles.hintContent}>
           <div className={styles.statName}>Primary Type</div>
           <div className={styles.typeValue}>{hint.primary_type}</div>
@@ -76,7 +77,7 @@ export function HintCard({ hint }: HintCardProps) {
 
   if (hint.type === 'secondary_type') {
     return (
-      <div className={`${styles.hintCard} ${styles.type}`}>
+      <div className={`${styles.hintCard} ${styles.type} ${isNew ? styles.newCard : ''}`}>
         <div className={styles.hintContent}>
           <div className={styles.statName}>Secondary Type</div>
           <div className={hint.secondary_type ? styles.typeValue : `${styles.typeValue} ${styles.none}`}>
@@ -89,7 +90,7 @@ export function HintCard({ hint }: HintCardProps) {
 
   if (hint.type === 'fully_evolved') {
     return (
-      <div className={`${styles.hintCard} ${styles.evolution}`}>
+      <div className={`${styles.hintCard} ${styles.evolution} ${isNew ? styles.newCard : ''}`}>
         <div className={styles.hintContent}>
           <div className={hint.is_fully_evolved ? `${styles.evolutionValue} ${styles.yes}` : `${styles.evolutionValue} ${styles.no}`}>
             {hint.is_fully_evolved ? 'Fully Evolved' : 'Not Fully Evolved'}
@@ -103,7 +104,7 @@ export function HintCard({ hint }: HintCardProps) {
     // Handle completion hint (when all attributes revealed)
     if (hint.relation === 'completion') {
       return (
-        <div className={`${styles.hintCard} ${styles.effectiveness}`}>
+        <div className={`${styles.hintCard} ${styles.effectiveness} ${isNew ? styles.newCard : ''}`}>
           <div className={styles.hintContent}>
             <div className={styles.typeValue}>All type attributes revealed!</div>
           </div>
@@ -112,7 +113,7 @@ export function HintCard({ hint }: HintCardProps) {
     }
 
     return (
-      <div className={`${styles.hintCard} ${styles.effectiveness}`}>
+      <div className={`${styles.hintCard} ${styles.effectiveness} ${isNew ? styles.newCard : ''}`}>
         <div className={styles.effectivenessContent}>
           <div className={styles.effectivenessRelation}>{hint.relation}</div>
           <div className={styles.effectivenessElement}>{hint.element}</div>

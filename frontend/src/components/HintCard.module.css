@@ -9,6 +9,96 @@
   }
 }
 
+/* CRT Animation Phases */
+@keyframes crtSignalReception {
+  0% {
+    opacity: 0;
+    transform: translateX(-2px);
+    filter: brightness(1.2);
+  }
+  15% {
+    opacity: 0.3;
+    transform: translateX(1px);
+  }
+  30% {
+    opacity: 0;
+    transform: translateX(-1px);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateX(0);
+    filter: brightness(1.4);
+  }
+  70% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    filter: brightness(1);
+  }
+}
+
+@keyframes crtDataStream {
+  0% {
+    clip-path: inset(0 0 100% 0);
+  }
+  100% {
+    clip-path: inset(0 0 0% 0);
+  }
+}
+
+@keyframes crtScanSweep {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes crtTextDecode {
+  0% {
+    filter: blur(3px);
+    text-shadow: 0 0 20px currentColor;
+  }
+  60% {
+    filter: blur(1px);
+  }
+  100% {
+    filter: blur(0);
+    text-shadow: inherit;
+  }
+}
+
+@keyframes crtLockGlow {
+  0% {
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(16, 185, 129, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(16, 185, 129, 0.1),
+      0 0 20px currentColor,
+      inset 0 0 10px currentColor;
+  }
+  100% {
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(16, 185, 129, 0.1);
+  }
+}
+
 @keyframes slideUp {
   from {
     transform: translateY(4px);
@@ -40,7 +130,6 @@
     0 2px 6px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(16, 185, 129, 0.1);
   position: relative;
-  animation: slideInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
   font-family: 'Courier New', monospace;
   overflow: hidden;
   min-height: 180px;
@@ -290,6 +379,115 @@
   font-size: 0.7rem;
   color: rgba(16, 185, 129, 0.8);
   font-family: 'Courier New', monospace;
+}
+
+/* New Card CRT Animation */
+.newCard {
+  animation:
+    crtSignalReception 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    crtDataStream 0.25s 0.25s cubic-bezier(0.4, 0, 0.2, 1) backwards,
+    crtLockGlow 0.3s 0.5s ease-out;
+}
+
+.newCard .hintContent,
+.newCard .comparisonPokemonHeader,
+.newCard .comparisonGrid,
+.newCard .effectivenessContent {
+  animation: crtTextDecode 0.3s 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+/* Scan sweep effect */
+.newCard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(16, 185, 129, 0.8) 50%,
+    transparent
+  );
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+  animation: crtScanSweep 0.35s 0.25s ease-in-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Type-specific scan sweep colors */
+.newCard.stat::after {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(59, 130, 246, 0.8) 50%,
+    transparent
+  );
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+}
+
+.newCard.comparison::after {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(245, 158, 11, 0.8) 50%,
+    transparent
+  );
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+}
+
+.newCard.type::after {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(16, 185, 129, 0.8) 50%,
+    transparent
+  );
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+}
+
+.newCard.evolution::after {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(139, 92, 246, 0.8) 50%,
+    transparent
+  );
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.6);
+}
+
+.newCard.effectiveness::after {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(236, 72, 153, 0.8) 50%,
+    transparent
+  );
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.6);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .newCard {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+    clip-path: none;
+  }
+
+  .newCard .hintContent,
+  .newCard .comparisonPokemonHeader,
+  .newCard .comparisonGrid,
+  .newCard .effectivenessContent {
+    animation: none;
+    filter: none;
+  }
+
+  .newCard::after {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {

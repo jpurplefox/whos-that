@@ -230,8 +230,12 @@ export function Game({ initialGame, onGameOver }: GameProps) {
               <div className={styles.hintsSection}>
                 <h3 className={styles.sectionTitle}>DATA RETRIEVED</h3>
                 <div className={styles.hintsGrid}>
-                  {game.hints.map((hint, index) => (
-                    <HintCard key={index} hint={hint} />
+                  {[...game.hints].reverse().map((hint, index) => (
+                    <HintCard
+                      key={game.hints.length - 1 - index}
+                      hint={hint}
+                      isNew={index === 0}
+                    />
                   ))}
                 </div>
               </div>
