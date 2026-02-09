@@ -285,6 +285,9 @@
   color: rgba(16, 185, 129, 0.7);
   margin-bottom: 2px;
   letter-spacing: 0.3px;
+  min-height: 2em;
+  display: flex;
+  align-items: center;
 }
 
 .comparisonValue {
