@@ -1,34 +1,34 @@
 import type { HintType } from '../types/api';
 
 export interface HintMetadata {
-  label: string;
+  labelKey: string;
   icon: string;
   colorClass: string;
 }
 
 export const HINT_CONFIG: Record<HintType, HintMetadata> = {
   stat: {
-    label: 'Random Stat',
+    labelKey: 'hint.randomStat',
     icon: '📊',
     colorClass: 'hintStat',
   },
   primary_type: {
-    label: 'Primary Type',
+    labelKey: 'hint.primaryType',
     icon: '🏷️',
     colorClass: 'hintType',
   },
   secondary_type: {
-    label: 'Secondary Type',
+    labelKey: 'hint.secondaryType',
     icon: '🏷️',
     colorClass: 'hintType',
   },
   fully_evolved: {
-    label: 'Evolution Status',
+    labelKey: 'hint.evolutionStatus',
     icon: '⚡',
     colorClass: 'hintEvolution',
   },
   effectiveness: {
-    label: 'Type Effectiveness',
+    labelKey: 'hint.typeEffectiveness',
     icon: '⚔️',
     colorClass: 'hintEffectiveness',
   },

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { HintType, AvailableHint } from '../types/api';
 import { HINT_CONFIG } from '../config/hintConfig';
 import styles from './Game.module.css';
@@ -13,6 +14,8 @@ interface HintShopProps {
 type DisabledReason = 'purchased' | 'low-battery' | null;
 
 export function HintShop({ availableHints, battery, isLoading, onConsultHint, onHoverCost }: HintShopProps) {
+  const { t } = useTranslation();
+
   const getDisabledReason = (availableHint: AvailableHint): DisabledReason => {
     if (!availableHint.available) return 'purchased';
     if (battery < (availableHint.cost || 0)) return 'low-battery';
@@ -21,7 +24,7 @@ export function HintShop({ availableHints, battery, isLoading, onConsultHint, on
 
   return (
     <div className={styles.controlPanel}>
-      <h3 className={styles.controlTitle}>REQUEST NEW DATA</h3>
+      <h3 className={styles.controlTitle}>{t('hintShop.title')}</h3>
       <div className={styles.hintShop}>
         {availableHints
           .filter((h) => h.cost !== null)
@@ -42,16 +45,16 @@ export function HintShop({ availableHints, battery, isLoading, onConsultHint, on
                 onMouseLeave={() => onHoverCost(null)}
               >
                 <span className={styles.hintIcon}>{metadata.icon}</span>
-                <span className={styles.hintLabel}>{metadata.label}</span>
+                <span className={styles.hintLabel}>{t(metadata.labelKey)}</span>
                 <div className={styles.hintCostWrapper}>
                   <span className={styles.hintCost}>{availableHint.cost}</span>
                   <span className={styles.powerUnit}>⚡</span>
                 </div>
                 {disabledReason === 'purchased' && (
-                  <span className={styles.disabledLabel}>USED</span>
+                  <span className={styles.disabledLabel}>{t('hintShop.used')}</span>
                 )}
                 {disabledReason === 'low-battery' && (
-                  <span className={styles.disabledLabel}>LOW PWR</span>
+                  <span className={styles.disabledLabel}>{t('hintShop.lowPwr')}</span>
                 )}
               </button>
             );

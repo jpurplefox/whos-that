@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Difficulty } from '../types/api';
 import styles from './Home.module.css';
 
@@ -7,6 +8,7 @@ interface HomeProps {
 }
 
 export function Home({ onStartGame }: HomeProps) {
+  const { t } = useTranslation();
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('medium');
 
   const handleStart = () => {
@@ -26,13 +28,13 @@ export function Home({ onStartGame }: HomeProps) {
 
       <div className={styles.screenBorder}>
         <div className={styles.screen}>
-          <h1 className={styles.title}>Who's That Pokémon?</h1>
+          <h1 className={styles.title}>{t('home.title')}</h1>
           <p className={styles.subtitle}>
-            Test your Pokémon knowledge! Guess the mystery Pokémon using hints.
+            {t('home.subtitle')}
           </p>
 
           <div className={styles.difficultySection}>
-            <h2>Choose Your Difficulty</h2>
+            <h2>{t('home.chooseDifficulty')}</h2>
             <div className={styles.difficultyButtons}>
               <button
                 className={`${styles.difficultyButton} ${styles.easy} ${
@@ -40,7 +42,7 @@ export function Home({ onStartGame }: HomeProps) {
                 }`}
                 onClick={() => setSelectedDifficulty('easy')}
               >
-                Easy
+                {t('home.easy')}
               </button>
               <button
                 className={`${styles.difficultyButton} ${styles.medium} ${
@@ -48,7 +50,7 @@ export function Home({ onStartGame }: HomeProps) {
                 }`}
                 onClick={() => setSelectedDifficulty('medium')}
               >
-                Medium
+                {t('home.medium')}
               </button>
               <button
                 className={`${styles.difficultyButton} ${styles.hard} ${
@@ -56,13 +58,13 @@ export function Home({ onStartGame }: HomeProps) {
                 }`}
                 onClick={() => setSelectedDifficulty('hard')}
               >
-                Hard
+                {t('home.hard')}
               </button>
             </div>
           </div>
 
           <button className={styles.startButton} onClick={handleStart}>
-            Start Game
+            {t('home.startGame')}
           </button>
         </div>
       </div>

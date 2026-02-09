@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { GameResponse, HintType } from '../types/api';
 import { api } from '../services/api';
 import { HintCard } from './HintCard';
@@ -14,6 +15,7 @@ interface GameProps {
 }
 
 export function Game({ initialGame, onGameOver }: GameProps) {
+  const { t } = useTranslation();
   const [game, setGame] = useState<GameResponse>(initialGame);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,7 +37,7 @@ export function Game({ initialGame, onGameOver }: GameProps) {
         setTimeout(() => onGameOver(updatedGame), 500);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to make guess');
+      setError(err instanceof Error ? err.message : t('game.errorGuess'));
     } finally {
       setIsLoading(false);
     }
@@ -53,7 +55,7 @@ export function Game({ initialGame, onGameOver }: GameProps) {
       });
       setGame(updatedGame);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to consult hint');
+      setError(err instanceof Error ? err.message : t('game.errorHint'));
     } finally {
       setIsLoading(false);
     }
@@ -93,7 +95,7 @@ export function Game({ initialGame, onGameOver }: GameProps) {
               <div className={styles.scanningEffect}></div>
               <div className={styles.scanLine}></div>
               <div className={styles.silhouetteImage}>?</div>
-              <p className={styles.mysteryLabel}>MYSTERY POKÉMON</p>
+              <p className={styles.mysteryLabel}>{t('game.mysteryPokemon')}</p>
             </div>
           </div>
         </div>
@@ -119,7 +121,7 @@ export function Game({ initialGame, onGameOver }: GameProps) {
           <div className={styles.infoScreen}>
             <div className={styles.screenWrapper}>
               <div className={styles.hintsSection}>
-                <h3 className={styles.sectionTitle}>KNOWN DATA</h3>
+                <h3 className={styles.sectionTitle}>{t('game.knownData')}</h3>
                 <div className={styles.hintsGrid}>
                   {[...game.hints].reverse().map((hint, index) => (
                     <HintCard
@@ -136,7 +138,7 @@ export function Game({ initialGame, onGameOver }: GameProps) {
 
         <div className={styles.inputScreen}>
           <div className={styles.inputWrapper}>
-            <h3 className={styles.inputTitle}>SUBMIT GUESS</h3>
+            <h3 className={styles.inputTitle}>{t('game.submitGuess')}</h3>
             <PokemonSearch onSelect={handleGuess} disabled={isLoading} />
             {error && <div className="error">{error}</div>}
           </div>

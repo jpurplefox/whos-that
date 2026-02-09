@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import styles from './Game.module.css';
 
 interface AttemptsIndicatorProps {
@@ -6,6 +7,8 @@ interface AttemptsIndicatorProps {
 }
 
 export function AttemptsIndicator({ attemptsRemaining, totalAttempts }: AttemptsIndicatorProps) {
+  const { t } = useTranslation();
+
   const getAttemptsColorClass = (): string => {
     if (attemptsRemaining >= 3) return styles.attemptsFull;
     if (attemptsRemaining === 2) return styles.attemptsWarning;
@@ -15,7 +18,7 @@ export function AttemptsIndicator({ attemptsRemaining, totalAttempts }: Attempts
 
   return (
     <div className={styles.attemptsDisplay}>
-      <div className={styles.attemptsLabel}>TRIES</div>
+      <div className={styles.attemptsLabel}>{t('indicator.tries')}</div>
       <div className={styles.attemptsIcons}>
         {Array.from({ length: totalAttempts }).map((_, index) => (
           <div
