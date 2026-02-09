@@ -14,6 +14,7 @@ export function Game({ initialGame, onGameOver }: GameProps) {
   const [game, setGame] = useState<GameResponse>(initialGame);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [hoveredHintCost, setHoveredHintCost] = useState<number | null>(null);
 
   const handleGuess = async (pokemonName: string) => {
     if (isLoading) return;
@@ -57,6 +58,20 @@ export function Game({ initialGame, onGameOver }: GameProps) {
 
   const batteryPercentage = (game.battery / game.max_battery) * 100;
   const isLowBattery = batteryPercentage < 30;
+
+  const getBatteryColorClass = (): string => {
+    if (batteryPercentage >= 75) return styles.batteryFull;
+    if (batteryPercentage >= 50) return styles.batteryGood;
+    if (batteryPercentage >= 30) return styles.batteryWarning;
+    return styles.batteryCritical;
+  };
+
+  const getAttemptsColorClass = (): string => {
+    if (game.attempts_remaining >= 3) return styles.attemptsFull;
+    if (game.attempts_remaining === 2) return styles.attemptsWarning;
+    if (game.attempts_remaining === 1) return styles.attemptsCritical;
+    return styles.attemptsEmpty;
+  };
 
   const getHintTypeLabel = (type: HintType): string => {
     const labels: Record<HintType, string> = {
@@ -103,14 +118,52 @@ export function Game({ initialGame, onGameOver }: GameProps) {
           <div className={styles.screenContent}>
             <div className={styles.statusDisplay}>
               <div className={styles.batteryDisplay}>
-                <div className={styles.batteryLabel}>BATTERY</div>
+                <div className={styles.batteryHeader}>
+                  <span className={styles.batteryIcon}>⚡</span>
+                  <span className={styles.batteryLabel}>PWR</span>
+                </div>
+                <div className={styles.batteryBarOuter}>
+                  {Array.from({ length: game.max_battery }).map((_, index) => {
+                    const isFilled = index < game.battery;
+                    const isPreviewedForRemoval = hoveredHintCost !== null &&
+                                                   isFilled &&
+                                                   index >= (game.battery - hoveredHintCost);
+                    return (
+                      <div
+                        key={index}
+                        className={`${styles.batterySegment} ${
+                          isFilled ? getBatteryColorClass() : styles.batterySegmentEmpty
+                        } ${isPreviewedForRemoval ? styles.batterySegmentPreview : ''}`}
+                      />
+                    );
+                  })}
+                  <div className={styles.batteryTerminal} />
+                </div>
                 <div className={`${styles.batteryValue} ${isLowBattery ? styles.warning : ''}`}>
                   {game.battery}/{game.max_battery}
                 </div>
               </div>
               <div className={styles.attemptsDisplay}>
-                <div className={styles.attemptsLabel}>ATTEMPTS</div>
-                <div className={styles.attemptsValue}>{game.attempts_remaining}</div>
+                <div className={styles.attemptsLabel}>TRIES</div>
+                <div className={styles.attemptsIcons}>
+                  {Array.from({ length: game.attempts_remaining + game.attempts.length }).map((_, index) => (
+                    <div
+                      key={index}
+                      className={`${styles.pokeball} ${
+                        index < game.attempts_remaining
+                          ? getAttemptsColorClass()
+                          : styles.pokeballUsed
+                      } ${
+                        game.attempts_remaining === 1 && index === 0 ? styles.lastAttempt : ''
+                      }`}
+                    >
+                      {index < game.attempts_remaining ? '●' : '✕'}
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.attemptsValue}>
+                  {game.attempts_remaining}/{game.attempts_remaining + game.attempts.length}
+                </div>
               </div>
             </div>
 
@@ -148,7 +201,7 @@ export function Game({ initialGame, onGameOver }: GameProps) {
         )}
 
         <div className={styles.controlPanel}>
-          <h3 className={styles.controlTitle}>POKEDEX CONSULTATION ({game.battery} battery)</h3>
+          <h3 className={styles.controlTitle}>POKEDEX CONSULTATION</h3>
           <div className={styles.hintShop}>
             {game.available_hints
               .filter((h) => h.cost !== null)
@@ -165,6 +218,8 @@ export function Game({ initialGame, onGameOver }: GameProps) {
                     }`}
                     onClick={() => handleConsultHint(availableHint.type)}
                     disabled={isDisabled}
+                    onMouseEnter={() => !isDisabled && setHoveredHintCost(availableHint.cost)}
+                    onMouseLeave={() => setHoveredHintCost(null)}
                   >
                     <span className={styles.hintIcon}>{metadata.icon}</span>
                     <span className={styles.hintLabel}>{getHintTypeLabel(availableHint.type)}</span>
