@@ -1,18 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Difficulty, GameResponse } from './types/api';
 import { api } from './services/api';
 import { Home } from './components/Home';
 import { Game } from './components/Game';
 import { GameOver } from './components/GameOver';
+import { LanguageSwitcher } from './components/LanguageSwitcher';
 import './App.css';
 
 type GameState = 'home' | 'playing' | 'game-over';
 
 function App() {
+  const { t, i18n } = useTranslation();
   const [gameState, setGameState] = useState<GameState>('home');
   const [currentGame, setCurrentGame] = useState<GameResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    document.title = t('pageTitle');
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) {
+      meta.setAttribute('content', t('pageDescription'));
+    }
+  }, [t, i18n.language]);
 
   const handleStartGame = async (difficulty: Difficulty) => {
     setIsLoading(true);
@@ -23,7 +34,7 @@ function App() {
       setCurrentGame(game);
       setGameState('playing');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to start game');
+      setError(err instanceof Error ? err.message : t('game.errorStartGame'));
     } finally {
       setIsLoading(false);
     }
@@ -42,9 +53,10 @@ function App() {
 
   return (
     <div className="app">
+      <LanguageSwitcher />
       <div className="pokedex-device">
         <div className="container">
-          {isLoading && <div className="loading">Loading...</div>}
+          {isLoading && <div className="loading">{t('game.loading')}</div>}
 
           {error && <div className="error">{error}</div>}
 

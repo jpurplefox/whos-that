@@ -177,10 +177,10 @@ describe('HintShop', () => {
     expect(screen.getAllByText('⚡').length).toBeGreaterThan(0);
   });
 
-  it('renders POKEDEX CONSULTATION title', () => {
+  it('renders REQUEST NEW DATA title', () => {
     render(<HintShop {...defaultProps} availableHints={[]} />);
 
-    expect(screen.getByText('POKEDEX CONSULTATION')).toBeInTheDocument();
+    expect(screen.getByText('REQUEST NEW DATA')).toBeInTheDocument();
   });
 
   it('handles multiple hints with various states', () => {

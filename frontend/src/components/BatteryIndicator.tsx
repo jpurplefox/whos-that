@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import styles from './Game.module.css';
 
 interface BatteryIndicatorProps {
@@ -7,6 +8,7 @@ interface BatteryIndicatorProps {
 }
 
 export function BatteryIndicator({ battery, maxBattery, hoveredHintCost }: BatteryIndicatorProps) {
+  const { t } = useTranslation();
   const batteryPercentage = (battery / maxBattery) * 100;
   const isLowBattery = batteryPercentage < 30;
 
@@ -21,7 +23,7 @@ export function BatteryIndicator({ battery, maxBattery, hoveredHintCost }: Batte
     <div className={styles.batteryDisplay}>
       <div className={styles.batteryHeader}>
         <span className={styles.batteryIcon}>⚡</span>
-        <span className={styles.batteryLabel}>PWR</span>
+        <span className={styles.batteryLabel}>{t('indicator.pwr')}</span>
       </div>
       <div className={styles.batteryBarOuter}>
         {Array.from({ length: maxBattery }).map((_, index) => {

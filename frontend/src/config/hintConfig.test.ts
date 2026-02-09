@@ -11,11 +11,11 @@ describe('hintConfig', () => {
     });
   });
 
-  it('each entry has label defined', () => {
+  it('each entry has labelKey defined', () => {
     allHintTypes.forEach((hintType) => {
-      expect(HINT_CONFIG[hintType].label).toBeDefined();
-      expect(typeof HINT_CONFIG[hintType].label).toBe('string');
-      expect(HINT_CONFIG[hintType].label.length).toBeGreaterThan(0);
+      expect(HINT_CONFIG[hintType].labelKey).toBeDefined();
+      expect(typeof HINT_CONFIG[hintType].labelKey).toBe('string');
+      expect(HINT_CONFIG[hintType].labelKey.length).toBeGreaterThan(0);
     });
   });
 
@@ -37,7 +37,7 @@ describe('hintConfig', () => {
 
   it('has correct metadata for stat hint', () => {
     expect(HINT_CONFIG.stat).toEqual({
-      label: 'Random Stat',
+      labelKey: 'hint.randomStat',
       icon: '📊',
       colorClass: 'hintStat',
     });
@@ -45,7 +45,7 @@ describe('hintConfig', () => {
 
   it('has correct metadata for primary_type hint', () => {
     expect(HINT_CONFIG.primary_type).toEqual({
-      label: 'Primary Type',
+      labelKey: 'hint.primaryType',
       icon: '🏷️',
       colorClass: 'hintType',
     });
@@ -53,7 +53,7 @@ describe('hintConfig', () => {
 
   it('has correct metadata for secondary_type hint', () => {
     expect(HINT_CONFIG.secondary_type).toEqual({
-      label: 'Secondary Type',
+      labelKey: 'hint.secondaryType',
       icon: '🏷️',
       colorClass: 'hintType',
     });
@@ -61,7 +61,7 @@ describe('hintConfig', () => {
 
   it('has correct metadata for fully_evolved hint', () => {
     expect(HINT_CONFIG.fully_evolved).toEqual({
-      label: 'Evolution Status',
+      labelKey: 'hint.evolutionStatus',
       icon: '⚡',
       colorClass: 'hintEvolution',
     });
@@ -69,7 +69,7 @@ describe('hintConfig', () => {
 
   it('has correct metadata for effectiveness hint', () => {
     expect(HINT_CONFIG.effectiveness).toEqual({
-      label: 'Type Effectiveness',
+      labelKey: 'hint.typeEffectiveness',
       icon: '⚔️',
       colorClass: 'hintEffectiveness',
     });

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Pokemon } from '../types/api';
 import { getPokemonList } from '../services/pokemonCache';
 import styles from './PokemonSearch.module.css';
@@ -9,6 +10,7 @@ interface PokemonSearchProps {
 }
 
 export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [filtered, setFiltered] = useState<Pokemon[]>([]);
@@ -84,7 +86,7 @@ export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
         onFocus={() => { if (filtered.length > 0) setIsOpen(true); }}
-        placeholder="Search Pokémon..."
+        placeholder={t('search.placeholder')}
         disabled={disabled}
         autoFocus
       />

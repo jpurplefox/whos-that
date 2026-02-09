@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { GameResponse } from '../types/api';
 import styles from './GameOver.module.css';
 
@@ -7,6 +8,7 @@ interface GameOverProps {
 }
 
 export function GameOver({ game, onPlayAgain }: GameOverProps) {
+  const { t } = useTranslation();
   const { is_won, pokemon, score } = game;
 
   if (!pokemon) {
@@ -18,13 +20,13 @@ export function GameOver({ game, onPlayAgain }: GameOverProps) {
       <div className={styles.screenBorder}>
         <div className={styles.resultScreen}>
           <h1 className={`${styles.title} ${is_won ? styles.won : styles.lost}`}>
-            {is_won ? 'SCAN COMPLETE' : 'SCAN FAILED'}
+            {is_won ? t('gameOver.scanComplete') : t('gameOver.scanFailed')}
           </h1>
 
           <p className={styles.message}>
             {is_won
-              ? 'POKÉMON SUCCESSFULLY IDENTIFIED'
-              : 'IDENTIFICATION UNSUCCESSFUL'}
+              ? t('gameOver.identified')
+              : t('gameOver.unsuccessful')}
           </p>
 
           <div className={styles.pokemonReveal}>
@@ -38,13 +40,13 @@ export function GameOver({ game, onPlayAgain }: GameOverProps) {
           </div>
 
           <div className={styles.scoreReadout}>
-            <div className={styles.scoreLabel}>FINAL SCORE</div>
+            <div className={styles.scoreLabel}>{t('gameOver.finalScore')}</div>
             <div className={styles.scoreValue}>{score || 0}</div>
           </div>
 
           <div className={styles.actions}>
             <button className={styles.playAgainButton} onClick={onPlayAgain}>
-              NEW SCAN
+              {t('gameOver.newScan')}
             </button>
           </div>
         </div>
