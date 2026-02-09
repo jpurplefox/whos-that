@@ -9,140 +9,6 @@
   }
 }
 
-.hintCard {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
-              rgba(0, 0, 0, 0.2);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-md);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  position: relative;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: slideInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
-  overflow: hidden;
-}
-
-.hintCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent-color, var(--color-primary)), transparent);
-}
-
-.hintCard:hover {
-  transform: translateY(-2px);
-}
-
-.hintCard.stat {
-  --accent-color: #3b82f6;
-}
-
-.hintCard.comparison {
-  --accent-color: #f59e0b;
-}
-
-.hintCard.type {
-  --accent-color: #10b981;
-}
-
-.hintCard.evolution {
-  --accent-color: #8b5cf6;
-}
-
-.hintCard.effectiveness {
-  --accent-color: #ec4899;
-}
-
-.hintType {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-xs);
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.hintType::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-color, var(--color-primary));
-  box-shadow: 0 0 8px var(--accent-color, var(--color-primary));
-}
-
-.hintContent {
-  font-size: 1.1rem;
-}
-
-.statName {
-  text-transform: capitalize;
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
-}
-
-.statValue {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #3b82f6;
-  text-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
-}
-
-.comparisonPokemonHeader {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-sm);
-}
-
-.comparisonSprite {
-  width: 48px;
-  height: 48px;
-}
-
-.comparisonPokemon {
-  font-weight: bold;
-  color: var(--color-warning);
-  font-size: 1.2rem;
-  text-transform: capitalize;
-}
-
-.comparisonGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-sm);
-}
-
-.comparisonItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: var(--spacing-sm);
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-  transition: all 0.2s ease;
-}
-
-.comparisonItem:hover {
-  background: rgba(0, 0, 0, 0.4);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.comparisonStat {
-  font-size: 0.8rem;
-  text-transform: capitalize;
-  color: var(--color-text-secondary);
-}
-
 @keyframes slideUp {
   from {
     transform: translateY(4px);
@@ -165,59 +31,232 @@
   }
 }
 
+.hintCard {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  padding: var(--spacing-md);
+  border: 2px solid rgba(16, 185, 129, 0.4);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(16, 185, 129, 0.1);
+  position: relative;
+  animation: slideInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+}
+
+.hintCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--screen-glow), transparent);
+  box-shadow: 0 0 6px var(--screen-glow);
+}
+
+.hintCard.stat {
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.hintCard.stat::before {
+  background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+  box-shadow: 0 0 6px #3b82f6;
+}
+
+.hintCard.comparison {
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.hintCard.comparison::before {
+  background: linear-gradient(90deg, transparent, #f59e0b, transparent);
+  box-shadow: 0 0 6px #f59e0b;
+}
+
+.hintCard.type {
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.hintCard.type::before {
+  background: linear-gradient(90deg, transparent, #10b981, transparent);
+  box-shadow: 0 0 6px #10b981;
+}
+
+.hintCard.evolution {
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.hintCard.evolution::before {
+  background: linear-gradient(90deg, transparent, #8b5cf6, transparent);
+  box-shadow: 0 0 6px #8b5cf6;
+}
+
+.hintCard.effectiveness {
+  border-color: rgba(236, 72, 153, 0.4);
+}
+
+.hintCard.effectiveness::before {
+  background: linear-gradient(90deg, transparent, #ec4899, transparent);
+  box-shadow: 0 0 6px #ec4899;
+}
+
+.hintType {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--screen-glow);
+  margin-bottom: var(--spacing-xs);
+  font-weight: bold;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+}
+
+.hintType::before {
+  content: '\u25B8';
+  font-size: 0.8rem;
+  color: var(--screen-glow);
+}
+
+.hintContent {
+  font-size: 1.1rem;
+}
+
+.statName {
+  text-transform: uppercase;
+  color: rgba(16, 185, 129, 0.8);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--screen-glow);
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+  font-family: 'Courier New', monospace;
+}
+
+.comparisonPokemonHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.comparisonSprite {
+  width: 48px;
+  height: 48px;
+  border: 2px solid rgba(16, 185, 129, 0.3);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+}
+
+.comparisonPokemon {
+  font-weight: bold;
+  color: #fbbf24;
+  font-size: 1rem;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+}
+
+.comparisonGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+}
+
+.comparisonItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-xs);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 4px;
+}
+
+.comparisonStat {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: rgba(16, 185, 129, 0.7);
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
 .comparisonValue {
   font-weight: bold;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   margin-top: 2px;
+  font-family: 'Courier New', monospace;
 }
 
 .comparisonValue.higher {
-  color: var(--color-success);
-  text-shadow: 0 2px 8px currentColor;
+  color: var(--led-green);
+  text-shadow: 0 0 10px var(--led-green);
   animation: slideUp 0.3s ease-out;
 }
 
 .comparisonValue.lower {
-  color: var(--color-error);
-  text-shadow: 0 2px 8px currentColor;
+  color: var(--led-red);
+  text-shadow: 0 0 10px var(--led-red);
   animation: slideDown 0.3s ease-out;
 }
 
 .comparisonValue.equal {
-  color: var(--color-warning);
-  text-shadow: 0 2px 8px currentColor;
+  color: var(--led-yellow);
+  text-shadow: 0 0 10px var(--led-yellow);
 }
 
 .typeValue {
   font-weight: bold;
-  color: #10b981;
-  text-transform: capitalize;
-  font-size: 1.3rem;
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  color: var(--screen-glow);
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  background: rgba(16, 185, 129, 0.2);
+  border: 2px solid rgba(16, 185, 129, 0.4);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
   display: inline-block;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
 }
 
 .typeValue.none {
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.5);
   font-style: italic;
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  text-shadow: none;
 }
 
 .evolutionValue {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: bold;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
 }
 
 .evolutionValue.yes {
-  color: var(--color-success);
+  color: var(--led-green);
+  text-shadow: 0 0 10px var(--led-green);
 }
 
 .evolutionValue.no {
-  color: var(--color-error);
+  color: var(--led-red);
+  text-shadow: 0 0 10px var(--led-red);
 }
 
 .effectivenessContent {
@@ -227,19 +266,30 @@
 }
 
 .effectivenessRelation {
-  text-transform: capitalize;
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: rgba(16, 185, 129, 0.8);
+  letter-spacing: 1px;
 }
 
 .effectivenessElement {
   font-weight: bold;
-  text-transform: capitalize;
+  text-transform: uppercase;
   font-size: 1.3rem;
-  color: #9c27b0;
+  color: #ec4899;
+  text-shadow: 0 0 10px rgba(236, 72, 153, 0.8);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
 }
 
 .effectivenessMultiplier {
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  color: rgba(16, 185, 129, 0.8);
+  font-family: 'Courier New', monospace;
+}
+
+@media (max-width: 768px) {
+  .comparisonGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

@@ -42,22 +42,24 @@ function App() {
 
   return (
     <div className="app">
-      <div className="container">
-        {isLoading && <div className="loading">Loading...</div>}
+      <div className="pokedex-device">
+        <div className="container">
+          {isLoading && <div className="loading">Loading...</div>}
 
-        {error && <div className="error">{error}</div>}
+          {error && <div className="error">{error}</div>}
 
-        {!isLoading && gameState === 'home' && (
-          <Home onStartGame={handleStartGame} />
-        )}
+          {!isLoading && gameState === 'home' && (
+            <Home onStartGame={handleStartGame} />
+          )}
 
-        {!isLoading && gameState === 'playing' && currentGame && (
-          <Game initialGame={currentGame} onGameOver={handleGameOver} />
-        )}
+          {!isLoading && gameState === 'playing' && currentGame && (
+            <Game initialGame={currentGame} onGameOver={handleGameOver} />
+          )}
 
-        {!isLoading && gameState === 'game-over' && currentGame && (
-          <GameOver game={currentGame} onPlayAgain={handlePlayAgain} />
-        )}
+          {!isLoading && gameState === 'game-over' && currentGame && (
+            <GameOver game={currentGame} onPlayAgain={handlePlayAgain} />
+          )}
+        </div>
       </div>
     </div>
   );

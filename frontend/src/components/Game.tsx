@@ -71,78 +71,101 @@ export function Game({ initialGame, onGameOver }: GameProps) {
 
   return (
     <div className={styles.game}>
-      <div className={styles.header}>
-        <h1>Who's That Pokémon?</h1>
-      </div>
+      {/* UPPER SECTION */}
+      <div className={styles.upperSection}>
+        <div className={styles.deviceHeader}>
+          <div className={styles.blueLens}></div>
+          <div className={styles.statusLEDs}>
+            <span className={`${styles.led} ${isLowBattery ? styles.blinking : ''}`}></span>
+            <span className={styles.led}></span>
+            <span className={styles.led}></span>
+          </div>
+        </div>
 
-      <div className={styles.statusBar}>
-        <div className={styles.batteryContainer}>
-          <div className={styles.batteryLabel}>Battery</div>
-          <div className={styles.batteryBar}>
-            <div
-              className={`${styles.batteryFill} ${isLowBattery ? styles.low : ''}`}
-              style={{ width: `${batteryPercentage}%` }}
-            />
-            <div className={styles.batteryText}>
-              {game.battery} / {game.max_battery}
+        <div className={styles.mainScreen}>
+          <div className={styles.screenContent}>
+            <div className={styles.statusDisplay}>
+              <div className={styles.batteryDisplay}>
+                <div className={styles.batteryLabel}>BATTERY</div>
+                <div className={`${styles.batteryValue} ${isLowBattery ? styles.warning : ''}`}>
+                  {game.battery}/{game.max_battery}
+                </div>
+              </div>
+              <div className={styles.attemptsDisplay}>
+                <div className={styles.attemptsLabel}>ATTEMPTS</div>
+                <div className={styles.attemptsValue}>{game.attempts_remaining}</div>
+              </div>
+            </div>
+
+            <div className={styles.mysterySilhouette}>
+              <div className={styles.scanningEffect}></div>
+              <div className={styles.scanLine}></div>
+              <div className={styles.silhouetteImage}>?</div>
+              <p className={styles.mysteryLabel}>MYSTERY POKÉMON</p>
             </div>
           </div>
         </div>
-
-        <div className={styles.attemptsRemaining}>
-          Attempts: <strong>{game.attempts_remaining}</strong>
-        </div>
       </div>
 
-      <div className={styles.mysterySilhouette}>
-        <div className={styles.silhouetteImage}>❓</div>
-        <p>Mystery Pokémon</p>
+      {/* HINGE */}
+      <div className={styles.hinge}>
+        <div className={styles.hingeBar}></div>
+        <div className={styles.hingeConnector}></div>
       </div>
 
-      {game.hints.length > 0 && (
-        <div className={styles.hintsSection}>
-          <h3>Hints</h3>
-          <div className={styles.hintsGrid}>
-            {game.hints.map((hint, index) => (
-              <HintCard key={index} hint={hint} />
-            ))}
+      {/* LOWER SECTION */}
+      <div className={styles.lowerSection}>
+        {game.hints.length > 0 && (
+          <div className={styles.infoScreen}>
+            <div className={styles.screenWrapper}>
+              <div className={styles.hintsSection}>
+                <h3 className={styles.sectionTitle}>DATA RETRIEVED</h3>
+                <div className={styles.hintsGrid}>
+                  {game.hints.map((hint, index) => (
+                    <HintCard key={index} hint={hint} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className={styles.controlPanel}>
+          <h3 className={styles.controlTitle}>POKEDEX CONSULTATION ({game.battery} battery)</h3>
+          <div className={styles.hintShop}>
+            {game.available_hints
+              .filter((h) => h.cost !== null)
+              .map((availableHint) => (
+                <button
+                  key={availableHint.type}
+                  className={styles.hintButton}
+                  onClick={() => handleConsultHint(availableHint.type)}
+                  disabled={!availableHint.available || game.battery < (availableHint.cost || 0) || isLoading}
+                >
+                  <span className={styles.hintLabel}>{getHintTypeLabel(availableHint.type)}</span>
+                  <span className={styles.hintCost}>{availableHint.cost} PWR</span>
+                </button>
+              ))}
           </div>
         </div>
-      )}
 
-      <div className={styles.hintShopSection}>
-        <h3>Pokedex Consultation ({game.battery} battery)</h3>
-        <div className={styles.hintShop}>
-          {game.available_hints
-            .filter((h) => h.cost !== null)
-            .map((availableHint) => (
-              <button
-                key={availableHint.type}
-                className={styles.hintButton}
-                onClick={() => handleConsultHint(availableHint.type)}
-                disabled={!availableHint.available || game.battery < (availableHint.cost || 0) || isLoading}
-              >
-                <span>{getHintTypeLabel(availableHint.type)}</span>
-                <span className={styles.hintCost}>Cost: {availableHint.cost} battery</span>
-              </button>
-            ))}
+        <div className={styles.inputScreen}>
+          <div className={styles.inputWrapper}>
+            <h3 className={styles.inputTitle}>IDENTIFY POKÉMON</h3>
+            <PokemonSearch onSelect={handleGuess} disabled={isLoading} />
+            {error && <div className="error">{error}</div>}
+          </div>
         </div>
-      </div>
 
-      <div className={styles.guessSection}>
-        <h3>Make Your Guess</h3>
-        <PokemonSearch onSelect={handleGuess} disabled={isLoading} />
-        {error && <div className="error">{error}</div>}
+        {game.attempts.length > 0 && (
+          <div className={styles.previousGuesses}>
+            <h3 className={styles.guessesTitle}>PREVIOUS ATTEMPTS</h3>
+            <p className={styles.guessesList}>
+              {game.attempts.map((attempt) => attempt.toUpperCase()).join(' | ')}
+            </p>
+          </div>
+        )}
       </div>
-
-      {game.attempts.length > 0 && (
-        <div>
-          <h3>Previous Guesses</h3>
-          <p style={{ textAlign: 'center', color: 'var(--color-text-secondary)' }}>
-            {game.attempts.map((attempt) => attempt).join(', ')}
-          </p>
-        </div>
-      )}
     </div>
   );
 }

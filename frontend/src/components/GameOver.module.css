@@ -1,7 +1,3 @@
-.gameOver {
-  text-align: center;
-}
-
 @keyframes victoryPulse {
   0% {
     transform: scale(0.8);
@@ -16,41 +12,25 @@
   }
 }
 
-@keyframes defeatShake {
+@keyframes defeatFlicker {
   0%, 100% {
-    transform: translateX(0);
+    opacity: 1;
   }
-  25% {
-    transform: translateX(-10px) rotate(-2deg);
+  20%, 40%, 60% {
+    opacity: 0.4;
   }
-  75% {
-    transform: translateX(10px) rotate(2deg);
+  30%, 50%, 70% {
+    opacity: 1;
   }
 }
 
-.title {
-  font-size: 3rem;
-  margin-bottom: var(--spacing-md);
-}
-
-.title.won {
-  color: #10b981;
-  text-shadow: 0 2px 12px rgba(16, 185, 129, 0.4),
-               0 0 32px rgba(16, 185, 129, 0.2);
-  animation: victoryPulse 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.title.lost {
-  color: var(--color-error);
-  text-shadow: 0 2px 12px rgba(244, 67, 54, 0.4),
-               0 0 32px rgba(244, 67, 54, 0.2);
-  animation: defeatShake 0.5s ease-in-out;
-}
-
-.message {
-  font-size: 1.3rem;
-  margin-bottom: var(--spacing-xl);
-  color: var(--color-text-secondary);
+@keyframes scanlines {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 4px;
+  }
 }
 
 @keyframes expandIn {
@@ -77,40 +57,6 @@
   }
 }
 
-.pokemonReveal {
-  background: radial-gradient(circle at center, rgba(220, 38, 38, 0.08), transparent 70%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-xl);
-  margin-bottom: var(--spacing-xl);
-  animation: expandIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.pokemonImage {
-  max-width: 300px;
-  height: auto;
-  margin: 0 auto var(--spacing-md);
-  display: block;
-  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5));
-  animation: revealImage 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.8s backwards;
-}
-
-.pokemonName {
-  font-size: 2rem;
-  font-weight: bold;
-  text-transform: capitalize;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: var(--spacing-sm);
-}
-
-.pokemonId {
-  font-size: 1.2rem;
-  color: var(--color-text-secondary);
-}
-
 @keyframes scoreEntrance {
   from {
     opacity: 0;
@@ -122,28 +68,181 @@
   }
 }
 
-.score {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-  border-radius: var(--border-radius);
-  padding: var(--spacing-lg);
+.gameOver {
+  text-align: center;
+  font-family: 'Courier New', monospace;
+}
+
+.screenBorder {
+  background: #334155;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.6),
+    inset 0 1px 4px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #1e293b;
+}
+
+.resultScreen {
+  background: var(--screen-background);
+  border-radius: 8px;
+  padding: var(--spacing-xl);
+  box-shadow:
+    inset 0 0 40px rgba(16, 185, 129, 0.1),
+    inset 0 2px 8px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.resultScreen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    transparent 1px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 3px
+  );
+  pointer-events: none;
+  animation: scanlines 8s linear infinite;
+  z-index: 1;
+}
+
+.resultScreen::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.resultScreen > * {
+  position: relative;
+  z-index: 2;
+}
+
+.title {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-md);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 4px;
+  font-weight: bold;
+}
+
+.title.won {
+  color: var(--screen-glow);
+  text-shadow:
+    0 0 20px rgba(16, 185, 129, 0.9),
+    0 0 40px rgba(16, 185, 129, 0.6),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+  animation: victoryPulse 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.title.lost {
+  color: var(--led-red);
+  text-shadow:
+    0 0 20px rgba(239, 68, 68, 0.9),
+    0 0 40px rgba(239, 68, 68, 0.6),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+  animation: defeatFlicker 0.8s ease-in-out;
+}
+
+.message {
+  font-size: 1rem;
   margin-bottom: var(--spacing-xl);
-  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3),
-              0 4px 12px rgba(52, 102, 175, 0.2);
+  color: rgba(16, 185, 129, 0.8);
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+  font-family: 'Courier New', monospace;
+}
+
+.pokemonReveal {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(16, 185, 129, 0.4);
+  border-radius: 8px;
+  padding: var(--spacing-xl);
+  margin: 0 auto var(--spacing-xl);
+  max-width: 400px;
+  animation: expandIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(16, 185, 129, 0.1);
+}
+
+.pokemonImage {
+  max-width: 250px;
+  height: auto;
+  margin: 0 auto var(--spacing-md);
+  display: block;
+  filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.4));
+  animation: revealImage 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s backwards;
+}
+
+.pokemonName {
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--screen-glow);
+  margin-bottom: var(--spacing-sm);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 3px;
+  text-shadow:
+    0 0 15px rgba(16, 185, 129, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.pokemonId {
+  font-size: 1.2rem;
+  color: rgba(16, 185, 129, 0.7);
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.scoreReadout {
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(16, 185, 129, 0.4);
+  border-radius: 8px;
+  padding: var(--spacing-lg);
+  margin: 0 auto var(--spacing-xl);
+  max-width: 300px;
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(16, 185, 129, 0.2);
   animation: scoreEntrance 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s backwards;
 }
 
 .scoreLabel {
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   margin-bottom: var(--spacing-xs);
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(16, 185, 129, 0.8);
+  letter-spacing: 2px;
+  text-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+  font-family: 'Courier New', monospace;
 }
 
 .scoreValue {
   font-size: 4rem;
   font-weight: bold;
-  color: var(--color-text);
-  text-shadow: 0 4px 16px rgba(255, 255, 255, 0.3),
-               0 2px 8px rgba(0, 0, 0, 0.5);
+  color: var(--screen-glow);
+  text-shadow:
+    0 0 20px rgba(16, 185, 129, 0.9),
+    0 0 40px rgba(16, 185, 129, 0.6),
+    0 4px 8px rgba(0, 0, 0, 0.8);
+  font-family: 'Courier New', monospace;
 }
 
 .actions {
@@ -157,33 +256,65 @@
   min-width: 200px;
   padding: var(--spacing-md) var(--spacing-xl);
   font-size: 1.2rem;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15),
-              0 4px 12px rgba(220, 38, 38, 0.3);
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  background: linear-gradient(180deg, #ef4444, #dc2626, #b91c1c);
+  border: none;
+  border-radius: 12px;
+  box-shadow:
+    0 6px 0 rgba(153, 27, 27, 0.9),
+    0 8px 16px rgba(220, 38, 38, 0.4),
+    inset 0 2px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #ffffff;
 }
 
 .playAgainButton:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15),
-              0 6px 20px rgba(220, 38, 38, 0.4),
-              0 12px 32px rgba(220, 38, 38, 0.3);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 0 rgba(153, 27, 27, 0.9),
+    0 10px 20px rgba(220, 38, 38, 0.5),
+    0 0 30px rgba(220, 38, 38, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+.playAgainButton:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow:
+    0 3px 0 rgba(153, 27, 27, 0.9),
+    0 4px 8px rgba(220, 38, 38, 0.4),
+    inset 0 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 768px) {
   .title {
-    font-size: 2rem;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
+
+  .message {
+    font-size: 0.85rem;
   }
 
   .pokemonImage {
-    max-width: 200px;
+    max-width: 180px;
   }
 
   .pokemonName {
     font-size: 1.5rem;
+    letter-spacing: 2px;
+  }
+
+  .pokemonId {
+    font-size: 1rem;
   }
 
   .scoreValue {
-    font-size: 2rem;
+    font-size: 3rem;
   }
 
   .actions {
@@ -192,5 +323,10 @@
 
   .playAgainButton {
     width: 100%;
+  }
+
+  .resultScreen {
+    min-height: 400px;
+    padding: var(--spacing-lg);
   }
 }
