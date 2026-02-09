@@ -484,6 +484,10 @@
 .hintLabel {
   font-size: 0.7rem;
   line-height: 1.1;
+  min-height: 2.2em;
+  display: flex;
+  align-items: center;
+  text-align: center;
 }
 
 .hintCostWrapper {
