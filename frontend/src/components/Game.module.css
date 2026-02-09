@@ -67,6 +67,26 @@
   }
 }
 
+@keyframes criticalPulse {
+  0%, 100% {
+    background: var(--led-red);
+    box-shadow: 0 0 8px var(--led-red);
+  }
+  50% {
+    background: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 0 4px var(--led-red);
+  }
+}
+
+@keyframes lastAttemptPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
 .game {
   max-width: 1000px;
   margin: 0 auto;
@@ -199,23 +219,178 @@
   border-radius: 4px;
   padding: 2px 4px;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.batteryLabel,
-.attemptsLabel {
-  font-size: 0.7rem;
-  color: rgba(16, 185, 129, 0.7);
+/* Battery Styles */
+.batteryHeader {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.batteryIcon {
+  font-size: 0.8rem;
+  color: rgba(251, 191, 36, 1);
+  filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6));
+}
+
+.batteryLabel {
+  font-size: 0.65rem;
+  color: rgba(16, 185, 129, 0.8);
   letter-spacing: 0.5px;
-  margin-bottom: 2px;
+  font-weight: bold;
 }
 
-.batteryValue,
-.attemptsValue {
-  font-size: 1.1rem;
+.batteryBarOuter {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: 2px;
+  padding: 2px;
+  height: 12px;
+  position: relative;
+}
+
+.batterySegment {
+  flex: 1;
+  height: 8px;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+
+.batterySegmentEmpty {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.batterySegmentPreview {
+  background: rgba(239, 68, 68, 0.5) !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.6) !important;
+  border-color: rgba(239, 68, 68, 0.8) !important;
+  animation: previewPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes previewPulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.batteryFull {
+  background: var(--led-green);
+  box-shadow: 0 0 6px var(--led-green);
+}
+
+.batteryGood {
+  background: #84cc16;
+  box-shadow: 0 0 6px #84cc16;
+}
+
+.batteryWarning {
+  background: var(--led-yellow);
+  box-shadow: 0 0 6px var(--led-yellow);
+  animation: warningPulse 1.5s ease-in-out infinite;
+}
+
+.batteryCritical {
+  background: var(--led-red);
+  box-shadow: 0 0 8px var(--led-red);
+  animation: criticalPulse 0.8s ease-in-out infinite;
+}
+
+.batteryTerminal {
+  width: 3px;
+  height: 8px;
+  background: linear-gradient(90deg, #64748b, #94a3b8);
+  border-radius: 0 2px 2px 0;
+  margin-left: 1px;
+}
+
+.batteryValue {
+  font-size: 0.7rem;
   font-weight: bold;
-  color: var(--screen-glow);
-  text-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+  color: rgba(16, 185, 129, 0.7);
+  text-shadow: 0 0 4px rgba(16, 185, 129, 0.4);
   font-family: 'Courier New', monospace;
+  text-align: center;
+}
+
+/* Attempts Styles */
+.attemptsLabel {
+  font-size: 0.65rem;
+  color: rgba(16, 185, 129, 0.8);
+  letter-spacing: 0.5px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.attemptsIcons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+}
+
+.pokeball {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  border: 2px solid;
+  transition: all 0.3s ease;
+}
+
+.attemptsFull {
+  background: radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.9), rgba(16, 185, 129, 0.6));
+  border-color: var(--led-green);
+  color: var(--led-green);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.attemptsWarning {
+  background: radial-gradient(circle at 30% 30%, rgba(251, 191, 36, 0.9), rgba(251, 191, 36, 0.6));
+  border-color: var(--led-yellow);
+  color: var(--led-yellow);
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+}
+
+.attemptsCritical {
+  background: radial-gradient(circle at 30% 30%, rgba(239, 68, 68, 0.9), rgba(239, 68, 68, 0.6));
+  border-color: var(--led-red);
+  color: var(--led-red);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+}
+
+.lastAttempt {
+  animation: lastAttemptPulse 1s ease-in-out infinite;
+}
+
+.pokeballUsed {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: rgba(239, 68, 68, 0.6);
+  opacity: 0.5;
+}
+
+.attemptsValue {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: rgba(16, 185, 129, 0.7);
+  text-shadow: 0 0 4px rgba(16, 185, 129, 0.4);
+  font-family: 'Courier New', monospace;
+  text-align: center;
 }
 
 .batteryValue.warning {
