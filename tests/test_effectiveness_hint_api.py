@@ -15,7 +15,7 @@ class TestEffectivenessHintAPI:
         async with AsyncTestClient(app=app) as client:
             # Create a game
             create_response = await client.post(
-                "/games",
+                "/api/games",
                 json={"difficulty": "medium"},
             )
             assert create_response.status_code == 201
@@ -29,7 +29,7 @@ class TestEffectivenessHintAPI:
 
             # Consult effectiveness hint
             consult_response = await client.post(
-                f"/games/{game_id}/consult",
+                f"/api/games/{game_id}/consult",
                 json={"hint_type": "effectiveness"},
             )
             assert consult_response.status_code == 201
@@ -61,7 +61,7 @@ class TestEffectivenessHintAPI:
         async with AsyncTestClient(app=app) as client:
             # Create a game
             create_response = await client.post(
-                "/games",
+                "/api/games",
                 json={"difficulty": "medium"},
             )
             game_data = create_response.json()
@@ -70,7 +70,7 @@ class TestEffectivenessHintAPI:
 
             # Consult effectiveness hint
             consult_response = await client.post(
-                f"/games/{game_id}/consult",
+                f"/api/games/{game_id}/consult",
                 json={"hint_type": "effectiveness"},
             )
             result = consult_response.json()
@@ -85,7 +85,7 @@ class TestEffectivenessHintAPI:
         async with AsyncTestClient(app=app) as client:
             # Create a game
             create_response = await client.post(
-                "/games",
+                "/api/games",
                 json={"difficulty": "medium"},
             )
             game_data = create_response.json()
@@ -93,7 +93,7 @@ class TestEffectivenessHintAPI:
 
             # First consult
             consult1 = await client.post(
-                f"/games/{game_id}/consult",
+                f"/api/games/{game_id}/consult",
                 json={"hint_type": "effectiveness"},
             )
             result1 = consult1.json()
@@ -101,13 +101,13 @@ class TestEffectivenessHintAPI:
 
             # Make a guess to reset consulted_this_turn
             await client.post(
-                f"/games/{game_id}/guess",
+                f"/api/games/{game_id}/guess",
                 json={"pokemon_name": "pikachu"},
             )
 
             # Second consult
             consult2 = await client.post(
-                f"/games/{game_id}/consult",
+                f"/api/games/{game_id}/consult",
                 json={"hint_type": "effectiveness"},
             )
             result2 = consult2.json()
@@ -128,7 +128,7 @@ class TestEffectivenessHintAPI:
         async with AsyncTestClient(app=app) as client:
             # Create a game
             create_response = await client.post(
-                "/games",
+                "/api/games",
                 json={"difficulty": "medium"},
             )
             game_data = create_response.json()
@@ -148,20 +148,20 @@ class TestEffectivenessHintAPI:
         async with AsyncTestClient(app=app) as client:
             # Create a game
             create_response = await client.post(
-                "/games",
+                "/api/games",
                 json={"difficulty": "medium"},
             )
             game_id = create_response.json()["id"]
 
             # First consult
             await client.post(
-                f"/games/{game_id}/consult",
+                f"/api/games/{game_id}/consult",
                 json={"hint_type": "effectiveness"},
             )
 
             # Second consult in same turn should fail
             consult2 = await client.post(
-                f"/games/{game_id}/consult",
+                f"/api/games/{game_id}/consult",
                 json={"hint_type": "effectiveness"},
             )
 

@@ -1,6 +1,6 @@
 import type { CreateGameRequest, GameResponse, GuessRequest, ConsultRequest, Pokemon } from '../types/api';
 
-const API_BASE = '';
+const API_BASE = '/api';
 
 export const api = {
   async listPokemon(): Promise<Pokemon[]> {
