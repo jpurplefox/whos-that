@@ -632,19 +632,24 @@
 }
 
 .hintButton:hover:not(:disabled) {
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.03);
   box-shadow:
-    0 5px 0 rgba(0, 0, 0, 0.4),
-    0 6px 10px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 6px 0 rgba(0, 0, 0, 0.4),
+    0 8px 16px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.hintButton:focus-visible {
+  outline: 2px solid var(--screen-glow);
+  outline-offset: 2px;
 }
 
 .hintButton:active:not(:disabled) {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(0.97);
   box-shadow:
-    0 2px 0 rgba(0, 0, 0, 0.4),
+    0 1px 0 rgba(0, 0, 0, 0.4),
     0 2px 4px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(0, 0, 0, 0.2);
+    inset 0 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 .hintButton:disabled {
@@ -712,10 +717,11 @@
 .hintStat:hover:not(:disabled) {
   border-color: rgba(59, 130, 246, 0.9);
   box-shadow:
-    0 5px 0 rgba(0, 0, 0, 0.4),
-    0 6px 10px rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(59, 130, 246, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 6px 0 rgba(0, 0, 0, 0.4),
+    0 8px 16px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(59, 130, 246, 0.5),
+    0 0 48px rgba(59, 130, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .hintType {
@@ -726,10 +732,11 @@
 .hintType:hover:not(:disabled) {
   border-color: rgba(16, 185, 129, 0.9);
   box-shadow:
-    0 5px 0 rgba(0, 0, 0, 0.4),
-    0 6px 10px rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(16, 185, 129, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 6px 0 rgba(0, 0, 0, 0.4),
+    0 8px 16px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(16, 185, 129, 0.5),
+    0 0 48px rgba(16, 185, 129, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .hintEvolution {
@@ -740,10 +747,11 @@
 .hintEvolution:hover:not(:disabled) {
   border-color: rgba(139, 92, 246, 0.9);
   box-shadow:
-    0 5px 0 rgba(0, 0, 0, 0.4),
-    0 6px 10px rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(139, 92, 246, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 6px 0 rgba(0, 0, 0, 0.4),
+    0 8px 16px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(139, 92, 246, 0.5),
+    0 0 48px rgba(139, 92, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .hintEffectiveness {
@@ -754,16 +762,17 @@
 .hintEffectiveness:hover:not(:disabled) {
   border-color: rgba(236, 72, 153, 0.9);
   box-shadow:
-    0 5px 0 rgba(0, 0, 0, 0.4),
-    0 6px 10px rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(236, 72, 153, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 6px 0 rgba(0, 0, 0, 0.4),
+    0 8px 16px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(236, 72, 153, 0.5),
+    0 0 48px rgba(236, 72, 153, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* Disabled State Variants */
 .purchased {
-  opacity: 0.4;
-  filter: grayscale(0.7);
+  opacity: 0.35;
+  filter: grayscale(0.8) brightness(0.7);
 }
 
 .purchased::before {

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Difficulty } from '../types/api';
 import styles from './Home.module.css';
@@ -9,11 +8,6 @@ interface HomeProps {
 
 export function Home({ onStartGame }: HomeProps) {
   const { t } = useTranslation();
-  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('medium');
-
-  const handleStart = () => {
-    onStartGame(selectedDifficulty);
-  };
 
   return (
     <div className={styles.home}>
@@ -37,35 +31,25 @@ export function Home({ onStartGame }: HomeProps) {
             <h2>{t('home.chooseDifficulty')}</h2>
             <div className={styles.difficultyButtons}>
               <button
-                className={`${styles.difficultyButton} ${styles.easy} ${
-                  selectedDifficulty === 'easy' ? styles.selected : ''
-                }`}
-                onClick={() => setSelectedDifficulty('easy')}
+                className={`${styles.difficultyButton} ${styles.easy}`}
+                onClick={() => onStartGame('easy')}
               >
                 {t('home.easy')}
               </button>
               <button
-                className={`${styles.difficultyButton} ${styles.medium} ${
-                  selectedDifficulty === 'medium' ? styles.selected : ''
-                }`}
-                onClick={() => setSelectedDifficulty('medium')}
+                className={`${styles.difficultyButton} ${styles.medium}`}
+                onClick={() => onStartGame('medium')}
               >
                 {t('home.medium')}
               </button>
               <button
-                className={`${styles.difficultyButton} ${styles.hard} ${
-                  selectedDifficulty === 'hard' ? styles.selected : ''
-                }`}
-                onClick={() => setSelectedDifficulty('hard')}
+                className={`${styles.difficultyButton} ${styles.hard}`}
+                onClick={() => onStartGame('hard')}
               >
                 {t('home.hard')}
               </button>
             </div>
           </div>
-
-          <button className={styles.startButton} onClick={handleStart}>
-            {t('home.startGame')}
-          </button>
         </div>
       </div>
     </div>
