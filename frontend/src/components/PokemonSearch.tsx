@@ -18,7 +18,7 @@ export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    getPokemonList().then(setPokemon);
+    getPokemonList().then(setPokemon).catch(() => {});
   }, []);
 
   useEffect(() => {

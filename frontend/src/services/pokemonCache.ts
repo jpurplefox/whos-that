@@ -10,6 +10,9 @@ export async function getPokemonList(): Promise<Pokemon[]> {
     loading = api.listPokemon().then((list) => {
       cached = list;
       return list;
+    }).catch((error) => {
+      loading = null;
+      throw error;
     });
   }
   return loading;

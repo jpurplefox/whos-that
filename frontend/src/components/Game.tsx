@@ -3,6 +3,9 @@ import type { GameResponse, HintType } from '../types/api';
 import { api } from '../services/api';
 import { HintCard } from './HintCard';
 import { PokemonSearch } from './PokemonSearch';
+import { BatteryIndicator } from './BatteryIndicator';
+import { AttemptsIndicator } from './AttemptsIndicator';
+import { HintShop } from './HintShop';
 import styles from './Game.module.css';
 
 interface GameProps {
@@ -59,48 +62,6 @@ export function Game({ initialGame, onGameOver }: GameProps) {
   const batteryPercentage = (game.battery / game.max_battery) * 100;
   const isLowBattery = batteryPercentage < 30;
 
-  const getBatteryColorClass = (): string => {
-    if (batteryPercentage >= 75) return styles.batteryFull;
-    if (batteryPercentage >= 50) return styles.batteryGood;
-    if (batteryPercentage >= 30) return styles.batteryWarning;
-    return styles.batteryCritical;
-  };
-
-  const getAttemptsColorClass = (): string => {
-    if (game.attempts_remaining >= 3) return styles.attemptsFull;
-    if (game.attempts_remaining === 2) return styles.attemptsWarning;
-    if (game.attempts_remaining === 1) return styles.attemptsCritical;
-    return styles.attemptsEmpty;
-  };
-
-  const getHintTypeLabel = (type: HintType): string => {
-    const labels: Record<HintType, string> = {
-      stat: 'Random Stat',
-      primary_type: 'Primary Type',
-      secondary_type: 'Secondary Type',
-      fully_evolved: 'Evolution Status',
-      effectiveness: 'Type Effectiveness',
-    };
-    return labels[type];
-  };
-
-  const getHintMetadata = (type: HintType): { icon: string; colorClass: string } => {
-    const metadata: Record<HintType, { icon: string; colorClass: string }> = {
-      stat: { icon: '📊', colorClass: styles.hintStat },
-      primary_type: { icon: '🏷️', colorClass: styles.hintType },
-      secondary_type: { icon: '🏷️', colorClass: styles.hintType },
-      fully_evolved: { icon: '⚡', colorClass: styles.hintEvolution },
-      effectiveness: { icon: '⚔️', colorClass: styles.hintEffectiveness },
-    };
-    return metadata[type];
-  };
-
-  const getDisabledReason = (availableHint: typeof game.available_hints[0]): 'purchased' | 'low-battery' | null => {
-    if (!availableHint.available) return 'purchased';
-    if (game.battery < (availableHint.cost || 0)) return 'low-battery';
-    return null;
-  };
-
   return (
     <div className={styles.game}>
       {/* UPPER SECTION */}
@@ -117,54 +78,15 @@ export function Game({ initialGame, onGameOver }: GameProps) {
         <div className={styles.mainScreen}>
           <div className={styles.screenContent}>
             <div className={styles.statusDisplay}>
-              <div className={styles.batteryDisplay}>
-                <div className={styles.batteryHeader}>
-                  <span className={styles.batteryIcon}>⚡</span>
-                  <span className={styles.batteryLabel}>PWR</span>
-                </div>
-                <div className={styles.batteryBarOuter}>
-                  {Array.from({ length: game.max_battery }).map((_, index) => {
-                    const isFilled = index < game.battery;
-                    const isPreviewedForRemoval = hoveredHintCost !== null &&
-                                                   isFilled &&
-                                                   index >= (game.battery - hoveredHintCost);
-                    return (
-                      <div
-                        key={index}
-                        className={`${styles.batterySegment} ${
-                          isFilled ? getBatteryColorClass() : styles.batterySegmentEmpty
-                        } ${isPreviewedForRemoval ? styles.batterySegmentPreview : ''}`}
-                      />
-                    );
-                  })}
-                  <div className={styles.batteryTerminal} />
-                </div>
-                <div className={`${styles.batteryValue} ${isLowBattery ? styles.warning : ''}`}>
-                  {game.battery}/{game.max_battery}
-                </div>
-              </div>
-              <div className={styles.attemptsDisplay}>
-                <div className={styles.attemptsLabel}>TRIES</div>
-                <div className={styles.attemptsIcons}>
-                  {Array.from({ length: game.attempts_remaining + game.attempts.length }).map((_, index) => (
-                    <div
-                      key={index}
-                      className={`${styles.pokeball} ${
-                        index < game.attempts_remaining
-                          ? getAttemptsColorClass()
-                          : styles.pokeballUsed
-                      } ${
-                        game.attempts_remaining === 1 && index === 0 ? styles.lastAttempt : ''
-                      }`}
-                    >
-                      {index < game.attempts_remaining ? '●' : '✕'}
-                    </div>
-                  ))}
-                </div>
-                <div className={styles.attemptsValue}>
-                  {game.attempts_remaining}/{game.attempts_remaining + game.attempts.length}
-                </div>
-              </div>
+              <BatteryIndicator
+                battery={game.battery}
+                maxBattery={game.max_battery}
+                hoveredHintCost={hoveredHintCost}
+              />
+              <AttemptsIndicator
+                attemptsRemaining={game.attempts_remaining}
+                totalAttempts={game.attempts_remaining + game.attempts.length}
+              />
             </div>
 
             <div className={styles.mysterySilhouette}>
@@ -185,44 +107,13 @@ export function Game({ initialGame, onGameOver }: GameProps) {
 
       {/* LOWER SECTION */}
       <div className={styles.lowerSection}>
-        <div className={styles.controlPanel}>
-          <h3 className={styles.controlTitle}>POKEDEX CONSULTATION</h3>
-          <div className={styles.hintShop}>
-            {game.available_hints
-              .filter((h) => h.cost !== null)
-              .map((availableHint) => {
-                const metadata = getHintMetadata(availableHint.type);
-                const disabledReason = getDisabledReason(availableHint);
-                const isDisabled = disabledReason !== null || isLoading;
-                return (
-                  <button
-                    key={availableHint.type}
-                    className={`${styles.hintButton} ${metadata.colorClass} ${
-                      disabledReason === 'purchased' ? styles.purchased :
-                      disabledReason === 'low-battery' ? styles.lowBattery : ''
-                    }`}
-                    onClick={() => handleConsultHint(availableHint.type)}
-                    disabled={isDisabled}
-                    onMouseEnter={() => !isDisabled && setHoveredHintCost(availableHint.cost)}
-                    onMouseLeave={() => setHoveredHintCost(null)}
-                  >
-                    <span className={styles.hintIcon}>{metadata.icon}</span>
-                    <span className={styles.hintLabel}>{getHintTypeLabel(availableHint.type)}</span>
-                    <div className={styles.hintCostWrapper}>
-                      <span className={styles.hintCost}>{availableHint.cost}</span>
-                      <span className={styles.powerUnit}>⚡</span>
-                    </div>
-                    {disabledReason === 'purchased' && (
-                      <span className={styles.disabledLabel}>USED</span>
-                    )}
-                    {disabledReason === 'low-battery' && (
-                      <span className={styles.disabledLabel}>LOW PWR</span>
-                    )}
-                  </button>
-                );
-              })}
-          </div>
-        </div>
+        <HintShop
+          availableHints={game.available_hints}
+          battery={game.battery}
+          isLoading={isLoading}
+          onConsultHint={handleConsultHint}
+          onHoverCost={setHoveredHintCost}
+        />
 
         {game.hints.length > 0 && (
           <div className={styles.infoScreen}>
