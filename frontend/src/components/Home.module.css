@@ -29,6 +29,11 @@
 
 .home {
   text-align: center;
+  --spacing-xs: 3px;
+  --spacing-sm: 6px;
+  --spacing-md: 8px;
+  --spacing-lg: 10px;
+  --spacing-xl: 14px;
 }
 
 /* Device Indicators */
@@ -36,31 +41,31 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-md);
-  padding: 0 var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+  padding: 0 var(--spacing-xs);
 }
 
 .blueLens {
-  width: 60px;
-  height: 60px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, #60a5fa, #2563eb, #1e3a8a);
   box-shadow:
-    0 0 20px rgba(59, 130, 246, 0.6),
-    0 0 40px rgba(59, 130, 246, 0.4),
-    inset 0 -2px 8px rgba(0, 0, 0, 0.5),
-    inset -2px -2px 12px rgba(0, 0, 0, 0.3);
+    0 0 10px rgba(59, 130, 246, 0.6),
+    0 0 20px rgba(59, 130, 246, 0.4),
+    inset 0 -1px 4px rgba(0, 0, 0, 0.5),
+    inset -1px -1px 6px rgba(0, 0, 0, 0.3);
   position: relative;
-  border: 3px solid rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(0, 0, 0, 0.4);
 }
 
 .blueLens::before {
   content: '';
   position: absolute;
-  top: 8px;
-  left: 8px;
-  width: 16px;
-  height: 16px;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.8);
   filter: blur(2px);
@@ -69,10 +74,10 @@
 .blueLens::after {
   content: '';
   position: absolute;
-  top: 5px;
-  right: 10px;
-  width: 10px;
-  height: 10px;
+  top: 3px;
+  right: 5px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.5);
   filter: blur(1px);
@@ -86,11 +91,11 @@
 .ledRed,
 .ledYellow,
 .ledGreen {
-  width: 12px;
-  height: 12px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  box-shadow: 0 0 10px currentColor;
-  border: 2px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 6px currentColor;
+  border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
 .ledRed {
@@ -111,8 +116,8 @@
 /* Screen Container */
 .screenBorder {
   background: #334155;
-  border-radius: 12px;
-  padding: 8px;
+  border-radius: 8px;
+  padding: 4px;
   box-shadow:
     inset 0 2px 8px rgba(0, 0, 0, 0.6),
     inset 0 1px 4px rgba(0, 0, 0, 0.4),
@@ -122,8 +127,8 @@
 
 .screen {
   background: var(--screen-background);
-  border-radius: 8px;
-  padding: var(--spacing-xl);
+  border-radius: 6px;
+  padding: var(--spacing-sm);
   box-shadow:
     inset 0 0 40px rgba(16, 185, 129, 0.1),
     inset 0 2px 8px rgba(0, 0, 0, 0.5);
@@ -167,7 +172,7 @@
 }
 
 .title {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-sm);
   animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s backwards;
   color: var(--screen-glow);
   text-shadow:
@@ -175,20 +180,20 @@
     0 0 20px rgba(16, 185, 129, 0.6),
     0 2px 4px rgba(0, 0, 0, 0.8);
   font-family: 'Courier New', monospace;
-  font-size: 2rem;
+  font-size: 1.3rem;
 }
 
 .subtitle {
   color: rgba(16, 185, 129, 0.8);
-  font-size: 1rem;
-  margin-bottom: var(--spacing-xl);
+  font-size: 0.8rem;
+  margin-bottom: var(--spacing-md);
   animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s backwards;
   font-family: 'Courier New', monospace;
   text-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
 }
 
 .difficultySection {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
   animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s backwards;
 }
 
@@ -196,26 +201,26 @@
   color: var(--screen-glow);
   text-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
   font-family: 'Courier New', monospace;
-  font-size: 1.3rem;
-  margin-bottom: var(--spacing-md);
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-xs);
 }
 
 .difficultyButtons {
   display: flex;
-  gap: var(--spacing-md);
+  gap: var(--spacing-xs);
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .difficultyButton {
-  min-width: 150px;
-  padding: var(--spacing-md) var(--spacing-lg);
-  font-size: 1.1rem;
+  min-width: 120px;
+  padding: 4px 6px;
+  font-size: 0.8rem;
   font-family: 'Courier New', monospace;
   font-weight: bold;
   background: var(--metal-gradient);
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   box-shadow:
     0 4px 0 rgba(0, 0, 0, 0.4),
     0 6px 8px rgba(0, 0, 0, 0.3),
@@ -225,22 +230,22 @@
   cursor: pointer;
   color: rgba(255, 255, 255, 0.9);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .difficultyButton:hover:not(:disabled) {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow:
-    0 6px 0 rgba(0, 0, 0, 0.4),
-    0 8px 12px rgba(0, 0, 0, 0.4),
+    0 5px 0 rgba(0, 0, 0, 0.4),
+    0 7px 10px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .difficultyButton:active:not(:disabled) {
-  transform: translateY(2px);
+  transform: translateY(1px);
   box-shadow:
-    0 2px 0 rgba(0, 0, 0, 0.4),
-    0 3px 4px rgba(0, 0, 0, 0.3),
+    0 3px 0 rgba(0, 0, 0, 0.4),
+    0 4px 6px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(0, 0, 0, 0.2);
 }
 
@@ -249,56 +254,56 @@
   color: #ffffff;
   box-shadow:
     0 4px 0 rgba(5, 150, 105, 0.8),
-    0 6px 12px rgba(16, 185, 129, 0.4),
-    0 0 20px rgba(16, 185, 129, 0.3),
+    0 6px 10px rgba(16, 185, 129, 0.4),
+    0 0 16px rgba(16, 185, 129, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .difficultyButton.selected:hover:not(:disabled) {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow:
-    0 6px 0 rgba(5, 150, 105, 0.8),
-    0 8px 16px rgba(16, 185, 129, 0.5),
-    0 0 24px rgba(16, 185, 129, 0.4),
+    0 5px 0 rgba(5, 150, 105, 0.8),
+    0 7px 14px rgba(16, 185, 129, 0.5),
+    0 0 20px rgba(16, 185, 129, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .startButton {
-  min-width: 200px;
-  padding: var(--spacing-md) var(--spacing-xl);
-  font-size: 1.3rem;
+  min-width: 160px;
+  padding: var(--spacing-xs) var(--spacing-lg);
+  font-size: 1rem;
   font-family: 'Courier New', monospace;
   font-weight: bold;
   background: linear-gradient(180deg, #ef4444, #dc2626, #b91c1c);
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow:
-    0 6px 0 rgba(153, 27, 27, 0.9),
-    0 8px 16px rgba(220, 38, 38, 0.4),
+    0 4px 0 rgba(153, 27, 27, 0.9),
+    0 6px 12px rgba(220, 38, 38, 0.4),
     inset 0 2px 0 rgba(255, 255, 255, 0.2),
     inset 0 -2px 0 rgba(0, 0, 0, 0.3);
   animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s backwards;
   cursor: pointer;
   transition: all 0.1s ease;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   color: #ffffff;
 }
 
 .startButton:hover:not(:disabled) {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow:
-    0 8px 0 rgba(153, 27, 27, 0.9),
-    0 10px 20px rgba(220, 38, 38, 0.5),
-    0 0 30px rgba(220, 38, 38, 0.3),
+    0 5px 0 rgba(153, 27, 27, 0.9),
+    0 7px 16px rgba(220, 38, 38, 0.5),
+    0 0 24px rgba(220, 38, 38, 0.3),
     inset 0 2px 0 rgba(255, 255, 255, 0.2);
 }
 
 .startButton:active:not(:disabled) {
-  transform: translateY(3px);
+  transform: translateY(2px);
   box-shadow:
-    0 3px 0 rgba(153, 27, 27, 0.9),
-    0 4px 8px rgba(220, 38, 38, 0.4),
+    0 2px 0 rgba(153, 27, 27, 0.9),
+    0 3px 6px rgba(220, 38, 38, 0.4),
     inset 0 2px 0 rgba(0, 0, 0, 0.3);
 }
 
@@ -318,10 +323,10 @@
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
   }
 
   .subtitle {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
   }
 }
