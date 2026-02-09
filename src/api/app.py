@@ -1,7 +1,7 @@
 from typing import Any
 
 import sentry_sdk
-from litestar import Litestar, Request, Response
+from litestar import Litestar, Request, Response, Router
 from litestar.config.cors import CORSConfig
 from litestar.exceptions import SerializationException
 from sentry_sdk.integrations.litestar import LitestarIntegration
@@ -46,8 +46,13 @@ async def _on_shutdown() -> None:
 
 cors_config = CORSConfig(allow_origins=_settings.cors_allowed_origins)
 
-app = Litestar(
+api_router = Router(
+    path="/api",
     route_handlers=[router, auth_router, history_router, collection_router],
+)
+
+app = Litestar(
+    route_handlers=[api_router],
     exception_handlers={SerializationException: _handle_serialization_error},
     on_startup=[_on_startup],
     on_shutdown=[_on_shutdown],

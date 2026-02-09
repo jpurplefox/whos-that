@@ -23,7 +23,7 @@ class FakeAuthenticate:
 def test_get_google_auth_url_returns_url() -> None:
     with container.google_oauth.override(FakeGoogleOAuth()):
         with TestClient(app) as client:
-            response = client.get("/auth/google/url")
+            response = client.get("/api/auth/google/url")
 
     assert response.status_code == 200
     data = response.json()
@@ -45,7 +45,7 @@ def test_google_callback_returns_token_and_user() -> None:
     with container.authenticate.override(fake_authenticate):
         with TestClient(app) as client:
             response = client.post(
-                "/auth/google/callback",
+                "/api/auth/google/callback",
                 json={"code": "auth-code-123"},
             )
 
@@ -61,7 +61,7 @@ def test_google_callback_returns_token_and_user() -> None:
 def test_invalid_token_returns_401() -> None:
     with TestClient(app) as client:
         response = client.get(
-            "/history",
+            "/api/history",
             headers={"Authorization": "Bearer invalid-token"},
         )
 

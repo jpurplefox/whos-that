@@ -59,7 +59,7 @@ def test_create_game_returns_game_with_hint(pikachu: Pokemon) -> None:
 
     with container.start_game.override(FakeStartGame(game)):
         with TestClient(app) as client:
-            response = client.post("/games", json={"difficulty": "medium"})
+            response = client.post("/api/games", json={"difficulty": "medium"})
 
     assert response.status_code == 201
     data = response.json()
@@ -85,7 +85,7 @@ def test_guess_correct_pokemon(pikachu: Pokemon) -> None:
     with container.guess.override(FakeGuess(game)):
         with TestClient(app) as client:
             response = client.post(
-                "/games/game-1/guess",
+                "/api/games/game-1/guess",
                 json={"pokemon_name": "pikachu"},
             )
 
@@ -106,7 +106,7 @@ def test_guess_incorrect_pokemon_returns_comparison_hint(
     with container.guess.override(FakeGuess(game)):
         with TestClient(app) as client:
             response = client.post(
-                "/games/game-1/guess",
+                "/api/games/game-1/guess",
                 json={"pokemon_name": "bulbasaur"},
             )
 
@@ -132,7 +132,7 @@ def test_guess_returns_400_when_no_attempts_remaining() -> None:
     with container.guess.override(FakeGuessNoAttempts()):
         with TestClient(app) as client:
             response = client.post(
-                "/games/game-1/guess",
+                "/api/games/game-1/guess",
                 json={"pokemon_name": "pikachu"},
             )
 
@@ -150,7 +150,7 @@ def test_guess_returns_400_when_pokemon_not_found() -> None:
     with container.guess.override(FakeGuessPokemonNotFound()):
         with TestClient(app) as client:
             response = client.post(
-                "/games/game-1/guess",
+                "/api/games/game-1/guess",
                 json={"pokemon_name": "notapokemon"},
             )
 
@@ -160,7 +160,7 @@ def test_guess_returns_400_when_pokemon_not_found() -> None:
 def test_guess_returns_400_when_pokemon_name_is_invalid() -> None:
     with TestClient(app) as client:
         response = client.post(
-            "/games/game-1/guess",
+            "/api/games/game-1/guess",
             json={"pokemon_name": "../pikachu"},
         )
 
@@ -178,7 +178,7 @@ def test_guess_returns_404_when_game_not_found() -> None:
     with container.guess.override(FakeGuessGameNotFound()):
         with TestClient(app) as client:
             response = client.post(
-                "/games/nonexistent/guess",
+                "/api/games/nonexistent/guess",
                 json={"pokemon_name": "pikachu"},
             )
 
@@ -188,7 +188,7 @@ def test_guess_returns_404_when_game_not_found() -> None:
 def test_guess_returns_400_when_invalid_json() -> None:
     with TestClient(app) as client:
         response = client.post(
-            "/games/game-1/guess",
+            "/api/games/game-1/guess",
             content="not valid json",
             headers={"Content-Type": "application/json"},
         )
@@ -203,7 +203,7 @@ def test_get_game_returns_game(pikachu: Pokemon) -> None:
 
     with container.get_game.override(FakeGetGame(game)):
         with TestClient(app) as client:
-            response = client.get("/games/game-1")
+            response = client.get("/api/games/game-1")
 
     assert response.status_code == 200
     data = response.json()
@@ -224,7 +224,7 @@ def test_get_game_returns_game(pikachu: Pokemon) -> None:
 def test_get_game_returns_404_when_not_found() -> None:
     with container.get_game.override(FakeGetGameNotFound()):
         with TestClient(app) as client:
-            response = client.get("/games/nonexistent")
+            response = client.get("/api/games/nonexistent")
 
     assert response.status_code == 404
 
@@ -256,7 +256,7 @@ def test_consult_returns_game(pikachu: Pokemon) -> None:
 
     with container.consult_pokedex.override(FakeConsultPokedex(game)):
         with TestClient(app) as client:
-            response = client.post("/games/game-1/consult", json={"hint_type": "stat"})
+            response = client.post("/api/games/game-1/consult", json={"hint_type": "stat"})
 
     assert response.status_code == 201
     data = response.json()
@@ -269,7 +269,7 @@ def test_consult_returns_game(pikachu: Pokemon) -> None:
 def test_consult_returns_404_when_game_not_found() -> None:
     with container.consult_pokedex.override(FakeConsultPokedexGameNotFound()):
         with TestClient(app) as client:
-            response = client.post("/games/nonexistent/consult", json={"hint_type": "stat"})
+            response = client.post("/api/games/nonexistent/consult", json={"hint_type": "stat"})
 
     assert response.status_code == 404
 
@@ -277,7 +277,7 @@ def test_consult_returns_404_when_game_not_found() -> None:
 def test_consult_returns_400_when_not_enough_battery() -> None:
     with container.consult_pokedex.override(FakeConsultPokedexNotEnoughBattery()):
         with TestClient(app) as client:
-            response = client.post("/games/game-1/consult", json={"hint_type": "stat"})
+            response = client.post("/api/games/game-1/consult", json={"hint_type": "stat"})
 
     assert response.status_code == 400
 
@@ -290,7 +290,7 @@ class FakeConsultPokedexGameOver:
 def test_consult_returns_400_when_game_is_over() -> None:
     with container.consult_pokedex.override(FakeConsultPokedexGameOver()):
         with TestClient(app) as client:
-            response = client.post("/games/game-1/consult", json={"hint_type": "stat"})
+            response = client.post("/api/games/game-1/consult", json={"hint_type": "stat"})
 
     assert response.status_code == 400
 
@@ -300,7 +300,7 @@ def test_consult_returns_400_when_game_is_over() -> None:
 
 def test_list_pokemon_returns_all_pokemon() -> None:
     with TestClient(app) as client:
-        response = client.get("/pokemon")
+        response = client.get("/api/pokemon")
 
     assert response.status_code == 200
     data = response.json()
@@ -318,7 +318,7 @@ def test_create_game_with_easy_difficulty(pikachu: Pokemon) -> None:
 
     with container.start_game.override(FakeStartGame(game)):
         with TestClient(app) as client:
-            response = client.post("/games", json={"difficulty": "easy"})
+            response = client.post("/api/games", json={"difficulty": "easy"})
 
     assert response.status_code == 201
     data = response.json()
@@ -332,7 +332,7 @@ def test_create_game_with_hard_difficulty(pikachu: Pokemon) -> None:
 
     with container.start_game.override(FakeStartGame(game)):
         with TestClient(app) as client:
-            response = client.post("/games", json={"difficulty": "hard"})
+            response = client.post("/api/games", json={"difficulty": "hard"})
 
     assert response.status_code == 201
     data = response.json()
@@ -346,7 +346,7 @@ def test_create_game_defaults_to_medium_difficulty(pikachu: Pokemon) -> None:
 
     with container.start_game.override(FakeStartGame(game)):
         with TestClient(app) as client:
-            response = client.post("/games", json={})
+            response = client.post("/api/games", json={})
 
     assert response.status_code == 201
 
@@ -359,7 +359,7 @@ def test_game_not_over_does_not_reveal_pokemon(pikachu: Pokemon) -> None:
 
     with container.get_game.override(FakeGetGame(game)):
         with TestClient(app) as client:
-            response = client.get("/games/game-1")
+            response = client.get("/api/games/game-1")
 
     assert response.status_code == 200
     data = response.json()
@@ -374,7 +374,7 @@ def test_game_won_reveals_pokemon(pikachu: Pokemon) -> None:
     with container.guess.override(FakeGuess(game)):
         with TestClient(app) as client:
             response = client.post(
-                "/games/game-1/guess",
+                "/api/games/game-1/guess",
                 json={"pokemon_name": "pikachu"},
             )
 
@@ -394,7 +394,7 @@ def test_game_lost_reveals_pokemon(pikachu: Pokemon, bulbasaur: Pokemon) -> None
     with container.guess.override(FakeGuess(game)):
         with TestClient(app) as client:
             response = client.post(
-                "/games/game-1/guess",
+                "/api/games/game-1/guess",
                 json={"pokemon_name": "bulbasaur"},
             )
 
@@ -414,7 +414,7 @@ def test_score_is_null_for_in_progress_game(pikachu: Pokemon) -> None:
 
     with container.get_game.override(FakeGetGame(game)):
         with TestClient(app) as client:
-            response = client.get("/games/game-1")
+            response = client.get("/api/games/game-1")
 
     assert response.status_code == 200
     data = response.json()
@@ -428,7 +428,7 @@ def test_score_is_present_when_game_won(pikachu: Pokemon) -> None:
     with container.guess.override(FakeGuess(game)):
         with TestClient(app) as client:
             response = client.post(
-                "/games/game-1/guess",
+                "/api/games/game-1/guess",
                 json={"pokemon_name": "pikachu"},
             )
 
@@ -445,7 +445,7 @@ def test_score_is_zero_when_game_lost(pikachu: Pokemon, bulbasaur: Pokemon) -> N
     with container.guess.override(FakeGuess(game)):
         with TestClient(app) as client:
             response = client.post(
-                "/games/game-1/guess",
+                "/api/games/game-1/guess",
                 json={"pokemon_name": "bulbasaur"},
             )
 
@@ -462,7 +462,7 @@ def test_create_game_response_includes_score_null(pikachu: Pokemon) -> None:
 
     with container.start_game.override(FakeStartGame(game)):
         with TestClient(app) as client:
-            response = client.post("/games", json={"difficulty": "medium"})
+            response = client.post("/api/games", json={"difficulty": "medium"})
 
     assert response.status_code == 201
     data = response.json()

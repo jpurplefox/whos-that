@@ -22,7 +22,7 @@ describe('api', () => {
 
       const result = await api.listPokemon();
 
-      expect(fetch).toHaveBeenCalledWith('/pokemon');
+      expect(fetch).toHaveBeenCalledWith('/api/pokemon');
       expect(result).toEqual(mockPokemon);
     });
 
@@ -62,7 +62,7 @@ describe('api', () => {
 
       const result = await api.createGame(request);
 
-      expect(fetch).toHaveBeenCalledWith('/games', {
+      expect(fetch).toHaveBeenCalledWith('/api/games', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ describe('api', () => {
 
       const result = await api.getGame(gameId);
 
-      expect(fetch).toHaveBeenCalledWith(`/games/${gameId}`);
+      expect(fetch).toHaveBeenCalledWith(`/api/games/${gameId}`);
       expect(result).toEqual(mockResponse);
     });
   });
@@ -140,7 +140,7 @@ describe('api', () => {
 
       const result = await api.makeGuess(gameId, request);
 
-      expect(fetch).toHaveBeenCalledWith(`/games/${gameId}/guess`, {
+      expect(fetch).toHaveBeenCalledWith(`/api/games/${gameId}/guess`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -204,7 +204,7 @@ describe('api', () => {
 
       const result = await api.consultHint(gameId, request);
 
-      expect(fetch).toHaveBeenCalledWith(`/games/${gameId}/consult`, {
+      expect(fetch).toHaveBeenCalledWith(`/api/games/${gameId}/consult`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

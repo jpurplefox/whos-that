@@ -27,7 +27,7 @@ class FakeGetCollection:
 
 def test_collection_returns_401_without_auth() -> None:
     with TestClient(app) as client:
-        response = client.get("/collection")
+        response = client.get("/api/collection")
 
     assert response.status_code == 401
 
@@ -48,7 +48,7 @@ def test_collection_returns_empty_list_when_no_captures() -> None:
     ):
         with TestClient(app) as client:
             response = client.get(
-                "/collection",
+                "/api/collection",
                 headers={"Authorization": "Bearer test-token"},
             )
 
@@ -79,7 +79,7 @@ def test_collection_returns_captured_pokemon(pikachu: Pokemon) -> None:
     ):
         with TestClient(app) as client:
             response = client.get(
-                "/collection",
+                "/api/collection",
                 headers={"Authorization": "Bearer test-token"},
             )
 
