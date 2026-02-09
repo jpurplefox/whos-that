@@ -1,0 +1,76 @@
+.home {
+  text-align: center;
+}
+
+.title {
+  margin-bottom: var(--spacing-xl);
+}
+
+.subtitle {
+  color: var(--color-text-secondary);
+  font-size: 1.2rem;
+  margin-bottom: var(--spacing-xl);
+}
+
+.difficultySection {
+  margin-bottom: var(--spacing-xl);
+}
+
+.difficultyButtons {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.difficultyButton {
+  min-width: 150px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: 1.1rem;
+}
+
+.difficultyButton.easy {
+  background: var(--color-success);
+}
+
+.difficultyButton.easy:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.difficultyButton.medium {
+  background: var(--color-warning);
+}
+
+.difficultyButton.medium:hover:not(:disabled) {
+  background: #e68900;
+}
+
+.difficultyButton.hard {
+  background: var(--color-error);
+}
+
+.difficultyButton.hard:hover:not(:disabled) {
+  background: #da190b;
+}
+
+.difficultyButton.selected {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+.startButton {
+  min-width: 200px;
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: 1.3rem;
+}
+
+@media (max-width: 768px) {
+  .difficultyButtons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .difficultyButton {
+    min-width: 100%;
+  }
+}
