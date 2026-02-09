@@ -2,17 +2,49 @@
   text-align: center;
 }
 
+@keyframes victoryPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes defeatShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px) rotate(-2deg);
+  }
+  75% {
+    transform: translateX(10px) rotate(2deg);
+  }
+}
+
 .title {
   font-size: 3rem;
   margin-bottom: var(--spacing-md);
 }
 
 .title.won {
-  color: var(--color-success);
+  color: #10b981;
+  text-shadow: 0 2px 12px rgba(16, 185, 129, 0.4),
+               0 0 32px rgba(16, 185, 129, 0.2);
+  animation: victoryPulse 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .title.lost {
   color: var(--color-error);
+  text-shadow: 0 2px 12px rgba(244, 67, 54, 0.4),
+               0 0 32px rgba(244, 67, 54, 0.2);
+  animation: defeatShake 0.5s ease-in-out;
 }
 
 .message {
@@ -21,11 +53,37 @@
   color: var(--color-text-secondary);
 }
 
+@keyframes expandIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes revealImage {
+  0% {
+    opacity: 0;
+    filter: blur(20px);
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+
 .pokemonReveal {
-  background: var(--color-surface-light);
+  background: radial-gradient(circle at center, rgba(220, 38, 38, 0.08), transparent 70%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--border-radius);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-xl);
+  animation: expandIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .pokemonImage {
@@ -33,13 +91,18 @@
   height: auto;
   margin: 0 auto var(--spacing-md);
   display: block;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5));
+  animation: revealImage 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.8s backwards;
 }
 
 .pokemonName {
   font-size: 2rem;
   font-weight: bold;
   text-transform: capitalize;
-  color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: var(--spacing-sm);
 }
 
@@ -48,23 +111,39 @@
   color: var(--color-text-secondary);
 }
 
+@keyframes scoreEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .score {
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   border-radius: var(--border-radius);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-xl);
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3),
+              0 4px 12px rgba(52, 102, 175, 0.2);
+  animation: scoreEntrance 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s backwards;
 }
 
 .scoreLabel {
   font-size: 1.2rem;
   margin-bottom: var(--spacing-xs);
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .scoreValue {
-  font-size: 3rem;
+  font-size: 4rem;
   font-weight: bold;
   color: var(--color-text);
+  text-shadow: 0 4px 16px rgba(255, 255, 255, 0.3),
+               0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .actions {
@@ -78,22 +157,16 @@
   min-width: 200px;
   padding: var(--spacing-md) var(--spacing-xl);
   font-size: 1.2rem;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15),
+              0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
-@keyframes celebrate {
-  0%, 100% {
-    transform: scale(1) rotate(0deg);
-  }
-  25% {
-    transform: scale(1.1) rotate(-5deg);
-  }
-  75% {
-    transform: scale(1.1) rotate(5deg);
-  }
-}
-
-.title.won {
-  animation: celebrate 0.5s ease-in-out;
+.playAgainButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15),
+              0 6px 20px rgba(220, 38, 38, 0.4),
+              0 12px 32px rgba(220, 38, 38, 0.3);
 }
 
 @media (max-width: 768px) {

@@ -28,6 +28,15 @@
   color: var(--color-text-secondary);
 }
 
+@keyframes batteryPulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.6);
+  }
+}
+
 .batteryBar {
   position: relative;
   height: 30px;
@@ -35,21 +44,36 @@
   border-radius: var(--border-radius);
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .batteryFill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-success), var(--color-info));
+  background: linear-gradient(90deg, #10b981, #3b82f6, #6366f1);
   transition: width 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   font-size: 0.9rem;
+  position: relative;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+}
+
+.batteryFill::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent);
+  pointer-events: none;
 }
 
 .batteryFill.low {
   background: linear-gradient(90deg, var(--color-error), var(--color-warning));
+  animation: batteryPulse 2s ease-in-out infinite;
 }
 
 .batteryText {
@@ -60,34 +84,90 @@
   font-weight: bold;
   font-size: 0.9rem;
   z-index: 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .attemptsRemaining {
   font-size: 1.1rem;
   text-align: center;
-  padding: var(--spacing-sm);
-  background: var(--color-surface-light);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--border-radius);
   min-width: 150px;
 }
 
 .attemptsRemaining strong {
   color: var(--color-primary);
-  font-size: 1.3rem;
+  font-size: 1.6rem;
+  display: block;
+  margin-top: 4px;
+  text-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .mysterySilhouette {
   text-align: center;
   margin-bottom: var(--spacing-lg);
-  padding: var(--spacing-lg);
-  background: var(--color-surface-light);
+  padding: var(--spacing-xl);
+  background: radial-gradient(circle, rgba(220, 38, 38, 0.08), transparent 70%);
   border-radius: var(--border-radius);
+  position: relative;
+  overflow: hidden;
+}
+
+.mysterySilhouette::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    transparent,
+    rgba(220, 38, 38, 0.05),
+    transparent 30%
+  );
+  animation: rotate 8s linear infinite;
+  pointer-events: none;
+}
+
+.mysterySilhouette > * {
+  position: relative;
+  z-index: 1;
+}
+
+.mysterySilhouette h3 {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .silhouetteImage {
-  font-size: 4rem;
+  font-size: 6rem;
   filter: brightness(0);
   opacity: 0.5;
+  animation: float 3s ease-in-out infinite;
+  display: inline-block;
 }
 
 .hintsSection {
@@ -111,6 +191,15 @@
   gap: var(--spacing-sm);
 }
 
+@keyframes sweepLine {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
 .hintButton {
   padding: var(--spacing-sm);
   font-size: 0.9rem;
@@ -118,11 +207,34 @@
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-xs);
-  background: var(--color-secondary);
+  background: rgba(59, 130, 246, 0.08);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hintButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.6), transparent);
+  transform: translateX(-100%);
 }
 
 .hintButton:hover:not(:disabled) {
-  background: #2850a0;
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.hintButton:hover:not(:disabled)::before {
+  animation: sweepLine 0.6s ease-out;
 }
 
 .hintCost {
@@ -132,20 +244,6 @@
 
 .guessSection {
   margin-bottom: var(--spacing-lg);
-}
-
-.guessForm {
-  display: flex;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
-}
-
-.guessInput {
-  flex: 1;
-}
-
-.guessButton {
-  min-width: 120px;
 }
 
 @media (max-width: 768px) {
@@ -164,13 +262,5 @@
 
   .hintShop {
     grid-template-columns: 1fr;
-  }
-
-  .guessForm {
-    flex-direction: column;
-  }
-
-  .guessButton {
-    width: 100%;
   }
 }
