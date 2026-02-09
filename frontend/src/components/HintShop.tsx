@@ -21,7 +21,7 @@ export function HintShop({ availableHints, battery, isLoading, onConsultHint, on
 
   return (
     <div className={styles.controlPanel}>
-      <h3 className={styles.controlTitle}>POKEDEX CONSULTATION</h3>
+      <h3 className={styles.controlTitle}>REQUEST NEW DATA</h3>
       <div className={styles.hintShop}>
         {availableHints
           .filter((h) => h.cost !== null)

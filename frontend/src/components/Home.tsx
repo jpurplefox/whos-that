@@ -28,7 +28,7 @@ export function Home({ onStartGame }: HomeProps) {
         <div className={styles.screen}>
           <h1 className={styles.title}>Who's That Pokémon?</h1>
           <p className={styles.subtitle}>
-            Test your Pokémon knowledge! Guess the mystery Pokémon using hints and comparisons.
+            Test your Pokémon knowledge! Guess the mystery Pokémon using hints.
           </p>
 
           <div className={styles.difficultySection}>

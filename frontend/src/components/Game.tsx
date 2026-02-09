@@ -119,7 +119,7 @@ export function Game({ initialGame, onGameOver }: GameProps) {
           <div className={styles.infoScreen}>
             <div className={styles.screenWrapper}>
               <div className={styles.hintsSection}>
-                <h3 className={styles.sectionTitle}>DATA RETRIEVED</h3>
+                <h3 className={styles.sectionTitle}>KNOWN DATA</h3>
                 <div className={styles.hintsGrid}>
                   {[...game.hints].reverse().map((hint, index) => (
                     <HintCard
@@ -136,7 +136,7 @@ export function Game({ initialGame, onGameOver }: GameProps) {
 
         <div className={styles.inputScreen}>
           <div className={styles.inputWrapper}>
-            <h3 className={styles.inputTitle}>IDENTIFY POKÉMON</h3>
+            <h3 className={styles.inputTitle}>SUBMIT GUESS</h3>
             <PokemonSearch onSelect={handleGuess} disabled={isLoading} />
             {error && <div className="error">{error}</div>}
           </div>
