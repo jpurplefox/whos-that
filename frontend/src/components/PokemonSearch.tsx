@@ -1,14 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Pokemon } from '../types/api';
-import { api } from '../services/api';
+import { getPokemonList } from '../services/pokemonCache';
 import styles from './PokemonSearch.module.css';
 
 interface PokemonSearchProps {
   onSelect: (name: string) => void;
   disabled?: boolean;
 }
-
-let cachedPokemon: Pokemon[] | null = null;
 
 export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
   const [query, setQuery] = useState('');
@@ -20,14 +18,7 @@ export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (cachedPokemon) {
-      setPokemon(cachedPokemon);
-      return;
-    }
-    api.listPokemon().then((list) => {
-      cachedPokemon = list;
-      setPokemon(list);
-    });
+    getPokemonList().then(setPokemon);
   }, []);
 
   useEffect(() => {

@@ -4,7 +4,7 @@ export type HintType = 'stat' | 'primary_type' | 'secondary_type' | 'fully_evolv
 
 export type Comparison = 'higher' | 'lower' | 'equal';
 
-export type Stat = 'hp' | 'attack' | 'defense' | 'special_attack' | 'special_defense' | 'speed';
+export type Stat = 'hp' | 'attack' | 'defense' | 'sp_attack' | 'sp_defense' | 'speed';
 
 export interface Pokemon {
   id: number;
@@ -26,7 +26,7 @@ export interface StatHint {
 
 export interface ComparisonHint {
   type: 'comparison';
-  pokemon: Pokemon;
+  pokemon: string;
   comparisons: Record<Stat, Comparison>;
 }
 

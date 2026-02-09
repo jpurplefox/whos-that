@@ -1,5 +1,23 @@
-import type { Hint } from '../types/api';
+import type { Hint, Stat, Comparison } from '../types/api';
+import { findPokemonByName } from '../services/pokemonCache';
 import styles from './HintCard.module.css';
+
+const STAT_ORDER: Stat[] = ['hp', 'attack', 'defense', 'sp_attack', 'sp_defense', 'speed'];
+
+const STAT_LABELS: Record<Stat, string> = {
+  hp: 'HP',
+  attack: 'Attack',
+  defense: 'Defense',
+  sp_attack: 'Sp. Atk',
+  sp_defense: 'Sp. Def',
+  speed: 'Speed',
+};
+
+const COMPARISON_ICONS: Record<Comparison, string> = {
+  higher: '\u2191',
+  lower: '\u2193',
+  equal: '=',
+};
 
 interface HintCardProps {
   hint: Hint;
@@ -19,19 +37,29 @@ export function HintCard({ hint }: HintCardProps) {
   }
 
   if (hint.type === 'comparison') {
+    const pokemonData = findPokemonByName(hint.pokemon);
     return (
       <div className={`${styles.hintCard} ${styles.comparison}`}>
         <div className={styles.hintType}>Comparison</div>
-        <div className={styles.comparisonPokemon}>{hint.pokemon.name}</div>
+        <div className={styles.comparisonPokemonHeader}>
+          {pokemonData && (
+            <img src={pokemonData.image_url} alt={hint.pokemon} className={styles.comparisonSprite} />
+          )}
+          <span className={styles.comparisonPokemon}>{hint.pokemon}</span>
+        </div>
         <div className={styles.comparisonGrid}>
-          {Object.entries(hint.comparisons).map(([stat, comparison]) => (
-            <div key={stat} className={styles.comparisonItem}>
-              <div className={styles.comparisonStat}>{stat.replace('_', ' ')}</div>
-              <div className={`${styles.comparisonValue} ${styles[comparison]}`}>
-                {comparison}
+          {STAT_ORDER.map((stat) => {
+            const comparison = hint.comparisons[stat];
+            if (!comparison) return null;
+            return (
+              <div key={stat} className={styles.comparisonItem}>
+                <div className={styles.comparisonStat}>{STAT_LABELS[stat]}</div>
+                <div className={`${styles.comparisonValue} ${styles[comparison]}`}>
+                  {COMPARISON_ICONS[comparison]}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     );
