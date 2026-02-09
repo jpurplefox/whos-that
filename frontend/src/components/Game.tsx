@@ -69,6 +69,23 @@ export function Game({ initialGame, onGameOver }: GameProps) {
     return labels[type];
   };
 
+  const getHintMetadata = (type: HintType): { icon: string; colorClass: string } => {
+    const metadata: Record<HintType, { icon: string; colorClass: string }> = {
+      stat: { icon: '📊', colorClass: styles.hintStat },
+      primary_type: { icon: '🏷️', colorClass: styles.hintType },
+      secondary_type: { icon: '🏷️', colorClass: styles.hintType },
+      fully_evolved: { icon: '⚡', colorClass: styles.hintEvolution },
+      effectiveness: { icon: '⚔️', colorClass: styles.hintEffectiveness },
+    };
+    return metadata[type];
+  };
+
+  const getDisabledReason = (availableHint: typeof game.available_hints[0]): 'purchased' | 'low-battery' | null => {
+    if (!availableHint.available) return 'purchased';
+    if (game.battery < (availableHint.cost || 0)) return 'low-battery';
+    return null;
+  };
+
   return (
     <div className={styles.game}>
       {/* UPPER SECTION */}
@@ -135,17 +152,35 @@ export function Game({ initialGame, onGameOver }: GameProps) {
           <div className={styles.hintShop}>
             {game.available_hints
               .filter((h) => h.cost !== null)
-              .map((availableHint) => (
-                <button
-                  key={availableHint.type}
-                  className={styles.hintButton}
-                  onClick={() => handleConsultHint(availableHint.type)}
-                  disabled={!availableHint.available || game.battery < (availableHint.cost || 0) || isLoading}
-                >
-                  <span className={styles.hintLabel}>{getHintTypeLabel(availableHint.type)}</span>
-                  <span className={styles.hintCost}>{availableHint.cost} PWR</span>
-                </button>
-              ))}
+              .map((availableHint) => {
+                const metadata = getHintMetadata(availableHint.type);
+                const disabledReason = getDisabledReason(availableHint);
+                const isDisabled = disabledReason !== null || isLoading;
+                return (
+                  <button
+                    key={availableHint.type}
+                    className={`${styles.hintButton} ${metadata.colorClass} ${
+                      disabledReason === 'purchased' ? styles.purchased :
+                      disabledReason === 'low-battery' ? styles.lowBattery : ''
+                    }`}
+                    onClick={() => handleConsultHint(availableHint.type)}
+                    disabled={isDisabled}
+                  >
+                    <span className={styles.hintIcon}>{metadata.icon}</span>
+                    <span className={styles.hintLabel}>{getHintTypeLabel(availableHint.type)}</span>
+                    <div className={styles.hintCostWrapper}>
+                      <span className={styles.hintCost}>{availableHint.cost}</span>
+                      <span className={styles.powerUnit}>⚡</span>
+                    </div>
+                    {disabledReason === 'purchased' && (
+                      <span className={styles.disabledLabel}>USED</span>
+                    )}
+                    {disabledReason === 'low-battery' && (
+                      <span className={styles.disabledLabel}>LOW PWR</span>
+                    )}
+                  </button>
+                );
+              })}
           </div>
         </div>
 
