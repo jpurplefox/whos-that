@@ -1,8 +1,18 @@
-import type { CreateGameRequest, GameResponse, GuessRequest, ConsultRequest } from '../types/api';
+import type { CreateGameRequest, GameResponse, GuessRequest, ConsultRequest, Pokemon } from '../types/api';
 
 const API_BASE = '';
 
 export const api = {
+  async listPokemon(): Promise<Pokemon[]> {
+    const response = await fetch(`${API_BASE}/pokemon`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to list pokemon: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
   async createGame(request: CreateGameRequest): Promise<GameResponse> {
     const response = await fetch(`${API_BASE}/games`, {
       method: 'POST',
