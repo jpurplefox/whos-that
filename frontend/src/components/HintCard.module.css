@@ -34,7 +34,7 @@
 .hintCard {
   background: rgba(0, 0, 0, 0.5);
   border-radius: 4px;
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
   border: 1px solid rgba(16, 185, 129, 0.4);
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.4),
@@ -43,6 +43,10 @@
   animation: slideInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
   font-family: 'Courier New', monospace;
   overflow: hidden;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .hintCard::before {
@@ -102,7 +106,7 @@
 }
 
 .hintType {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   color: var(--screen-glow);
   margin-bottom: 2px;
@@ -127,13 +131,13 @@
 .statName {
   text-transform: uppercase;
   color: rgba(16, 185, 129, 0.8);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   letter-spacing: 0.5px;
   margin-bottom: 2px;
 }
 
 .statValue {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: bold;
   color: var(--screen-glow);
   text-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
@@ -150,8 +154,8 @@
 }
 
 .comparisonSprite {
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
   border: 1px solid rgba(16, 185, 129, 0.3);
   border-radius: 3px;
   background: rgba(0, 0, 0, 0.3);
@@ -162,7 +166,7 @@
 .comparisonPokemon {
   font-weight: bold;
   color: #fbbf24;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
   text-shadow: 0 0 6px rgba(251, 191, 36, 0.6);
   font-family: 'Courier New', monospace;
@@ -187,7 +191,7 @@
 }
 
 .comparisonStat {
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   text-transform: uppercase;
   color: rgba(16, 185, 129, 0.7);
   margin-bottom: 2px;
@@ -196,7 +200,7 @@
 
 .comparisonValue {
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin-top: 1px;
   font-family: 'Courier New', monospace;
 }
@@ -222,7 +226,7 @@
   font-weight: bold;
   color: var(--screen-glow);
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   background: rgba(16, 185, 129, 0.2);
   border: 1px solid rgba(16, 185, 129, 0.4);
   padding: 0.2rem 0.4rem;
@@ -242,7 +246,7 @@
 }
 
 .evolutionValue {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: bold;
   text-transform: uppercase;
   font-family: 'Courier New', monospace;
@@ -267,7 +271,7 @@
 
 .effectivenessRelation {
   text-transform: uppercase;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: rgba(16, 185, 129, 0.8);
   letter-spacing: 0.5px;
 }
@@ -275,7 +279,7 @@
 .effectivenessElement {
   font-weight: bold;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: #ec4899;
   text-shadow: 0 0 8px rgba(236, 72, 153, 0.8);
   font-family: 'Courier New', monospace;
@@ -283,7 +287,7 @@
 }
 
 .effectivenessMultiplier {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: rgba(16, 185, 129, 0.8);
   font-family: 'Courier New', monospace;
 }
