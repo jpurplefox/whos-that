@@ -22,6 +22,12 @@ export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
   }, []);
 
   useEffect(() => {
+    if (!disabled) {
+      inputRef.current?.focus();
+    }
+  }, [disabled]);
+
+  useEffect(() => {
     if (!query.trim()) {
       setFiltered([]);
       setIsOpen(false);
@@ -48,6 +54,7 @@ export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
     setQuery('');
     setIsOpen(false);
     onSelect(name);
+    setTimeout(() => inputRef.current?.focus(), 0);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -79,6 +86,7 @@ export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
         onFocus={() => { if (filtered.length > 0) setIsOpen(true); }}
         placeholder="Search Pokémon..."
         disabled={disabled}
+        autoFocus
       />
       {isOpen && (
         <ul className={styles.dropdown}>
