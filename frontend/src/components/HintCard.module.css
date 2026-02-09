@@ -43,7 +43,7 @@
   animation: slideInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
   font-family: 'Courier New', monospace;
   overflow: hidden;
-  min-height: 200px;
+  min-height: 180px;
   display: flex;
   flex-direction: column;
   justify-content: center;
