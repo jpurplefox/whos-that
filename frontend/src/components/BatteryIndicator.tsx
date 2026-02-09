@@ -33,7 +33,7 @@ export function BatteryIndicator({ battery, maxBattery, hoveredHintCost }: Batte
                                          index >= (battery - hoveredHintCost);
           return (
             <div
-              key={index}
+              key={`${index}-${hoveredHintCost ?? 'none'}`}
               className={`${styles.batterySegment} ${
                 isFilled ? getBatteryColorClass() : styles.batterySegmentEmpty
               } ${isPreviewedForRemoval ? styles.batterySegmentPreview : ''}`}
