@@ -7,7 +7,7 @@ import styles from './Game.module.css';
 
 interface GameProps {
   initialGame: GameResponse;
-  onGameOver: () => void;
+  onGameOver: (game: GameResponse) => void;
 }
 
 export function Game({ initialGame, onGameOver }: GameProps) {
@@ -31,7 +31,7 @@ export function Game({ initialGame, onGameOver }: GameProps) {
       setGuessInput('');
 
       if (updatedGame.is_over) {
-        setTimeout(() => onGameOver(), 500);
+        setTimeout(() => onGameOver(updatedGame), 500);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to make guess');

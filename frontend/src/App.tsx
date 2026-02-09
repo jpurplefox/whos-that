@@ -29,7 +29,8 @@ function App() {
     }
   };
 
-  const handleGameOver = () => {
+  const handleGameOver = (finalGame: GameResponse) => {
+    setCurrentGame(finalGame);
     setGameState('game-over');
   };
 
