@@ -6,11 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/games': {
-        target: process.env.API_URL || 'http://localhost:8000',
-        changeOrigin: true,
-      },
-      '/pokemon': {
+      '/api': {
         target: process.env.API_URL || 'http://localhost:8000',
         changeOrigin: true,
       },
