@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import type { FormEvent } from 'react';
 import type { GameResponse, HintType } from '../types/api';
 import { api } from '../services/api';
 import { HintCard } from './HintCard';
+import { PokemonSearch } from './PokemonSearch';
 import styles from './Game.module.css';
 
 interface GameProps {
@@ -12,23 +12,20 @@ interface GameProps {
 
 export function Game({ initialGame, onGameOver }: GameProps) {
   const [game, setGame] = useState<GameResponse>(initialGame);
-  const [guessInput, setGuessInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleGuess = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!guessInput.trim() || isLoading) return;
+  const handleGuess = async (pokemonName: string) => {
+    if (isLoading) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
       const updatedGame = await api.makeGuess(game.id!, {
-        pokemon_name: guessInput.trim().toLowerCase(),
+        pokemon_name: pokemonName,
       });
       setGame(updatedGame);
-      setGuessInput('');
 
       if (updatedGame.is_over) {
         setTimeout(() => onGameOver(updatedGame), 500);
@@ -134,20 +131,7 @@ export function Game({ initialGame, onGameOver }: GameProps) {
 
       <div className={styles.guessSection}>
         <h3>Make Your Guess</h3>
-        <form onSubmit={handleGuess} className={styles.guessForm}>
-          <input
-            type="text"
-            className={styles.guessInput}
-            value={guessInput}
-            onChange={(e) => setGuessInput(e.target.value)}
-            placeholder="Enter Pokémon name..."
-            disabled={isLoading}
-          />
-          <button type="submit" className={styles.guessButton} disabled={!guessInput.trim() || isLoading}>
-            {isLoading ? 'Guessing...' : 'Guess'}
-          </button>
-        </form>
-
+        <PokemonSearch onSelect={handleGuess} disabled={isLoading} />
         {error && <div className="error">{error}</div>}
       </div>
 
