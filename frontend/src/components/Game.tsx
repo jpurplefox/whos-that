@@ -185,21 +185,6 @@ export function Game({ initialGame, onGameOver }: GameProps) {
 
       {/* LOWER SECTION */}
       <div className={styles.lowerSection}>
-        {game.hints.length > 0 && (
-          <div className={styles.infoScreen}>
-            <div className={styles.screenWrapper}>
-              <div className={styles.hintsSection}>
-                <h3 className={styles.sectionTitle}>DATA RETRIEVED</h3>
-                <div className={styles.hintsGrid}>
-                  {game.hints.map((hint, index) => (
-                    <HintCard key={index} hint={hint} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
         <div className={styles.controlPanel}>
           <h3 className={styles.controlTitle}>POKEDEX CONSULTATION</h3>
           <div className={styles.hintShop}>
@@ -238,6 +223,21 @@ export function Game({ initialGame, onGameOver }: GameProps) {
               })}
           </div>
         </div>
+
+        {game.hints.length > 0 && (
+          <div className={styles.infoScreen}>
+            <div className={styles.screenWrapper}>
+              <div className={styles.hintsSection}>
+                <h3 className={styles.sectionTitle}>DATA RETRIEVED</h3>
+                <div className={styles.hintsGrid}>
+                  {game.hints.map((hint, index) => (
+                    <HintCard key={index} hint={hint} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className={styles.inputScreen}>
           <div className={styles.inputWrapper}>
