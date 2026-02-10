@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     sentry_dsn: str = ""
     sentry_traces_sample_rate: float = 1.0
     database_url: str = ""
-    cors_allowed_origins: list[str] = []
+    cors_allowed_origins: str = ""
     use_connection_pool: bool = True
 
     # JWT
