@@ -285,11 +285,7 @@ def test_score_with_zero_battery_on_win(bulbasaur: Pokemon) -> None:
     assert game.score == 4000
 
 
-# --- New scoring edge-case tests for issue #20 ---
-
-
 def test_zero_battery_zero_attempts_win_scores_above_zero(bulbasaur: Pokemon) -> None:
-    """Winning with 0 battery and 0 attempts remaining must score > 0."""
     game = Game(
         pokemon=bulbasaur,
         max_attempts=1,
@@ -311,7 +307,6 @@ def test_zero_battery_zero_attempts_win_scores_above_zero(bulbasaur: Pokemon) ->
 
 
 def test_hard_perfect_scores_higher_than_easy_perfect(bulbasaur: Pokemon) -> None:
-    """Hard perfect should score higher than Easy perfect."""
     easy_perfect = Game(
         pokemon=bulbasaur,
         max_attempts=5,
@@ -340,7 +335,6 @@ def test_hard_perfect_scores_higher_than_easy_perfect(bulbasaur: Pokemon) -> Non
 
 
 def test_max_scores_match_expected_values(bulbasaur: Pokemon) -> None:
-    """Max scores: Easy=6000, Medium=7500, Hard=10000."""
     # Easy: 5 attempts, 100 battery, multiplier 1.0 - first guess win
     easy = Game(
         pokemon=bulbasaur,
@@ -383,7 +377,6 @@ def test_max_scores_match_expected_values(bulbasaur: Pokemon) -> None:
 
 
 def test_loss_still_scores_zero(bulbasaur: Pokemon, charmander: Pokemon) -> None:
-    """Losing should still score 0 regardless of difficulty multiplier."""
     game = Game(
         pokemon=bulbasaur,
         max_attempts=1,
@@ -401,7 +394,6 @@ def test_loss_still_scores_zero(bulbasaur: Pokemon, charmander: Pokemon) -> None
 
 
 def test_in_progress_score_is_none(bulbasaur: Pokemon) -> None:
-    """In-progress game should return None for score."""
     game = Game(
         pokemon=bulbasaur,
         max_attempts=4,
@@ -415,7 +407,6 @@ def test_in_progress_score_is_none(bulbasaur: Pokemon) -> None:
 
 
 def test_medium_perfect_score(bulbasaur: Pokemon) -> None:
-    """Medium perfect: first guess, full battery, 1.5x multiplier."""
     game = Game(
         pokemon=bulbasaur,
         max_attempts=4,
@@ -432,7 +423,6 @@ def test_medium_perfect_score(bulbasaur: Pokemon) -> None:
 
 
 def test_min_win_scores(bulbasaur: Pokemon, charmander: Pokemon) -> None:
-    """Min win: last attempt, 0 battery."""
     # Easy min: last attempt (5th), 0 battery
     easy_min = Game(
         pokemon=bulbasaur,
