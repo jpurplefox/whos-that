@@ -10,8 +10,8 @@ steps = [
     step(
         """
         ALTER TABLE games
-        ADD COLUMN initial_battery INTEGER NOT NULL DEFAULT 100,
-        ADD COLUMN difficulty_multiplier REAL NOT NULL DEFAULT 1.0
+        ADD COLUMN initial_battery INTEGER,
+        ADD COLUMN difficulty_multiplier REAL
         """,
         """
         ALTER TABLE games
