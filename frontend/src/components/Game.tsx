@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { GameResponse, HintType } from '../types/api';
+import type { Difficulty, GameResponse, HintType } from '../types/api';
 import { api } from '../services/api';
+import { trackGuessSubmitted, trackGameEnded, trackHintPurchased } from '../services/analytics';
 import { HintCard } from './HintCard';
 import { PokemonSearch } from './PokemonSearch';
 import { BatteryIndicator } from './BatteryIndicator';
@@ -12,14 +13,16 @@ import styles from './Game.module.css';
 interface GameProps {
   initialGame: GameResponse;
   onGameOver: (game: GameResponse) => void;
+  difficulty: Difficulty;
 }
 
-export function Game({ initialGame, onGameOver }: GameProps) {
+export function Game({ initialGame, onGameOver, difficulty }: GameProps) {
   const { t } = useTranslation();
   const [game, setGame] = useState<GameResponse>(initialGame);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hoveredHintCost, setHoveredHintCost] = useState<number | null>(null);
+  const gameStartTimeRef = useRef(Date.now());
 
   const handleGuess = async (pokemonName: string) => {
     if (isLoading) return;
@@ -33,7 +36,39 @@ export function Game({ initialGame, onGameOver }: GameProps) {
       });
       setGame(updatedGame);
 
+      const attemptNumber = updatedGame.attempts.length;
+      const hintsUsedCount = updatedGame.hints.filter(h => h.type !== 'comparison').length;
+      const timeSinceStart = Math.round((Date.now() - gameStartTimeRef.current) / 1000);
+
+      trackGuessSubmitted({
+        game_id: game.id!,
+        difficulty,
+        guessed_pokemon: pokemonName,
+        is_correct: updatedGame.is_won,
+        attempt_number: attemptNumber,
+        battery_remaining: updatedGame.battery,
+        hints_used_count: hintsUsedCount,
+        time_since_game_start: timeSinceStart,
+      });
+
       if (updatedGame.is_over) {
+        const purchasedHintTypes = updatedGame.hints
+          .filter(h => h.type !== 'comparison')
+          .map(h => h.type) as HintType[];
+
+        trackGameEnded({
+          game_id: game.id!,
+          difficulty,
+          result: updatedGame.is_won ? 'won' : 'lost',
+          score: updatedGame.score ?? 0,
+          total_attempts_used: updatedGame.attempts.length,
+          battery_remaining: updatedGame.battery,
+          hints_purchased_count: purchasedHintTypes.length,
+          hint_types_purchased: purchasedHintTypes,
+          game_duration_seconds: timeSinceStart,
+          target_pokemon_name: updatedGame.pokemon?.name ?? '',
+        });
+
         setTimeout(() => onGameOver(updatedGame), 500);
       }
     } catch (err) {
@@ -46,6 +81,11 @@ export function Game({ initialGame, onGameOver }: GameProps) {
   const handleConsultHint = async (hintType: HintType) => {
     if (isLoading) return;
 
+    const batteryBefore = game.battery;
+    const hintInfo = game.available_hints.find(h => h.type === hintType);
+    const hintCost = hintInfo?.cost ?? 0;
+    const hintsAlreadyPurchased = game.hints.filter(h => h.type !== 'comparison').length;
+
     setIsLoading(true);
     setError(null);
 
@@ -54,6 +94,17 @@ export function Game({ initialGame, onGameOver }: GameProps) {
         hint_type: hintType,
       });
       setGame(updatedGame);
+
+      trackHintPurchased({
+        game_id: game.id!,
+        difficulty,
+        hint_type: hintType,
+        hint_cost: hintCost,
+        battery_before: batteryBefore,
+        battery_after: updatedGame.battery,
+        attempt_number: updatedGame.attempts.length,
+        hints_already_purchased: hintsAlreadyPurchased,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : t('game.errorHint'));
     } finally {

@@ -1,19 +1,33 @@
 import { useTranslation } from 'react-i18next';
-import type { GameResponse } from '../types/api';
+import type { Difficulty, GameResponse } from '../types/api';
+import { trackPlayAgainClicked } from '../services/analytics';
 import styles from './GameOver.module.css';
 
 interface GameOverProps {
   game: GameResponse;
   onPlayAgain: () => void;
+  difficulty: Difficulty;
+  gamesPlayedThisSession: number;
 }
 
-export function GameOver({ game, onPlayAgain }: GameOverProps) {
+export function GameOver({ game, onPlayAgain, difficulty, gamesPlayedThisSession }: GameOverProps) {
   const { t } = useTranslation();
   const { is_won, pokemon, score } = game;
 
   if (!pokemon) {
     return null;
   }
+
+  const handlePlayAgain = () => {
+    trackPlayAgainClicked({
+      previous_game_id: game.id!,
+      previous_result: is_won ? 'won' : 'lost',
+      previous_score: score ?? 0,
+      previous_difficulty: difficulty,
+      games_played_this_session: gamesPlayedThisSession,
+    });
+    onPlayAgain();
+  };
 
   return (
     <div className={styles.gameOver}>
@@ -45,7 +59,7 @@ export function GameOver({ game, onPlayAgain }: GameOverProps) {
           </div>
 
           <div className={styles.actions}>
-            <button className={styles.playAgainButton} onClick={onPlayAgain}>
+            <button className={styles.playAgainButton} onClick={handlePlayAgain}>
               {t('gameOver.newScan')}
             </button>
           </div>

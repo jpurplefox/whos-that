@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Difficulty, GameResponse } from './types/api';
 import { api } from './services/api';
+import { trackAppOpened, trackGameStarted, isReturningUser } from './services/analytics';
 import { Home } from './components/Home';
 import { Game } from './components/Game';
 import { GameOver } from './components/GameOver';
@@ -16,6 +17,8 @@ function App() {
   const [currentGame, setCurrentGame] = useState<GameResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [difficulty, setDifficulty] = useState<Difficulty>('easy');
+  const sessionGameNumberRef = useRef(0);
 
   useEffect(() => {
     document.title = t('pageTitle');
@@ -25,14 +28,32 @@ function App() {
     }
   }, [t, i18n.language]);
 
-  const handleStartGame = async (difficulty: Difficulty) => {
+  useEffect(() => {
+    trackAppOpened({
+      language: i18n.language,
+      referrer: document.referrer,
+      is_returning_user: isReturningUser(),
+    });
+  }, []);
+
+  const handleStartGame = async (selectedDifficulty: Difficulty) => {
     setIsLoading(true);
     setError(null);
+    setDifficulty(selectedDifficulty);
 
     try {
-      const game = await api.createGame({ difficulty });
+      const game = await api.createGame({ difficulty: selectedDifficulty });
       setCurrentGame(game);
       setGameState('playing');
+
+      sessionGameNumberRef.current += 1;
+      trackGameStarted({
+        difficulty: selectedDifficulty,
+        game_id: game.id!,
+        initial_battery: game.battery,
+        max_attempts: game.attempts_remaining,
+        session_game_number: sessionGameNumberRef.current,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : t('game.errorStartGame'));
     } finally {
@@ -65,11 +86,16 @@ function App() {
           )}
 
           {!isLoading && gameState === 'playing' && currentGame && (
-            <Game initialGame={currentGame} onGameOver={handleGameOver} />
+            <Game initialGame={currentGame} onGameOver={handleGameOver} difficulty={difficulty} />
           )}
 
           {!isLoading && gameState === 'game-over' && currentGame && (
-            <GameOver game={currentGame} onPlayAgain={handlePlayAgain} />
+            <GameOver
+              game={currentGame}
+              onPlayAgain={handlePlayAgain}
+              difficulty={difficulty}
+              gamesPlayedThisSession={sessionGameNumberRef.current}
+            />
           )}
         </div>
       </div>
