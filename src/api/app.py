@@ -44,7 +44,8 @@ async def _on_shutdown() -> None:
         await resources
 
 
-cors_config = CORSConfig(allow_origins=_settings.cors_allowed_origins)
+_cors_origins = [o.strip() for o in _settings.cors_allowed_origins.split(",") if o.strip()]
+cors_config = CORSConfig(allow_origins=_cors_origins)
 
 api_router = Router(
     path="/api",
