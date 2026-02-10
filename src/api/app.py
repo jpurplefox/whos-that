@@ -10,7 +10,6 @@ from api.auth_views import auth_router
 from api.collection_views import collection_router
 from api.dependencies import container
 from api.history_views import history_router
-from api.rate_limit import RateLimitMiddleware
 from api.views import router
 from config import Settings
 from structlog_config import configure_logging
@@ -58,5 +57,4 @@ app = Litestar(
     on_startup=[_on_startup],
     on_shutdown=[_on_shutdown],
     cors_config=cors_config,
-    middleware=[RateLimitMiddleware],
 )
