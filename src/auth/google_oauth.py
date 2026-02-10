@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 import httpx
 
 from domain.ports.oauth_provider import OAuthUserInfo
+from domain.ports.oauth_state_store import OAuthStateStore
 
 
 class GoogleOAuthService:
@@ -11,19 +12,25 @@ class GoogleOAuthService:
     TOKEN_URL = "https://oauth2.googleapis.com/token"
     USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
 
-    def __init__(self, client_id: str, client_secret: str, redirect_uri: str) -> None:
+    def __init__(
+        self,
+        client_id: str,
+        client_secret: str,
+        redirect_uri: str,
+        state_store: OAuthStateStore,
+    ) -> None:
         self._client_id = client_id
         self._client_secret = client_secret
         self._redirect_uri = redirect_uri
-        self._pending_states: set[str] = set()
+        self._state_store = state_store
 
     @property
     def provider_type(self) -> str:
         return "google"
 
-    def get_authorization_url(self) -> tuple[str, str]:
+    async def get_authorization_url(self) -> tuple[str, str]:
         state = secrets.token_urlsafe(32)
-        self._pending_states.add(state)
+        await self._state_store.save(state)
         params = {
             "client_id": self._client_id,
             "redirect_uri": self._redirect_uri,
@@ -34,11 +41,8 @@ class GoogleOAuthService:
         }
         return f"{self.AUTHORIZATION_URL}?{urlencode(params)}", state
 
-    def consume_state(self, state: str) -> bool:
-        if state in self._pending_states:
-            self._pending_states.discard(state)
-            return True
-        return False
+    async def consume_state(self, state: str) -> bool:
+        return await self._state_store.consume(state)
 
     async def exchange_code(self, code: str) -> str:
         async with httpx.AsyncClient() as client:
