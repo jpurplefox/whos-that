@@ -16,7 +16,7 @@ def _insert_state() -> str:
 
 def _delete_valid_state() -> str:
     return str(
-        PostgreSQLQuery.from_(_oauth_states)
+        PostgreSQLQuery.from_(_oauth_states)  # type: ignore[operator]
         .where(_oauth_states.state == Parameter("%(state)s"))
         .where(
             _oauth_states.created_at
