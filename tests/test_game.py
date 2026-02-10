@@ -235,7 +235,8 @@ def test_score_when_won_with_remaining_attempts_and_battery(
     assert game.is_won is True
     assert game.attempts_remaining == 3
     assert game.battery == 70
-    assert game.score == 3700
+    # battery_pct = 70/100 = 0.7, base = 1000 + 3000 + 700 = 4700
+    assert game.score == 4700
 
 
 def test_score_matches_issue_example(bulbasaur: Pokemon, charmander: Pokemon) -> None:
@@ -247,7 +248,8 @@ def test_score_matches_issue_example(bulbasaur: Pokemon, charmander: Pokemon) ->
     assert game.is_won is True
     assert game.attempts_remaining == 2
     assert game.battery == 70
-    assert game.score == 2700
+    # battery_pct = 70/100 = 0.7, base = 1000 + 2000 + 700 = 3700
+    assert game.score == 3700
 
 
 def test_score_on_first_attempt_win(bulbasaur: Pokemon) -> None:
@@ -255,7 +257,8 @@ def test_score_on_first_attempt_win(bulbasaur: Pokemon) -> None:
 
     game.guess(bulbasaur)
 
-    assert game.score == 3900
+    # battery_pct = 90/100 = 0.9, base = 1000 + 3000 + 900 = 4900
+    assert game.score == 4900
 
 
 def test_score_on_last_attempt_win(
@@ -268,7 +271,9 @@ def test_score_on_last_attempt_win(
 
     assert game.attempts_remaining == 0
     assert game.is_won is True
-    assert game.score == 600
+    # battery = 60 (50 + 10 recovery from wrong guess), battery_pct = 60/100 = 0.6
+    # base = 1000 + 0 + 600 = 1600
+    assert game.score == 1600
 
 
 def test_score_with_zero_battery_on_win(bulbasaur: Pokemon) -> None:
@@ -276,4 +281,201 @@ def test_score_with_zero_battery_on_win(bulbasaur: Pokemon) -> None:
 
     game.guess(bulbasaur)
 
-    assert game.score == 3000
+    # battery_pct = 0/100 = 0, base = 1000 + 3000 + 0 = 4000
+    assert game.score == 4000
+
+
+# --- New scoring edge-case tests for issue #20 ---
+
+
+def test_zero_battery_zero_attempts_win_scores_above_zero(bulbasaur: Pokemon) -> None:
+    """Winning with 0 battery and 0 attempts remaining must score > 0."""
+    game = Game(
+        pokemon=bulbasaur,
+        max_attempts=1,
+        battery=0,
+        max_battery=100,
+        battery_recovery=0,
+        initial_battery=75,
+        difficulty_multiplier=2.0,
+    )
+
+    game.guess(bulbasaur)
+
+    assert game.is_won is True
+    assert game.attempts_remaining == 0
+    assert game.battery == 0
+    # battery_pct = 0/75 = 0, base = 1000 + 0 + 0 = 1000, score = 1000 * 2.0 = 2000
+    assert game.score == 2000
+    assert game.score > 0
+
+
+def test_hard_perfect_scores_higher_than_easy_perfect(bulbasaur: Pokemon) -> None:
+    """Hard perfect should score higher than Easy perfect."""
+    easy_perfect = Game(
+        pokemon=bulbasaur,
+        max_attempts=5,
+        battery=100,
+        max_battery=100,
+        battery_recovery=35,
+        initial_battery=100,
+        difficulty_multiplier=1.0,
+    )
+    easy_perfect.guess(bulbasaur)
+
+    hard_perfect = Game(
+        pokemon=bulbasaur,
+        max_attempts=4,
+        battery=75,
+        max_battery=100,
+        battery_recovery=20,
+        initial_battery=75,
+        difficulty_multiplier=2.0,
+    )
+    hard_perfect.guess(bulbasaur)
+
+    assert easy_perfect.score == 6000
+    assert hard_perfect.score == 10000
+    assert hard_perfect.score > easy_perfect.score
+
+
+def test_max_scores_match_expected_values(bulbasaur: Pokemon) -> None:
+    """Max scores: Easy=6000, Medium=7500, Hard=10000."""
+    # Easy: 5 attempts, 100 battery, multiplier 1.0 - first guess win
+    easy = Game(
+        pokemon=bulbasaur,
+        max_attempts=5,
+        battery=100,
+        max_battery=100,
+        initial_battery=100,
+        difficulty_multiplier=1.0,
+    )
+    easy.guess(bulbasaur)
+
+    # Medium: 4 attempts, 100 battery, multiplier 1.5 - first guess win
+    medium = Game(
+        pokemon=bulbasaur,
+        max_attempts=4,
+        battery=100,
+        max_battery=100,
+        initial_battery=100,
+        difficulty_multiplier=1.5,
+    )
+    medium.guess(bulbasaur)
+
+    # Hard: 4 attempts, 75 battery, multiplier 2.0 - first guess win
+    hard = Game(
+        pokemon=bulbasaur,
+        max_attempts=4,
+        battery=75,
+        max_battery=100,
+        initial_battery=75,
+        difficulty_multiplier=2.0,
+    )
+    hard.guess(bulbasaur)
+
+    # base_easy = 1000 + 4*1000 + 1000 = 6000, * 1.0 = 6000
+    assert easy.score == 6000
+    # base_medium = 1000 + 3*1000 + 1000 = 5000, * 1.5 = 7500
+    assert medium.score == 7500
+    # base_hard = 1000 + 3*1000 + 1000 = 5000, * 2.0 = 10000
+    assert hard.score == 10000
+
+
+def test_loss_still_scores_zero(bulbasaur: Pokemon, charmander: Pokemon) -> None:
+    """Losing should still score 0 regardless of difficulty multiplier."""
+    game = Game(
+        pokemon=bulbasaur,
+        max_attempts=1,
+        battery=75,
+        max_battery=100,
+        initial_battery=75,
+        difficulty_multiplier=2.0,
+    )
+
+    game.guess(charmander)
+
+    assert game.is_over is True
+    assert game.is_won is False
+    assert game.score == 0
+
+
+def test_in_progress_score_is_none(bulbasaur: Pokemon) -> None:
+    """In-progress game should return None for score."""
+    game = Game(
+        pokemon=bulbasaur,
+        max_attempts=4,
+        battery=75,
+        initial_battery=75,
+        difficulty_multiplier=2.0,
+    )
+
+    assert game.is_over is False
+    assert game.score is None
+
+
+def test_medium_perfect_score(bulbasaur: Pokemon) -> None:
+    """Medium perfect: first guess, full battery, 1.5x multiplier."""
+    game = Game(
+        pokemon=bulbasaur,
+        max_attempts=4,
+        battery=100,
+        max_battery=100,
+        initial_battery=100,
+        difficulty_multiplier=1.5,
+    )
+
+    game.guess(bulbasaur)
+
+    # base = 1000 + 3*1000 + 1000 = 5000, * 1.5 = 7500
+    assert game.score == 7500
+
+
+def test_min_win_scores(bulbasaur: Pokemon, charmander: Pokemon) -> None:
+    """Min win: last attempt, 0 battery."""
+    # Easy min: last attempt (5th), 0 battery
+    easy_min = Game(
+        pokemon=bulbasaur,
+        max_attempts=1,
+        battery=0,
+        max_battery=100,
+        battery_recovery=0,
+        initial_battery=100,
+        difficulty_multiplier=1.0,
+    )
+    easy_min.guess(bulbasaur)
+
+    # Hard min: last attempt, 0 battery
+    hard_min = Game(
+        pokemon=bulbasaur,
+        max_attempts=1,
+        battery=0,
+        max_battery=100,
+        battery_recovery=0,
+        initial_battery=75,
+        difficulty_multiplier=2.0,
+    )
+    hard_min.guess(bulbasaur)
+
+    # Easy min: base = 1000 + 0 + 0 = 1000, * 1.0 = 1000
+    assert easy_min.score == 1000
+    # Hard min: base = 1000 + 0 + 0 = 1000, * 2.0 = 2000
+    assert hard_min.score == 2000
+
+
+def test_score_with_zero_initial_battery(bulbasaur: Pokemon) -> None:
+    """Edge case: initial_battery=0 should not cause division by zero."""
+    game = Game(
+        pokemon=bulbasaur,
+        max_attempts=4,
+        battery=0,
+        max_battery=100,
+        battery_recovery=0,
+        initial_battery=0,
+        difficulty_multiplier=1.0,
+    )
+
+    game.guess(bulbasaur)
+
+    # battery_pct = 0 (guard clause), base = 1000 + 3000 + 0 = 4000
+    assert game.score == 4000

@@ -435,7 +435,7 @@ def test_score_is_present_when_game_won(pikachu: Pokemon) -> None:
     assert response.status_code == 201
     data = response.json()
     assert data["is_won"] is True
-    assert data["score"] == 3900
+    assert data["score"] == 4900
 
 
 def test_score_is_zero_when_game_lost(pikachu: Pokemon, bulbasaur: Pokemon) -> None:

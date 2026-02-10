@@ -27,6 +27,8 @@ class Game(BaseModel):
     battery: int = 100
     max_battery: int = 100
     battery_recovery: int = 10
+    initial_battery: int = 100
+    difficulty_multiplier: float = 1.0
     consulted_this_turn: bool = False
 
     def consult(self, hint: Hint, cost: int) -> None:
@@ -60,7 +62,9 @@ class Game(BaseModel):
             return None
         if not self.is_won:
             return 0
-        return (self.attempts_remaining * 1000) + (self.battery * 10)
+        battery_pct = min(self.battery / self.initial_battery, 1.0) if self.initial_battery > 0 else 0
+        base = 1000 + (self.attempts_remaining * 1000) + int(battery_pct * 1000)
+        return int(base * self.difficulty_multiplier)
 
     def guess(self, pokemon: Pokemon) -> bool:
         if self.is_over:
