@@ -62,7 +62,7 @@ class Game(BaseModel):
             return None
         if not self.is_won:
             return 0
-        battery_pct = min(self.battery / self.initial_battery, 1.0) if self.initial_battery > 0 else 0
+        battery_pct = min(self.battery / self.initial_battery, 1.0) if self.initial_battery > 0 else 0.0
         base = 1000 + (self.attempts_remaining * 1000) + int(battery_pct * 1000)
         return int(base * self.difficulty_multiplier)
 

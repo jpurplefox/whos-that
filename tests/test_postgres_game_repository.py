@@ -138,6 +138,41 @@ class TestGet:
         assert game.max_battery == 100
         assert game.battery_recovery == 10
         assert game.consulted_this_turn is False
+        assert game.initial_battery == 100
+        assert game.difficulty_multiplier == 1.0
+
+    @pytest.mark.asyncio
+    async def test_handles_null_scoring_fields(
+        self,
+        repository: PostgresGameRepository,
+        mock_connection: AsyncMock,
+        mock_pokemon_repository: AsyncMock,
+        pikachu: Pokemon,
+    ) -> None:
+        mock_pokemon_repository.get_by_number.return_value = pikachu
+        cursor = AsyncMock()
+        cursor.fetchone = AsyncMock(
+            return_value={
+                "id": "test-id",
+                "pokemon_id": 25,
+                "max_attempts": 4,
+                "hints": [],
+                "attempts": [],
+                "battery": 100,
+                "max_battery": 100,
+                "battery_recovery": 10,
+                "consulted_this_turn": False,
+                "hint_costs": None,
+                "initial_battery": None,
+                "difficulty_multiplier": None,
+            }
+        )
+        mock_connection.cursor.return_value.__aenter__.return_value = cursor
+
+        game = await repository.get("test-id")
+
+        assert game.initial_battery == 100
+        assert game.difficulty_multiplier == 1.0
 
     @pytest.mark.asyncio
     async def test_raises_when_not_found(
