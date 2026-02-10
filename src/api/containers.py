@@ -18,7 +18,9 @@ from adapters.in_memory_pokemon_repository import InMemoryPokemonRepository
 from adapters.in_memory_user_repository import InMemoryUserRepository
 from adapters.pokemon_loader import load_pokemon_from_json
 from adapters.postgres_collection_repository import PostgresCollectionRepository
+from adapters.in_memory_oauth_state_store import InMemoryOAuthStateStore
 from adapters.postgres_game_repository import PostgresGameRepository
+from adapters.postgres_oauth_state_store import PostgresOAuthStateStore
 from adapters.postgres_user_repository import PostgresUserRepository
 from adapters.random_generator import SystemRandomGenerator
 from adapters.random_pokemon_selector import RandomPokemonSelector
@@ -97,6 +99,14 @@ def _create_collection_repository(
     if connection_provider is not None:
         return PostgresCollectionRepository(connection_provider, pokemon_repository)
     return InMemoryCollectionRepository()
+
+
+def _create_oauth_state_store(
+    connection_provider: ConnectionProvider | None,
+) -> Any:
+    if connection_provider is not None:
+        return PostgresOAuthStateStore(connection_provider)
+    return InMemoryOAuthStateStore()
 
 
 def _create_event_bus(capture_pokemon: CapturePokemon) -> EventBus:
@@ -184,11 +194,17 @@ class Container(containers.DeclarativeContainer):
         expiration_hours=settings.provided.jwt_expiration_hours,
     )
 
+    oauth_state_store = providers.Singleton(
+        _create_oauth_state_store,
+        connection_provider=connection_provider,
+    )
+
     google_oauth = providers.Singleton(
         GoogleOAuthService,
         client_id=settings.provided.google_client_id,
         client_secret=settings.provided.google_client_secret,
         redirect_uri=settings.provided.google_redirect_uri,
+        state_store=oauth_state_store,
     )
 
     start_game = providers.Singleton(

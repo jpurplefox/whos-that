@@ -31,7 +31,7 @@ class AuthResponse(BaseModel):
 async def get_google_auth_url(
     google_oauth: GoogleOAuthService = Dependency(skip_validation=True),
 ) -> GoogleAuthUrlResponse:
-    url, state = google_oauth.get_authorization_url()
+    url, state = await google_oauth.get_authorization_url()
     return GoogleAuthUrlResponse(url=url, state=state)
 
 
@@ -41,7 +41,7 @@ async def google_callback(
     google_oauth: GoogleOAuthService = Dependency(skip_validation=True),
     authenticate: Authenticate = Dependency(skip_validation=True),
 ) -> AuthResponse:
-    if not google_oauth.consume_state(data.state):
+    if not await google_oauth.consume_state(data.state):
         raise HTTPException(status_code=400, detail="Invalid or expired OAuth state")
 
     result = await authenticate.execute(data.code)

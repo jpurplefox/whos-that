@@ -1,6 +1,5 @@
 import time
 from collections import defaultdict
-from typing import Any
 
 from litestar import Request, Response
 from litestar.types import ASGIApp, Receive, Scope, Send
@@ -30,14 +29,14 @@ _RATE_LIMITS: dict[str, tuple[int, int]] = {
 
 
 def _get_client_ip(scope: "Scope") -> str:
-    """Extract client IP from ASGI scope, with X-Forwarded-For support."""
-    headers = dict(scope.get("headers", []))
-    forwarded = headers.get(b"x-forwarded-for", b"").decode()
-    if forwarded:
-        return forwarded.split(",")[0].strip()
+    """Extract client IP from ASGI scope. Prefers scope client (set by API Gateway)."""
     client = scope.get("client")
     if client:
         return client[0]
+    headers = dict(scope.get("headers", []))
+    forwarded = headers.get(b"x-forwarded-for", b"").decode()
+    if forwarded:
+        return forwarded.split(",")[-1].strip()
     return "unknown"
 
 
