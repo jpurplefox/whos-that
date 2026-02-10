@@ -123,6 +123,8 @@ class TestGet:
                 "battery_recovery": 10,
                 "consulted_this_turn": False,
                 "hint_costs": None,
+                "initial_battery": 100,
+                "difficulty_multiplier": 1.0,
             }
         )
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
@@ -172,6 +174,8 @@ class TestGet:
                 "battery_recovery": 10,
                 "consulted_this_turn": False,
                 "hint_costs": None,
+                "initial_battery": 100,
+                "difficulty_multiplier": 1.0,
             }
         )
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
@@ -221,6 +225,8 @@ class TestGet:
                 "battery_recovery": 10,
                 "consulted_this_turn": False,
                 "hint_costs": None,
+                "initial_battery": 100,
+                "difficulty_multiplier": 1.0,
             }
         )
         mock_connection.cursor.return_value.__aenter__.return_value = cursor
@@ -259,6 +265,8 @@ class TestGet:
                 "battery_recovery": 10,
                 "consulted_this_turn": False,
                 "hint_costs": None,
+                "initial_battery": 100,
+                "difficulty_multiplier": 1.0,
             }
         )
         mock_connection.cursor.return_value.__aenter__.return_value = cursor

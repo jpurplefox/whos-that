@@ -35,6 +35,8 @@ def _select_game_by_id() -> str:
             _games.consulted_this_turn,
             _games.user_id,
             _games.created_at,
+            _games.initial_battery,
+            _games.difficulty_multiplier,
         )
         .where(_games.id == Parameter("%(id)s"))
     )
@@ -56,6 +58,8 @@ def _select_games_by_user_id() -> str:
             _games.consulted_this_turn,
             _games.user_id,
             _games.created_at,
+            _games.initial_battery,
+            _games.difficulty_multiplier,
         )
         .where(_games.user_id == Parameter("%(user_id)s"))
         .orderby(_games.created_at, order=Order.desc)
@@ -77,6 +81,8 @@ def _upsert_game() -> str:
             "battery_recovery",
             "consulted_this_turn",
             "user_id",
+            "initial_battery",
+            "difficulty_multiplier",
         )
         .insert(
             Parameter("%(id)s"),
@@ -90,6 +96,8 @@ def _upsert_game() -> str:
             Parameter("%(battery_recovery)s"),
             Parameter("%(consulted_this_turn)s"),
             Parameter("%(user_id)s"),
+            Parameter("%(initial_battery)s"),
+            Parameter("%(difficulty_multiplier)s"),
         )
         .on_conflict(_games.id)  # type: ignore[operator]
         .do_update(_games.pokemon_id, Parameter("%(pokemon_id)s"))
@@ -102,6 +110,8 @@ def _upsert_game() -> str:
         .do_update(_games.battery_recovery, Parameter("%(battery_recovery)s"))
         .do_update(_games.consulted_this_turn, Parameter("%(consulted_this_turn)s"))
         .do_update(_games.user_id, Parameter("%(user_id)s"))
+        .do_update(_games.initial_battery, Parameter("%(initial_battery)s"))
+        .do_update(_games.difficulty_multiplier, Parameter("%(difficulty_multiplier)s"))
     )
 
 
@@ -132,6 +142,8 @@ class PostgresGameRepository:
             "battery_recovery": game.battery_recovery,
             "consulted_this_turn": game.consulted_this_turn,
             "user_id": game.user_id,
+            "initial_battery": game.initial_battery,
+            "difficulty_multiplier": game.difficulty_multiplier,
         }
 
         async with self._connection_provider.connection() as conn:
@@ -186,6 +198,8 @@ class PostgresGameRepository:
             consulted_this_turn=row["consulted_this_turn"],
             user_id=row.get("user_id"),
             created_at=row.get("created_at"),
+            initial_battery=row.get("initial_battery", 100),
+            difficulty_multiplier=row.get("difficulty_multiplier", 1.0),
         )
 
     def _serialize_hints(self, hints: list[Hint]) -> list[dict[str, Any]]:
