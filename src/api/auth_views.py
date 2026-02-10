@@ -11,7 +11,6 @@ from services.authenticate import Authenticate
 
 class GoogleAuthUrlResponse(BaseModel):
     url: str
-    state: str
 
 
 class GoogleCallbackRequest(BaseModel):
@@ -31,8 +30,8 @@ class AuthResponse(BaseModel):
 async def get_google_auth_url(
     google_oauth: GoogleOAuthService = Dependency(skip_validation=True),
 ) -> GoogleAuthUrlResponse:
-    url, state = await google_oauth.get_authorization_url()
-    return GoogleAuthUrlResponse(url=url, state=state)
+    url = await google_oauth.get_authorization_url()
+    return GoogleAuthUrlResponse(url=url)
 
 
 @post("/auth/google/callback")
