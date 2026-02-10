@@ -115,6 +115,8 @@ jobs:
         run: npm test
 
       - name: Build
+        env:
+          VITE_AMPLITUDE_API_KEY: ${{ secrets.VITE_AMPLITUDE_API_KEY }}
         run: npm run build
 
       - name: Configure AWS credentials
