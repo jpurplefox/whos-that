@@ -198,8 +198,8 @@ class PostgresGameRepository:
             consulted_this_turn=row["consulted_this_turn"],
             user_id=row.get("user_id"),
             created_at=row.get("created_at"),
-            initial_battery=row.get("initial_battery", 100),
-            difficulty_multiplier=row.get("difficulty_multiplier", 1.0),
+            initial_battery=row.get("initial_battery") or 100,
+            difficulty_multiplier=row.get("difficulty_multiplier") or 1.0,
         )
 
     def _serialize_hints(self, hints: list[Hint]) -> list[dict[str, Any]]:
