@@ -29,9 +29,12 @@ function App() {
   }, [t, i18n.language]);
 
   useEffect(() => {
+    const referrer = document.referrer
+      ? new URL(document.referrer).origin
+      : '';
     trackAppOpened({
       language: i18n.language,
-      referrer: document.referrer,
+      referrer,
       is_returning_user: isReturningUser(),
     });
   }, []);
