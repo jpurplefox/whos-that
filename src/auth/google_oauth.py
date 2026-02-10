@@ -1,3 +1,4 @@
+import secrets
 from urllib.parse import urlencode
 
 import httpx
@@ -14,22 +15,30 @@ class GoogleOAuthService:
         self._client_id = client_id
         self._client_secret = client_secret
         self._redirect_uri = redirect_uri
+        self._pending_states: set[str] = set()
 
     @property
     def provider_type(self) -> str:
         return "google"
 
-    def get_authorization_url(self, state: str | None = None) -> str:
+    def get_authorization_url(self) -> tuple[str, str]:
+        state = secrets.token_urlsafe(32)
+        self._pending_states.add(state)
         params = {
             "client_id": self._client_id,
             "redirect_uri": self._redirect_uri,
             "response_type": "code",
             "scope": "openid email profile",
             "access_type": "offline",
+            "state": state,
         }
-        if state:
-            params["state"] = state
-        return f"{self.AUTHORIZATION_URL}?{urlencode(params)}"
+        return f"{self.AUTHORIZATION_URL}?{urlencode(params)}", state
+
+    def consume_state(self, state: str) -> bool:
+        if state in self._pending_states:
+            self._pending_states.discard(state)
+            return True
+        return False
 
     async def exchange_code(self, code: str) -> str:
         async with httpx.AsyncClient() as client:

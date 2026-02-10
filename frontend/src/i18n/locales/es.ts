@@ -64,6 +64,7 @@ const es = {
 
     // Search
     'search.placeholder': 'Buscar Pokemon...',
+    'search.loadError': 'Error al cargar la lista de Pokemon. Recarga la pagina.',
   },
 } as const;
 

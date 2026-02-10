@@ -1,5 +1,6 @@
 from litestar import Router, get, post
 from litestar.di import Provide
+from litestar.exceptions import HTTPException
 from litestar.params import Dependency
 from pydantic import BaseModel
 
@@ -10,10 +11,12 @@ from services.authenticate import Authenticate
 
 class GoogleAuthUrlResponse(BaseModel):
     url: str
+    state: str
 
 
 class GoogleCallbackRequest(BaseModel):
     code: str
+    state: str
 
 
 class AuthResponse(BaseModel):
@@ -28,15 +31,19 @@ class AuthResponse(BaseModel):
 async def get_google_auth_url(
     google_oauth: GoogleOAuthService = Dependency(skip_validation=True),
 ) -> GoogleAuthUrlResponse:
-    url = google_oauth.get_authorization_url()
-    return GoogleAuthUrlResponse(url=url)
+    url, state = google_oauth.get_authorization_url()
+    return GoogleAuthUrlResponse(url=url, state=state)
 
 
 @post("/auth/google/callback")
 async def google_callback(
     data: GoogleCallbackRequest,
+    google_oauth: GoogleOAuthService = Dependency(skip_validation=True),
     authenticate: Authenticate = Dependency(skip_validation=True),
 ) -> AuthResponse:
+    if not google_oauth.consume_state(data.state):
+        raise HTTPException(status_code=400, detail="Invalid or expired OAuth state")
+
     result = await authenticate.execute(data.code)
     return AuthResponse(
         token=result.token,

@@ -16,7 +16,7 @@ def google_oauth() -> GoogleOAuthService:
 
 
 def test_get_authorization_url_includes_client_id(google_oauth: GoogleOAuthService) -> None:
-    url = google_oauth.get_authorization_url()
+    url, state = google_oauth.get_authorization_url()
 
     assert "client_id=test-client-id" in url
     assert "redirect_uri=http" in url
@@ -24,16 +24,28 @@ def test_get_authorization_url_includes_client_id(google_oauth: GoogleOAuthServi
     assert "scope=openid" in url
 
 
-def test_get_authorization_url_includes_state_when_provided(google_oauth: GoogleOAuthService) -> None:
-    url = google_oauth.get_authorization_url(state="random-state")
+def test_get_authorization_url_includes_state(google_oauth: GoogleOAuthService) -> None:
+    url, state = google_oauth.get_authorization_url()
 
-    assert "state=random-state" in url
+    assert f"state={state}" in url
+    assert len(state) > 0
 
 
-def test_get_authorization_url_without_state(google_oauth: GoogleOAuthService) -> None:
-    url = google_oauth.get_authorization_url()
+def test_consume_state_valid(google_oauth: GoogleOAuthService) -> None:
+    _, state = google_oauth.get_authorization_url()
 
-    assert "state=" not in url
+    assert google_oauth.consume_state(state) is True
+
+
+def test_consume_state_invalid(google_oauth: GoogleOAuthService) -> None:
+    assert google_oauth.consume_state("invalid-state") is False
+
+
+def test_consume_state_cannot_reuse(google_oauth: GoogleOAuthService) -> None:
+    _, state = google_oauth.get_authorization_url()
+
+    assert google_oauth.consume_state(state) is True
+    assert google_oauth.consume_state(state) is False
 
 
 @pytest.mark.asyncio

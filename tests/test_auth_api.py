@@ -7,8 +7,19 @@ from services.authenticate import AuthenticateResponse
 
 
 class FakeGoogleOAuth:
-    def get_authorization_url(self, state: str | None = None) -> str:
-        return "https://accounts.google.com/o/oauth2/v2/auth?client_id=test"
+    def __init__(self) -> None:
+        self._pending_states: set[str] = set()
+
+    def get_authorization_url(self) -> tuple[str, str]:
+        state = "test-state-123"
+        self._pending_states.add(state)
+        return "https://accounts.google.com/o/oauth2/v2/auth?client_id=test&state=" + state, state
+
+    def consume_state(self, state: str) -> bool:
+        if state in self._pending_states:
+            self._pending_states.discard(state)
+            return True
+        return False
 
 
 class FakeAuthenticate:
@@ -20,7 +31,7 @@ class FakeAuthenticate:
         return AuthenticateResponse(user=self._user, token=self._token)
 
 
-def test_get_google_auth_url_returns_url() -> None:
+def test_get_google_auth_url_returns_url_and_state() -> None:
     with container.google_oauth.override(FakeGoogleOAuth()):
         with TestClient(app) as client:
             response = client.get("/api/auth/google/url")
@@ -28,7 +39,9 @@ def test_get_google_auth_url_returns_url() -> None:
     assert response.status_code == 200
     data = response.json()
     assert "url" in data
+    assert "state" in data
     assert data["url"].startswith("https://accounts.google.com")
+    assert data["state"] == "test-state-123"
 
 
 def test_google_callback_returns_token_and_user() -> None:
@@ -40,13 +53,19 @@ def test_google_callback_returns_token_and_user() -> None:
         display_name="Test User",
         avatar_url="https://example.com/avatar.png",
     )
+    fake_oauth = FakeGoogleOAuth()
     fake_authenticate = FakeAuthenticate(user, "jwt-token-123")
 
-    with container.authenticate.override(fake_authenticate):
+    # First get the auth URL to register the state
+    with container.google_oauth.override(fake_oauth), \
+         container.authenticate.override(fake_authenticate):
         with TestClient(app) as client:
+            url_response = client.get("/api/auth/google/url")
+            state = url_response.json()["state"]
+
             response = client.post(
                 "/api/auth/google/callback",
-                json={"code": "auth-code-123"},
+                json={"code": "auth-code-123", "state": state},
             )
 
     assert response.status_code == 201
@@ -56,6 +75,52 @@ def test_google_callback_returns_token_and_user() -> None:
     assert data["email"] == "test@example.com"
     assert data["display_name"] == "Test User"
     assert data["avatar_url"] == "https://example.com/avatar.png"
+
+
+def test_google_callback_rejects_invalid_state() -> None:
+    fake_oauth = FakeGoogleOAuth()
+
+    with container.google_oauth.override(fake_oauth):
+        with TestClient(app) as client:
+            response = client.post(
+                "/api/auth/google/callback",
+                json={"code": "auth-code-123", "state": "invalid-state"},
+            )
+
+    assert response.status_code == 400
+
+
+def test_google_callback_rejects_reused_state() -> None:
+    user = User(
+        id="user-123",
+        email="test@example.com",
+        provider_id="google-123",
+        provider_type="google",
+        display_name="Test User",
+        avatar_url="https://example.com/avatar.png",
+    )
+    fake_oauth = FakeGoogleOAuth()
+    fake_authenticate = FakeAuthenticate(user, "jwt-token-123")
+
+    with container.google_oauth.override(fake_oauth), \
+         container.authenticate.override(fake_authenticate):
+        with TestClient(app) as client:
+            url_response = client.get("/api/auth/google/url")
+            state = url_response.json()["state"]
+
+            # First use succeeds
+            response1 = client.post(
+                "/api/auth/google/callback",
+                json={"code": "auth-code-123", "state": state},
+            )
+            assert response1.status_code == 201
+
+            # Second use with same state fails
+            response2 = client.post(
+                "/api/auth/google/callback",
+                json={"code": "auth-code-123", "state": state},
+            )
+            assert response2.status_code == 400
 
 
 def test_invalid_token_returns_401() -> None:

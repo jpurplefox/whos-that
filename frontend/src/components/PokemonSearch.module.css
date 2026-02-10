@@ -158,6 +158,17 @@
   text-shadow: 0 0 4px rgba(16, 185, 129, 0.3);
 }
 
+.loadError {
+  color: #ef4444;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+}
+
 @media (max-width: 768px) {
   .dropdown {
     max-height: 250px;
