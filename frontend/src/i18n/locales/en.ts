@@ -64,6 +64,7 @@ const en = {
 
     // Search
     'search.placeholder': 'Search Pokemon...',
+    'search.loadError': 'Failed to load Pokemon list. Please reload.',
   },
 } as const;
 

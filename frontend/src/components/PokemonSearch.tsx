@@ -16,11 +16,12 @@ export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
   const [filtered, setFiltered] = useState<Pokemon[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [loadError, setLoadError] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    getPokemonList().then(setPokemon).catch(() => {});
+    getPokemonList().then(setPokemon).catch(() => setLoadError(true));
   }, []);
 
   useEffect(() => {
@@ -78,6 +79,9 @@ export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
 
   return (
     <div className={styles.container} ref={containerRef}>
+      {loadError && (
+        <div className={styles.loadError}>{t('search.loadError')}</div>
+      )}
       <input
         ref={inputRef}
         type="text"
