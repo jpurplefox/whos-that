@@ -48,7 +48,7 @@ const en = {
     'hintCard.none': 'None',
     'hintCard.fullyEvolved': 'Fully Evolved',
     'hintCard.notFullyEvolved': 'Not Fully Evolved',
-    'hintCard.allRevealed': 'All type attributes revealed!',
+    'hintCard.allRevealed': 'All weaknesses & resistances revealed!',
 
     // Stat labels
     'stat.hp': 'HP',

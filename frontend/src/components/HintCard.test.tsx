@@ -172,7 +172,7 @@ describe('HintCard', () => {
 
       render(<HintCard hint={hint} />);
 
-      expect(screen.getByText('All type attributes revealed!')).toBeInTheDocument();
+      expect(screen.getByText('All weaknesses & resistances revealed!')).toBeInTheDocument();
     });
   });
 

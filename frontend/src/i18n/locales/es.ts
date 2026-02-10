@@ -48,7 +48,7 @@ const es = {
     'hintCard.none': 'Ninguno',
     'hintCard.fullyEvolved': 'Totalmente Evolucionado',
     'hintCard.notFullyEvolved': 'No Totalmente Evolucionado',
-    'hintCard.allRevealed': 'Todos los atributos de tipo revelados!',
+    'hintCard.allRevealed': 'Todas las debilidades y resistencias reveladas!',
 
     // Stat labels
     'stat.hp': 'PS',
