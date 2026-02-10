@@ -15,7 +15,8 @@
       ["stat", "stat"],
       ["stat", "effectiveness"],
       ["stat", "fully_evolved"]
-    ]
+    ],
+    "difficulty_multiplier": 1.0
   },
   "medium": {
     "max_attempts": 4,
@@ -32,7 +33,8 @@
     "initial_hints": [
       ["stat"],
       ["effectiveness"]
-    ]
+    ],
+    "difficulty_multiplier": 1.5
   },
   "hard": {
     "max_attempts": 4,
@@ -48,6 +50,7 @@
     },
     "initial_hints": [
       ["stat"]
-    ]
+    ],
+    "difficulty_multiplier": 2.0
   }
 }

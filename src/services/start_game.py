@@ -36,6 +36,8 @@ class StartGame:
             battery=difficulty_settings.initial_battery,
             max_battery=difficulty_settings.max_battery,
             battery_recovery=difficulty_settings.battery_recovery,
+            initial_battery=difficulty_settings.initial_battery,
+            difficulty_multiplier=difficulty_settings.difficulty_multiplier,
             user_id=user_id,
         )
         hint_sets = difficulty_settings.initial_hints

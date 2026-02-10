@@ -21,6 +21,7 @@ class Difficulty(BaseModel):
     battery_recovery: int
     hint_costs: HintCosts
     initial_hints: list[list[str]] = []
+    difficulty_multiplier: float = 1.0
 
 
 class DifficultyConfig(BaseModel):
