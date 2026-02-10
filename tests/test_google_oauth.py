@@ -1,3 +1,5 @@
+from urllib.parse import parse_qs, urlparse
+
 import pytest
 import respx
 from httpx import Response
@@ -21,9 +23,13 @@ def google_oauth(state_store: InMemoryOAuthStateStore) -> GoogleOAuthService:
     )
 
 
+def _extract_state(url: str) -> str:
+    return parse_qs(urlparse(url).query)["state"][0]
+
+
 @pytest.mark.asyncio
 async def test_get_authorization_url_includes_client_id(google_oauth: GoogleOAuthService) -> None:
-    url, state = await google_oauth.get_authorization_url()
+    url = await google_oauth.get_authorization_url()
 
     assert "client_id=test-client-id" in url
     assert "redirect_uri=http" in url
@@ -33,17 +39,17 @@ async def test_get_authorization_url_includes_client_id(google_oauth: GoogleOAut
 
 @pytest.mark.asyncio
 async def test_get_authorization_url_includes_state(google_oauth: GoogleOAuthService) -> None:
-    url, state = await google_oauth.get_authorization_url()
+    url = await google_oauth.get_authorization_url()
 
-    assert f"state={state}" in url
+    state = _extract_state(url)
     assert len(state) > 0
 
 
 @pytest.mark.asyncio
 async def test_consume_state_valid(google_oauth: GoogleOAuthService) -> None:
-    _, state = await google_oauth.get_authorization_url()
+    url = await google_oauth.get_authorization_url()
 
-    assert await google_oauth.consume_state(state) is True
+    assert await google_oauth.consume_state(_extract_state(url)) is True
 
 
 @pytest.mark.asyncio
@@ -53,7 +59,8 @@ async def test_consume_state_invalid(google_oauth: GoogleOAuthService) -> None:
 
 @pytest.mark.asyncio
 async def test_consume_state_cannot_reuse(google_oauth: GoogleOAuthService) -> None:
-    _, state = await google_oauth.get_authorization_url()
+    url = await google_oauth.get_authorization_url()
+    state = _extract_state(url)
 
     assert await google_oauth.consume_state(state) is True
     assert await google_oauth.consume_state(state) is False

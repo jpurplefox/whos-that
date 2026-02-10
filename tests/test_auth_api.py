@@ -1,3 +1,5 @@
+from urllib.parse import parse_qs, urlparse
+
 import pytest
 from litestar.testing import AsyncTestClient
 
@@ -11,10 +13,10 @@ class FakeGoogleOAuth:
     def __init__(self) -> None:
         self._pending_states: set[str] = set()
 
-    async def get_authorization_url(self) -> tuple[str, str]:
+    async def get_authorization_url(self) -> str:
         state = "test-state-123"
         self._pending_states.add(state)
-        return "https://accounts.google.com/o/oauth2/v2/auth?client_id=test&state=" + state, state
+        return "https://accounts.google.com/o/oauth2/v2/auth?client_id=test&state=" + state
 
     async def consume_state(self, state: str) -> bool:
         if state in self._pending_states:
@@ -32,18 +34,20 @@ class FakeAuthenticate:
         return AuthenticateResponse(user=self._user, token=self._token)
 
 
+def _extract_state(url: str) -> str:
+    return parse_qs(urlparse(url).query)["state"][0]
+
+
 @pytest.mark.asyncio
-async def test_get_google_auth_url_returns_url_and_state() -> None:
+async def test_get_google_auth_url_returns_url() -> None:
     with container.google_oauth.override(FakeGoogleOAuth()):
         async with AsyncTestClient(app) as client:
             response = await client.get("/api/auth/google/url")
 
     assert response.status_code == 200
     data = response.json()
-    assert "url" in data
-    assert "state" in data
     assert data["url"].startswith("https://accounts.google.com")
-    assert data["state"] == "test-state-123"
+    assert "state" not in data
 
 
 @pytest.mark.asyncio
@@ -63,7 +67,7 @@ async def test_google_callback_returns_token_and_user() -> None:
          container.authenticate.override(fake_authenticate):
         async with AsyncTestClient(app) as client:
             url_response = await client.get("/api/auth/google/url")
-            state = url_response.json()["state"]
+            state = _extract_state(url_response.json()["url"])
 
             response = await client.post(
                 "/api/auth/google/callback",
@@ -110,7 +114,7 @@ async def test_google_callback_rejects_reused_state() -> None:
          container.authenticate.override(fake_authenticate):
         async with AsyncTestClient(app) as client:
             url_response = await client.get("/api/auth/google/url")
-            state = url_response.json()["state"]
+            state = _extract_state(url_response.json()["url"])
 
             response1 = await client.post(
                 "/api/auth/google/callback",

@@ -28,7 +28,7 @@ class GoogleOAuthService:
     def provider_type(self) -> str:
         return "google"
 
-    async def get_authorization_url(self) -> tuple[str, str]:
+    async def get_authorization_url(self) -> str:
         state = secrets.token_urlsafe(32)
         await self._state_store.save(state)
         params = {
@@ -39,7 +39,7 @@ class GoogleOAuthService:
             "access_type": "offline",
             "state": state,
         }
-        return f"{self.AUTHORIZATION_URL}?{urlencode(params)}", state
+        return f"{self.AUTHORIZATION_URL}?{urlencode(params)}"
 
     async def consume_state(self, state: str) -> bool:
         return await self._state_store.consume(state)
