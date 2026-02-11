@@ -26,6 +26,7 @@ class HintTypeRequest(Enum):
     SECONDARY_TYPE = "secondary_type"
     FULLY_EVOLVED = "fully_evolved"
     EFFECTIVENESS = "effectiveness"
+    MOVES = "moves"
 
 
 class ConsultRequest(BaseModel):

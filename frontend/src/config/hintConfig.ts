@@ -32,4 +32,9 @@ export const HINT_CONFIG: Record<HintType, HintMetadata> = {
     icon: '⚔️',
     colorClass: 'hintEffectiveness',
   },
+  moves: {
+    labelKey: 'hint.pokemonMoves',
+    icon: '💥',
+    colorClass: 'hintMoves',
+  },
 };

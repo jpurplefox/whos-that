@@ -5,6 +5,7 @@ from domain.hint import (
     EffectivenessHint,
     FullyEvolvedHint,
     Hint,
+    MovesHint,
     PrimaryTypeHint,
     SecondaryTypeHint,
     StatHint,
@@ -86,6 +87,15 @@ class EffectivenessHintSerializer:
         return EffectivenessHint.model_validate(data)
 
 
+class MovesHintSerializer:
+    def serialize(self, hint: Hint) -> dict[str, Any]:
+        assert isinstance(hint, MovesHint)
+        return {"type": "moves", "move": hint.move}
+
+    async def deserialize(self, data: dict[str, Any]) -> MovesHint:
+        return MovesHint.model_validate(data)
+
+
 class HintSerializerRegistry:
     def __init__(self, pokemon_repository: PokemonRepository) -> None:
         self._serializers: dict[type[Hint], HintSerializer] = {}
@@ -99,6 +109,7 @@ class HintSerializerRegistry:
         self._register(SecondaryTypeHint, "secondary_type", SecondaryTypeHintSerializer())
         self._register(FullyEvolvedHint, "fully_evolved", FullyEvolvedHintSerializer())
         self._register(EffectivenessHint, "effectiveness", EffectivenessHintSerializer())
+        self._register(MovesHint, "moves", MovesHintSerializer())
 
     def _register(self, hint_type: type[Hint], type_name: str, serializer: HintSerializer) -> None:
         self._serializers[hint_type] = serializer

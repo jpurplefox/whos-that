@@ -101,6 +101,10 @@ def _convert_hint_type(hint_type: HintTypeRequest) -> HintType:
             return HintType.FULLY_EVOLVED
         case HintTypeRequest.EFFECTIVENESS:
             return HintType.EFFECTIVENESS
+        case HintTypeRequest.MOVES:
+            return HintType.MOVES
+        case _:
+            raise ValueError(f"Unknown hint type: {hint_type}")
 
 
 @post(

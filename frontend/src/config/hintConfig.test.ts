@@ -3,7 +3,7 @@ import { HINT_CONFIG } from './hintConfig';
 import type { HintType } from '../types/api';
 
 describe('hintConfig', () => {
-  const allHintTypes: HintType[] = ['stat', 'primary_type', 'secondary_type', 'fully_evolved', 'effectiveness'];
+  const allHintTypes: HintType[] = ['stat', 'primary_type', 'secondary_type', 'fully_evolved', 'effectiveness', 'moves'];
 
   it('has entries for all HintType keys', () => {
     allHintTypes.forEach((hintType) => {
@@ -72,6 +72,14 @@ describe('hintConfig', () => {
       labelKey: 'hint.typeEffectiveness',
       icon: '⚔️',
       colorClass: 'hintEffectiveness',
+    });
+  });
+
+  it('has correct metadata for moves hint', () => {
+    expect(HINT_CONFIG.moves).toEqual({
+      labelKey: 'hint.pokemonMoves',
+      icon: '💥',
+      colorClass: 'hintMoves',
     });
   });
 });

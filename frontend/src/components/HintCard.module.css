@@ -194,6 +194,15 @@
   box-shadow: 0 0 6px #ec4899;
 }
 
+.hintCard.moves {
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
+.hintCard.moves::before {
+  background: linear-gradient(90deg, transparent, #f97316, transparent);
+  box-shadow: 0 0 6px #f97316;
+}
+
 .hintType {
   font-size: 0.7rem;
   text-transform: uppercase;
@@ -384,6 +393,21 @@
   font-family: 'Courier New', monospace;
 }
 
+.moveValue {
+  font-weight: bold;
+  color: #f97316;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  background: rgba(249, 115, 22, 0.15);
+  border: 1px solid rgba(249, 115, 22, 0.4);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+  text-shadow: 0 0 6px rgba(249, 115, 22, 0.6);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+}
+
 /* New Card CRT Animation */
 .newCard {
   animation:
@@ -468,6 +492,11 @@
     transparent
   );
   box-shadow: 0 0 10px rgba(236, 72, 153, 0.6);
+}
+
+.newCard.moves::after {
+  background: linear-gradient(180deg, transparent 0%, rgba(249, 115, 22, 0.8) 50%, transparent 100%);
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.6);
 }
 
 /* Reduced motion support */
