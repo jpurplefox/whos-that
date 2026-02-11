@@ -3,19 +3,20 @@
     "max_attempts": 5,
     "initial_battery": 100,
     "max_battery": 100,
-    "battery_recovery": 30,
+    "battery_recovery": 50,
     "hint_costs": {
       "stat": 20,
-      "primary_type": 40,
-      "secondary_type": 40,
+      "primary_type": 60,
+      "secondary_type": 60,
       "fully_evolved": 20,
       "effectiveness": 30,
       "moves": 40
     },
     "initial_hints": [
-      ["primary_type", "moves"],
-      ["primary_type", "fully_evolved"],
-      ["moves", "moves"]
+      ["moves", "effectiveness"],
+      ["moves", "stat"],
+      ["effectiveness", "effectiveness", "effectiveness"],
+      ["effectiveness", "effectiveness", "stat"]
     ],
     "difficulty_multiplier": 1.0
   },
@@ -23,36 +24,37 @@
     "max_attempts": 4,
     "initial_battery": 80,
     "max_battery": 100,
-    "battery_recovery": 20,
+    "battery_recovery": 45,
     "hint_costs": {
       "stat": 35,
-      "primary_type": 50,
-      "secondary_type": 50,
+      "primary_type": 65,
+      "secondary_type": 65,
       "fully_evolved": 25,
       "effectiveness": 35,
-      "moves": 55
+      "moves": 50
     },
     "initial_hints": [
-      ["fully_evolved"],
-      ["effectiveness"]
+      ["stat", "effectiveness"],
+      ["effectiveness", "effectiveness"]
     ],
     "difficulty_multiplier": 1.5
   },
   "hard": {
     "max_attempts": 3,
-    "initial_battery": 60,
+    "initial_battery": 65,
     "max_battery": 100,
-    "battery_recovery": 10,
+    "battery_recovery": 40,
     "hint_costs": {
       "stat": 30,
-      "primary_type": 50,
-      "secondary_type": 50,
-      "fully_evolved": 25,
+      "primary_type": 70,
+      "secondary_type": 70,
+      "fully_evolved": 30,
       "effectiveness": 35,
       "moves": 55
     },
     "initial_hints": [
-      ["fully_evolved"]
+      ["stat"],
+      ["effectiveness"]
     ],
     "difficulty_multiplier": 2.5
   }
