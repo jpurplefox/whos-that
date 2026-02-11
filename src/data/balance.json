@@ -5,12 +5,12 @@
     "max_battery": 100,
     "battery_recovery": 30,
     "hint_costs": {
-      "stat": 10,
-      "primary_type": 20,
-      "secondary_type": 20,
-      "fully_evolved": 10,
-      "effectiveness": 15,
-      "moves": 20
+      "stat": 20,
+      "primary_type": 40,
+      "secondary_type": 40,
+      "fully_evolved": 20,
+      "effectiveness": 30,
+      "moves": 40
     },
     "initial_hints": [
       ["primary_type", "moves"],
@@ -25,12 +25,12 @@
     "max_battery": 100,
     "battery_recovery": 20,
     "hint_costs": {
-      "stat": 20,
-      "primary_type": 30,
-      "secondary_type": 30,
-      "fully_evolved": 15,
-      "effectiveness": 20,
-      "moves": 35
+      "stat": 35,
+      "primary_type": 50,
+      "secondary_type": 50,
+      "fully_evolved": 25,
+      "effectiveness": 35,
+      "moves": 55
     },
     "initial_hints": [
       ["fully_evolved"],
@@ -44,12 +44,12 @@
     "max_battery": 100,
     "battery_recovery": 10,
     "hint_costs": {
-      "stat": 15,
-      "primary_type": 30,
-      "secondary_type": 30,
-      "fully_evolved": 15,
-      "effectiveness": 20,
-      "moves": 35
+      "stat": 30,
+      "primary_type": 50,
+      "secondary_type": 50,
+      "fully_evolved": 25,
+      "effectiveness": 35,
+      "moves": 55
     },
     "initial_hints": [
       ["fully_evolved"]

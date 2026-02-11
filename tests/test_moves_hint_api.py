@@ -16,7 +16,7 @@ class TestMovesHintAPI:
             # Create a game
             create_response = await client.post(
                 "/api/games",
-                json={"difficulty": "medium"},
+                json={"difficulty": "easy"},
             )
             assert create_response.status_code == 201
             game_data = create_response.json()
@@ -57,7 +57,7 @@ class TestMovesHintAPI:
             # Create a game
             create_response = await client.post(
                 "/api/games",
-                json={"difficulty": "medium"},
+                json={"difficulty": "easy"},
             )
             game_data = create_response.json()
             game_id = game_data["id"]
@@ -81,7 +81,7 @@ class TestMovesHintAPI:
             # Create a game
             create_response = await client.post(
                 "/api/games",
-                json={"difficulty": "medium"},
+                json={"difficulty": "easy"},
             )
             game_data = create_response.json()
             game_id = game_data["id"]
@@ -119,7 +119,7 @@ class TestMovesHintAPI:
             # Create a game
             create_response = await client.post(
                 "/api/games",
-                json={"difficulty": "medium"},
+                json={"difficulty": "easy"},
             )
             game_data = create_response.json()
 
@@ -138,7 +138,7 @@ class TestMovesHintAPI:
         async with AsyncTestClient(app=app) as client:
             create_response = await client.post(
                 "/api/games",
-                json={"difficulty": "medium"},
+                json={"difficulty": "easy"},
             )
             game_id = create_response.json()["id"]
 
