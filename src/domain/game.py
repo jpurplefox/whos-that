@@ -4,7 +4,6 @@ from pydantic import BaseModel, Field
 
 from domain.balance import HintCosts
 from domain.exceptions import (
-    AlreadyConsultedThisTurn,
     GameOver,
     HintAlreadyRevealed,
     NotEnoughBattery,
@@ -29,20 +28,16 @@ class Game(BaseModel):
     battery_recovery: int = 10
     initial_battery: int = 100
     difficulty_multiplier: float = 1.0
-    consulted_this_turn: bool = False
 
     def consult(self, hint: Hint, cost: int) -> None:
         if self.is_over:
             raise GameOver()
-        if self.consulted_this_turn:
-            raise AlreadyConsultedThisTurn()
         if self.battery < cost:
             raise NotEnoughBattery()
         if hint.is_already_revealed(self.hints):
             raise HintAlreadyRevealed()
         self.hints.append(hint)
         self.battery -= cost
-        self.consulted_this_turn = True
 
     @property
     def is_over(self) -> bool:
@@ -74,5 +69,4 @@ class Game(BaseModel):
             hint = ComparisonHint.create(self.pokemon, pokemon)
             self.hints.append(hint)
             self.battery = min(self.battery + self.battery_recovery, self.max_battery)
-        self.consulted_this_turn = False
         return self.is_won

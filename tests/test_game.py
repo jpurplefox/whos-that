@@ -1,7 +1,6 @@
 import pytest
 
 from domain.exceptions import (
-    AlreadyConsultedThisTurn,
     GameOver,
     HintAlreadyRevealed,
     NotEnoughBattery,
@@ -99,19 +98,20 @@ def test_consult_subtracts_battery_and_adds_hint(bulbasaur: Pokemon) -> None:
     game.consult(hint, cost=30)
 
     assert game.battery == 70
-    assert game.consulted_this_turn is True
     assert hint in game.hints
 
 
-def test_consult_raises_already_consulted_this_turn(bulbasaur: Pokemon) -> None:
+def test_consult_allows_multiple_hints_per_turn(bulbasaur: Pokemon) -> None:
     game = Game(pokemon=bulbasaur, battery=100, max_battery=100)
     hint1 = StatHint.create(bulbasaur, Stat.HP)
     hint2 = StatHint.create(bulbasaur, Stat.ATTACK)
 
     game.consult(hint1, cost=30)
+    game.consult(hint2, cost=30)
 
-    with pytest.raises(AlreadyConsultedThisTurn):
-        game.consult(hint2, cost=30)
+    assert game.battery == 40
+    assert hint1 in game.hints
+    assert hint2 in game.hints
 
 
 def test_consult_raises_not_enough_battery(bulbasaur: Pokemon) -> None:
@@ -133,14 +133,12 @@ def test_consult_raises_hint_already_revealed(bulbasaur: Pokemon) -> None:
         game.consult(duplicate_hint, cost=30)
 
 
-def test_guess_recovers_battery_and_resets_consulted(bulbasaur: Pokemon, charmander: Pokemon) -> None:
+def test_guess_recovers_battery(bulbasaur: Pokemon, charmander: Pokemon) -> None:
     game = Game(pokemon=bulbasaur, battery=70, max_battery=100, battery_recovery=10)
-    game.consulted_this_turn = True
 
     game.guess(charmander)
 
     assert game.battery == 80
-    assert game.consulted_this_turn is False
 
 
 def test_consult_raises_game_over_when_won(bulbasaur: Pokemon) -> None:

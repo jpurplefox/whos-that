@@ -121,7 +121,6 @@ class TestGet:
                 "battery": 100,
                 "max_battery": 100,
                 "battery_recovery": 10,
-                "consulted_this_turn": False,
                 "hint_costs": None,
                 "initial_battery": 100,
                 "difficulty_multiplier": 1.0,
@@ -137,7 +136,6 @@ class TestGet:
         assert game.battery == 100
         assert game.max_battery == 100
         assert game.battery_recovery == 10
-        assert game.consulted_this_turn is False
         assert game.initial_battery == 100
         assert game.difficulty_multiplier == 1.0
 
@@ -161,7 +159,6 @@ class TestGet:
                 "battery": 100,
                 "max_battery": 100,
                 "battery_recovery": 10,
-                "consulted_this_turn": False,
                 "hint_costs": None,
                 "initial_battery": None,
                 "difficulty_multiplier": None,
@@ -207,7 +204,6 @@ class TestGet:
                 "battery": 100,
                 "max_battery": 100,
                 "battery_recovery": 10,
-                "consulted_this_turn": False,
                 "hint_costs": None,
                 "initial_battery": 100,
                 "difficulty_multiplier": 1.0,
@@ -258,7 +254,6 @@ class TestGet:
                 "battery": 100,
                 "max_battery": 100,
                 "battery_recovery": 10,
-                "consulted_this_turn": False,
                 "hint_costs": None,
                 "initial_battery": 100,
                 "difficulty_multiplier": 1.0,
@@ -298,7 +293,6 @@ class TestGet:
                 "battery": 100,
                 "max_battery": 100,
                 "battery_recovery": 10,
-                "consulted_this_turn": False,
                 "hint_costs": None,
                 "initial_battery": 100,
                 "difficulty_multiplier": 1.0,

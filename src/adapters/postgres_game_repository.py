@@ -32,7 +32,6 @@ def _select_game_by_id() -> str:
             _games.battery,
             _games.max_battery,
             _games.battery_recovery,
-            _games.consulted_this_turn,
             _games.user_id,
             _games.created_at,
             _games.initial_battery,
@@ -55,7 +54,6 @@ def _select_games_by_user_id() -> str:
             _games.battery,
             _games.max_battery,
             _games.battery_recovery,
-            _games.consulted_this_turn,
             _games.user_id,
             _games.created_at,
             _games.initial_battery,
@@ -79,7 +77,6 @@ def _upsert_game() -> str:
             "battery",
             "max_battery",
             "battery_recovery",
-            "consulted_this_turn",
             "user_id",
             "initial_battery",
             "difficulty_multiplier",
@@ -94,7 +91,6 @@ def _upsert_game() -> str:
             Parameter("%(battery)s"),
             Parameter("%(max_battery)s"),
             Parameter("%(battery_recovery)s"),
-            Parameter("%(consulted_this_turn)s"),
             Parameter("%(user_id)s"),
             Parameter("%(initial_battery)s"),
             Parameter("%(difficulty_multiplier)s"),
@@ -108,7 +104,6 @@ def _upsert_game() -> str:
         .do_update(_games.battery, Parameter("%(battery)s"))
         .do_update(_games.max_battery, Parameter("%(max_battery)s"))
         .do_update(_games.battery_recovery, Parameter("%(battery_recovery)s"))
-        .do_update(_games.consulted_this_turn, Parameter("%(consulted_this_turn)s"))
         .do_update(_games.user_id, Parameter("%(user_id)s"))
         .do_update(_games.initial_battery, Parameter("%(initial_battery)s"))
         .do_update(_games.difficulty_multiplier, Parameter("%(difficulty_multiplier)s"))
@@ -140,7 +135,6 @@ class PostgresGameRepository:
             "battery": game.battery,
             "max_battery": game.max_battery,
             "battery_recovery": game.battery_recovery,
-            "consulted_this_turn": game.consulted_this_turn,
             "user_id": game.user_id,
             "initial_battery": game.initial_battery,
             "difficulty_multiplier": game.difficulty_multiplier,
@@ -195,7 +189,6 @@ class PostgresGameRepository:
             battery=row["battery"],
             max_battery=row["max_battery"],
             battery_recovery=row["battery_recovery"],
-            consulted_this_turn=row["consulted_this_turn"],
             user_id=row.get("user_id"),
             created_at=row.get("created_at"),
             initial_battery=row["initial_battery"] if row.get("initial_battery") is not None else 100,
