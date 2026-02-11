@@ -83,10 +83,11 @@ class TestEffectivenessHintAPI:
     ) -> None:
         """Test that consulting twice returns different effectiveness attributes."""
         async with AsyncTestClient(app=app) as client:
-            # Create a game
+            # Use hard difficulty — its initial hints give at most 1 effectiveness,
+            # leaving room for 2 more consultations without exhausting the pool.
             create_response = await client.post(
                 "/api/games",
-                json={"difficulty": "easy"},
+                json={"difficulty": "hard"},
             )
             game_data = create_response.json()
             game_id = game_data["id"]
