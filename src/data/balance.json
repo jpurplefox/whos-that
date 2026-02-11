@@ -3,57 +3,57 @@
     "max_attempts": 5,
     "initial_battery": 100,
     "max_battery": 100,
-    "battery_recovery": 35,
+    "battery_recovery": 30,
     "hint_costs": {
-      "stat": 30,
-      "primary_type": 50,
-      "secondary_type": 50,
-      "fully_evolved": 20,
-      "effectiveness": 25,
+      "stat": 10,
+      "primary_type": 20,
+      "secondary_type": 20,
+      "fully_evolved": 10,
+      "effectiveness": 15,
       "moves": 20
     },
     "initial_hints": [
-      ["stat", "stat"],
-      ["stat", "effectiveness"],
-      ["stat", "fully_evolved"]
+      ["primary_type", "moves"],
+      ["primary_type", "fully_evolved"],
+      ["moves", "moves"]
     ],
     "difficulty_multiplier": 1.0
   },
   "medium": {
     "max_attempts": 4,
-    "initial_battery": 100,
+    "initial_battery": 80,
     "max_battery": 100,
-    "battery_recovery": 25,
+    "battery_recovery": 20,
     "hint_costs": {
-      "stat": 40,
-      "primary_type": 75,
-      "secondary_type": 75,
-      "fully_evolved": 30,
-      "effectiveness": 35,
-      "moves": 30
+      "stat": 20,
+      "primary_type": 30,
+      "secondary_type": 30,
+      "fully_evolved": 15,
+      "effectiveness": 20,
+      "moves": 35
     },
     "initial_hints": [
-      ["stat"],
+      ["fully_evolved"],
       ["effectiveness"]
     ],
     "difficulty_multiplier": 1.5
   },
   "hard": {
-    "max_attempts": 4,
-    "initial_battery": 75,
+    "max_attempts": 3,
+    "initial_battery": 60,
     "max_battery": 100,
-    "battery_recovery": 20,
+    "battery_recovery": 10,
     "hint_costs": {
-      "stat": 50,
-      "primary_type": 80,
-      "secondary_type": 80,
-      "fully_evolved": 40,
-      "effectiveness": 45,
-      "moves": 40
+      "stat": 15,
+      "primary_type": 30,
+      "secondary_type": 30,
+      "fully_evolved": 15,
+      "effectiveness": 20,
+      "moves": 35
     },
     "initial_hints": [
-      ["stat"]
+      ["fully_evolved"]
     ],
-    "difficulty_multiplier": 2.0
+    "difficulty_multiplier": 2.5
   }
 }
