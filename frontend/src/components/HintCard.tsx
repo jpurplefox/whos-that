@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import type { Hint, Stat, Comparison, StatHint, ComparisonHint, PrimaryTypeHint, SecondaryTypeHint, FullyEvolvedHint, EffectivenessHint, MoveHint } from '../types/api';
 import { findPokemonByName } from '../services/pokemonCache';
+import { getMoveName } from '../i18n/vocabulary/moves';
 import styles from './HintCard.module.css';
 
 const STAT_ORDER: Stat[] = ['hp', 'attack', 'defense', 'sp_attack', 'sp_defense', 'speed'];
@@ -136,7 +137,7 @@ function EffectivenessCard({ hint, isNew }: HintRendererProps<EffectivenessHint>
 }
 
 function MoveCard({ hint, isNew }: HintRendererProps<MoveHint>) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   // Handle completion hint (when all moves revealed)
   if (hint.move === null) {
     return (
@@ -152,7 +153,7 @@ function MoveCard({ hint, isNew }: HintRendererProps<MoveHint>) {
     <div className={`${styles.hintCard} ${styles.moves} ${isNew ? styles.newCard : ''}`}>
       <div className={styles.hintContent}>
         <div className={styles.statName}>{t('hintCard.move')}</div>
-        <div className={styles.moveValue}>{hint.move}</div>
+        <div className={styles.moveValue}>{getMoveName(hint.move, i18n.language)}</div>
       </div>
     </div>
   );
