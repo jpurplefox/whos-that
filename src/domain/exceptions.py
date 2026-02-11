@@ -14,10 +14,6 @@ class NotEnoughBattery(DomainException):
     pass
 
 
-class AlreadyConsultedThisTurn(DomainException):
-    pass
-
-
 class NoStatsAvailable(DomainException):
     pass
 

@@ -99,7 +99,7 @@ class TestEffectivenessHintAPI:
             result1 = consult1.json()
             hint1 = [h for h in result1["hints"] if h["type"] == "effectiveness"][0]
 
-            # Make a guess to reset consulted_this_turn
+            # Make a guess to advance the game
             await client.post(
                 f"/api/games/{game_id}/guess",
                 json={"pokemon_name": "pikachu"},
@@ -143,27 +143,23 @@ class TestEffectivenessHintAPI:
             assert effectiveness_hint[0]["available"] is True
             assert effectiveness_hint[0]["cost"] is not None
 
-    async def test_consult_effectiveness_already_consulted_this_turn(self) -> None:
-        """Test that consulting twice in same turn fails."""
+    async def test_consult_multiple_hints_same_turn(self) -> None:
+        """Test that consulting multiple different hints in same turn succeeds."""
         async with AsyncTestClient(app=app) as client:
-            # Create a game
             create_response = await client.post(
                 "/api/games",
                 json={"difficulty": "medium"},
             )
             game_id = create_response.json()["id"]
 
-            # First consult
-            await client.post(
+            consult1 = await client.post(
                 f"/api/games/{game_id}/consult",
                 json={"hint_type": "effectiveness"},
             )
+            assert consult1.status_code == 201
 
-            # Second consult in same turn should fail
             consult2 = await client.post(
                 f"/api/games/{game_id}/consult",
-                json={"hint_type": "effectiveness"},
+                json={"hint_type": "stat"},
             )
-
-            assert consult2.status_code == 400
-            assert "already consulted" in consult2.json()["detail"].lower()
+            assert consult2.status_code == 201

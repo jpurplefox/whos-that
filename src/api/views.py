@@ -9,7 +9,6 @@ from api.schemas import ConsultRequest, CreateGameRequest, DifficultyRequest, Ga
 from domain.difficulty import DifficultyLevel
 from domain.ports.repositories import PokemonRepository
 from domain.exceptions import (
-    AlreadyConsultedThisTurn,
     GameAccessDenied,
     GameNotFound,
     GameOver,
@@ -107,7 +106,7 @@ def _convert_hint_type(hint_type: HintTypeRequest) -> HintType:
 @post(
     "/games/{game_id:str}/consult",
     responses={
-        400: ResponseSpec(data_container=None, description="Not enough battery, already consulted this turn, or hint already revealed"),
+        400: ResponseSpec(data_container=None, description="Not enough battery or hint already revealed"),
         404: ResponseSpec(data_container=None, description="Game not found"),
     },
 )
@@ -124,8 +123,6 @@ async def consult(
         raise HTTPException(status_code=404, detail="Game not found")
     except NotEnoughBattery:
         raise HTTPException(status_code=400, detail="Not enough battery")
-    except AlreadyConsultedThisTurn:
-        raise HTTPException(status_code=400, detail="Already consulted this turn")
     except HintAlreadyRevealed:
         raise HTTPException(status_code=400, detail="Hint already revealed")
     except HintNotAvailable:
