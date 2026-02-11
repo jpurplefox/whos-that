@@ -9,7 +9,8 @@
       "primary_type": 50,
       "secondary_type": 50,
       "fully_evolved": 20,
-      "effectiveness": 25
+      "effectiveness": 25,
+      "moves": 20
     },
     "initial_hints": [
       ["stat", "stat"],
@@ -28,7 +29,8 @@
       "primary_type": 75,
       "secondary_type": 75,
       "fully_evolved": 30,
-      "effectiveness": 35
+      "effectiveness": 35,
+      "moves": 30
     },
     "initial_hints": [
       ["stat"],
@@ -46,7 +48,8 @@
       "primary_type": 80,
       "secondary_type": 80,
       "fully_evolved": 40,
-      "effectiveness": 45
+      "effectiveness": 45,
+      "moves": 40
     },
     "initial_hints": [
       ["stat"]

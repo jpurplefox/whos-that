@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import type { Hint, Stat, Comparison, StatHint, ComparisonHint, PrimaryTypeHint, SecondaryTypeHint, FullyEvolvedHint, EffectivenessHint } from '../types/api';
+import type { Hint, Stat, Comparison, StatHint, ComparisonHint, PrimaryTypeHint, SecondaryTypeHint, FullyEvolvedHint, EffectivenessHint, MoveHint } from '../types/api';
 import { findPokemonByName } from '../services/pokemonCache';
 import styles from './HintCard.module.css';
 
@@ -135,6 +135,29 @@ function EffectivenessCard({ hint, isNew }: HintRendererProps<EffectivenessHint>
   );
 }
 
+function MoveCard({ hint, isNew }: HintRendererProps<MoveHint>) {
+  const { t } = useTranslation();
+  // Handle completion hint (when all moves revealed)
+  if (hint.move === null) {
+    return (
+      <div className={`${styles.hintCard} ${styles.moves} ${isNew ? styles.newCard : ''}`}>
+        <div className={styles.hintContent}>
+          <div className={styles.typeValue}>{t('hintCard.allMovesRevealed')}</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${styles.hintCard} ${styles.moves} ${isNew ? styles.newCard : ''}`}>
+      <div className={styles.hintContent}>
+        <div className={styles.statName}>{t('hintCard.move')}</div>
+        <div className={styles.moveValue}>{hint.move}</div>
+      </div>
+    </div>
+  );
+}
+
 const HINT_RENDERERS: Record<Hint['type'], React.FC<HintRendererProps<any>>> = {
   stat: StatCard,
   comparison: ComparisonCard,
@@ -142,6 +165,7 @@ const HINT_RENDERERS: Record<Hint['type'], React.FC<HintRendererProps<any>>> = {
   secondary_type: SecondaryTypeCard,
   fully_evolved: FullyEvolvedCard,
   effectiveness: EffectivenessCard,
+  moves: MoveCard,
 };
 
 export function HintCard({ hint, isNew = false }: HintCardProps) {

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { HintCard } from './HintCard';
-import type { StatHint, PrimaryTypeHint, SecondaryTypeHint, FullyEvolvedHint, EffectivenessHint, Pokemon } from '../types/api';
+import type { StatHint, PrimaryTypeHint, SecondaryTypeHint, FullyEvolvedHint, EffectivenessHint, MoveHint, Pokemon } from '../types/api';
 import styles from './HintCard.module.css';
 
 // Mock pokemonCache
@@ -173,6 +173,31 @@ describe('HintCard', () => {
       render(<HintCard hint={hint} />);
 
       expect(screen.getByText('All weaknesses & resistances revealed!')).toBeInTheDocument();
+    });
+  });
+
+  describe('MoveHint', () => {
+    it('renders move hint with move label and move name', () => {
+      const hint: MoveHint = {
+        type: 'moves',
+        move: 'thunderbolt',
+      };
+
+      render(<HintCard hint={hint} />);
+
+      expect(screen.getByText('Move')).toBeInTheDocument();
+      expect(screen.getByText('thunderbolt')).toBeInTheDocument();
+    });
+
+    it('renders move completion hint when move is null', () => {
+      const hint: MoveHint = {
+        type: 'moves',
+        move: null,
+      };
+
+      render(<HintCard hint={hint} />);
+
+      expect(screen.getByText('All moves revealed!')).toBeInTheDocument();
     });
   });
 

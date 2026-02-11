@@ -31,6 +31,7 @@ def pikachu() -> Pokemon:
         secondary_type=None,
         evolves_from=None,
         evolves_to=[26],
+        moves=["thunder-shock", "quick-attack", "thunderbolt", "iron-tail"],
     )
 
 
@@ -50,6 +51,7 @@ def bulbasaur() -> Pokemon:
         secondary_type="poison",
         evolves_from=None,
         evolves_to=[2],
+        moves=["tackle", "vine-whip", "razor-leaf", "solar-beam", "sleep-powder"],
     )
 
 
@@ -69,6 +71,7 @@ def charmander() -> Pokemon:
         secondary_type=None,
         evolves_from=None,
         evolves_to=[5],
+        moves=["scratch", "ember", "flamethrower", "fire-spin", "slash"],
     )
 
 
@@ -88,6 +91,7 @@ def raichu() -> Pokemon:
         secondary_type=None,
         evolves_from=25,
         evolves_to=[],
+        moves=["thunderbolt", "thunder", "focus-blast", "iron-tail", "quick-attack"],
     )
 
 

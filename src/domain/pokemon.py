@@ -17,6 +17,7 @@ class Pokemon(BaseModel):
     secondary_type: str | None = None
     evolves_from: int | None = None
     evolves_to: list[int] = []
+    moves: list[str] = []
 
     def get_stat(self, stat: Stat) -> int:
         value: int = getattr(self, stat.value)

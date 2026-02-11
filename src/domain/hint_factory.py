@@ -1,7 +1,7 @@
 from typing import Protocol
 
 from domain.exceptions import HintAlreadyRevealed
-from domain.hint import EffectivenessHint, FullyEvolvedHint, Hint, PrimaryTypeHint, SecondaryTypeHint, StatHint
+from domain.hint import EffectivenessHint, FullyEvolvedHint, Hint, MovesHint, PrimaryTypeHint, SecondaryTypeHint, StatHint
 from domain.pokemon import Pokemon
 from domain.ports.random_generator import RandomGenerator
 from domain.type_effectiveness import EffectivenessAttribute, TypeEffectiveness
@@ -112,6 +112,32 @@ class EffectivenessHintCreator:
         )
 
 
+class MovesHintCreator:
+    def is_available(self, pokemon: Pokemon, hints: list[Hint]) -> bool:
+        if self._unrevealed_moves(pokemon, hints):
+            return True
+        return not self._is_completion_revealed(hints)
+
+    def create(
+        self, pokemon: Pokemon, hints: list[Hint], random_generator: RandomGenerator
+    ) -> Hint:
+        available = self._unrevealed_moves(pokemon, hints)
+        if available:
+            index = random_generator.randint(0, len(available) - 1)
+            return MovesHint.create(pokemon, available[index])
+        if not self._is_completion_revealed(hints):
+            return MovesHint()
+        raise HintAlreadyRevealed("All moves already revealed")
+
+    def _unrevealed_moves(self, pokemon: Pokemon, hints: list[Hint]) -> list[str]:
+        revealed = {h.move for h in hints if isinstance(h, MovesHint) and h.move is not None}
+        return [m for m in pokemon.moves if m not in revealed]
+
+    @staticmethod
+    def _is_completion_revealed(hints: list[Hint]) -> bool:
+        return any(isinstance(h, MovesHint) and h.move is None for h in hints)
+
+
 class HintCreatorRegistry:
     def __init__(self) -> None:
         self._creators: dict[str, HintCreator] = {}
@@ -149,4 +175,5 @@ def create_hint_registry(type_effectiveness: TypeEffectiveness) -> HintCreatorRe
     registry.register("secondary_type", SecondaryTypeHintCreator())
     registry.register("fully_evolved", FullyEvolvedHintCreator())
     registry.register("effectiveness", EffectivenessHintCreator(type_effectiveness))
+    registry.register("moves", MovesHintCreator())
     return registry

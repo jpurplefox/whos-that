@@ -1,6 +1,6 @@
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
-export type HintType = 'stat' | 'primary_type' | 'secondary_type' | 'fully_evolved' | 'effectiveness';
+export type HintType = 'stat' | 'primary_type' | 'secondary_type' | 'fully_evolved' | 'effectiveness' | 'moves';
 
 export type Comparison = 'higher' | 'lower' | 'equal';
 
@@ -52,7 +52,12 @@ export interface EffectivenessHint {
   multiplier: number | null;
 }
 
-export type Hint = StatHint | ComparisonHint | PrimaryTypeHint | SecondaryTypeHint | FullyEvolvedHint | EffectivenessHint;
+export interface MoveHint {
+  type: 'moves';
+  move: string | null;
+}
+
+export type Hint = StatHint | ComparisonHint | PrimaryTypeHint | SecondaryTypeHint | FullyEvolvedHint | EffectivenessHint | MoveHint;
 
 export interface GameResponse {
   id: string | null;

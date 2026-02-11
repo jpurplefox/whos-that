@@ -41,6 +41,7 @@ const es = {
     'hint.secondaryType': 'Tipo Secundario',
     'hint.evolutionStatus': 'Estado de Evolucion',
     'hint.typeEffectiveness': 'Efectividad de Tipo',
+    'hint.pokemonMoves': 'Movimientos',
 
     // HintCard
     'hintCard.primaryType': 'Tipo Primario',
@@ -49,6 +50,8 @@ const es = {
     'hintCard.fullyEvolved': 'Totalmente Evolucionado',
     'hintCard.notFullyEvolved': 'No Totalmente Evolucionado',
     'hintCard.allRevealed': 'Todas las debilidades y resistencias reveladas!',
+    'hintCard.move': 'Movimiento',
+    'hintCard.allMovesRevealed': 'Todos los movimientos revelados!',
 
     // Stat labels
     'stat.hp': 'PS',

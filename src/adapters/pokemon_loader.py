@@ -23,6 +23,7 @@ def load_pokemon_from_json(json_path: Path) -> list[Pokemon]:
             secondary_type=entry.get("secondary_type"),
             evolves_from=entry.get("evolves_from"),
             evolves_to=entry.get("evolves_to", []),
+            moves=entry.get("moves", []),
         )
         for entry in data
     ]

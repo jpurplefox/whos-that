@@ -121,3 +121,18 @@ class EffectivenessHint(Hint):
         return cls(relation=relation, element=element, multiplier=multiplier)
 
 
+class MovesHint(Hint):
+    hint_type_name: ClassVar[str] = "moves"
+    move: str | None = None
+
+    def is_already_revealed(self, hints: list[Hint]) -> bool:
+        return any(
+            isinstance(h, MovesHint) and h.move == self.move
+            for h in hints
+        )
+
+    @classmethod
+    def create(cls, pokemon: Pokemon, move: str) -> "MovesHint":
+        return cls(move=move)
+
+
