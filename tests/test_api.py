@@ -33,12 +33,12 @@ class FakeGetGame:
     def __init__(self, game: Game):
         self.game = game
 
-    async def execute(self, game_id: str) -> Game:
+    async def execute(self, game_id: str, user_id: str | None = None) -> Game:
         return self.game
 
 
 class FakeGetGameNotFound:
-    async def execute(self, game_id: str) -> Game:
+    async def execute(self, game_id: str, user_id: str | None = None) -> Game:
         raise GameNotFound()
 
 
@@ -236,17 +236,17 @@ class FakeConsultPokedex:
     def __init__(self, game: Game):
         self.game = game
 
-    async def execute(self, game_id: str, hint_type: object = None) -> Game:
+    async def execute(self, game_id: str, hint_type: object = None, user_id: str | None = None) -> Game:
         return self.game
 
 
 class FakeConsultPokedexGameNotFound:
-    async def execute(self, game_id: str, hint_type: object = None) -> Game:
+    async def execute(self, game_id: str, hint_type: object = None, user_id: str | None = None) -> Game:
         raise GameNotFound()
 
 
 class FakeConsultPokedexNotEnoughBattery:
-    async def execute(self, game_id: str, hint_type: object = None) -> Game:
+    async def execute(self, game_id: str, hint_type: object = None, user_id: str | None = None) -> Game:
         raise NotEnoughBattery()
 
 
@@ -283,7 +283,7 @@ def test_consult_returns_400_when_not_enough_battery() -> None:
 
 
 class FakeConsultPokedexGameOver:
-    async def execute(self, game_id: str, hint_type: object = None) -> Game:
+    async def execute(self, game_id: str, hint_type: object = None, user_id: str | None = None) -> Game:
         raise GameOver()
 
 

@@ -1,7 +1,7 @@
 import pytest
 
 from domain.balance import HintCosts
-from domain.exceptions import HintAlreadyRevealed, HintNotAvailable
+from domain.exceptions import GameAccessDenied, HintAlreadyRevealed, HintNotAvailable
 from domain.game import Game
 from domain.hint import (
     EffectivenessHint,
@@ -275,3 +275,51 @@ async def test_consult_effectiveness_cost_none_raises_not_available(
 
     with pytest.raises(HintNotAvailable):
         await consult.execute(game.id, HintType.EFFECTIVENESS)
+
+
+@pytest.mark.asyncio
+async def test_consult_denies_other_user(
+    game_repository: GameRepository,
+    pikachu: Pokemon,
+    hint_registry: HintCreatorRegistry,
+) -> None:
+    game = Game(pokemon=pikachu, battery=100, user_id="user-1")
+    game.hint_costs.stat = 40
+    game = await game_repository.save(game)
+
+    assert game.id is not None
+    consult = ConsultPokedex(game_repository, FakeRandomGenerator(0), hint_registry)
+    with pytest.raises(GameAccessDenied):
+        await consult.execute(game.id, HintType.STAT, user_id="user-2")
+
+
+@pytest.mark.asyncio
+async def test_consult_denies_anonymous_on_authenticated_game(
+    game_repository: GameRepository,
+    pikachu: Pokemon,
+    hint_registry: HintCreatorRegistry,
+) -> None:
+    game = Game(pokemon=pikachu, battery=100, user_id="user-1")
+    game.hint_costs.stat = 40
+    game = await game_repository.save(game)
+
+    assert game.id is not None
+    consult = ConsultPokedex(game_repository, FakeRandomGenerator(0), hint_registry)
+    with pytest.raises(GameAccessDenied):
+        await consult.execute(game.id, HintType.STAT)
+
+
+@pytest.mark.asyncio
+async def test_consult_allows_anonymous_on_anonymous_game(
+    game_repository: GameRepository,
+    pikachu: Pokemon,
+    hint_registry: HintCreatorRegistry,
+) -> None:
+    game = Game(pokemon=pikachu, battery=100)
+    game.hint_costs.stat = 40
+    game = await game_repository.save(game)
+
+    assert game.id is not None
+    consult = ConsultPokedex(game_repository, FakeRandomGenerator(0), hint_registry)
+    updated = await consult.execute(game.id, HintType.STAT)
+    assert updated.battery == 60
