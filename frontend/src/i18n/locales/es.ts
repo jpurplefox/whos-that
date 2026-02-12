@@ -68,6 +68,13 @@ const es = {
     // Search
     'search.placeholder': 'Buscar Pokemon...',
     'search.loadError': 'Error al cargar la lista de Pokemon. Recarga la pagina.',
+
+    // Auth
+    'auth.signIn': 'Iniciar sesion',
+    'auth.signOut': 'Cerrar sesion',
+    'auth.signingIn': 'Conectando...',
+    'auth.popupBlocked': 'Permite las ventanas emergentes para este sitio',
+    'auth.loginFailed': 'Error al iniciar sesion. Intenta de nuevo.',
   },
 } as const;
 

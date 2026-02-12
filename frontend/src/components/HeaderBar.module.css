@@ -1,0 +1,24 @@
+.headerBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.separator {
+  width: 1px;
+  height: 16px;
+  background: linear-gradient(180deg, transparent, rgba(82, 82, 91, 0.6) 30%, rgba(82, 82, 91, 0.6) 70%, transparent);
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .headerBar { gap: 6px; }
+  .separator { height: 14px; }
+}
+
+@media (max-width: 380px) {
+  .headerBar { gap: 4px; }
+}

@@ -6,7 +6,7 @@ import { trackAppOpened, trackGameStarted, isReturningUser } from './services/an
 import { Home } from './components/Home';
 import { Game } from './components/Game';
 import { GameOver } from './components/GameOver';
-import { LanguageSwitcher } from './components/LanguageSwitcher';
+import { HeaderBar } from './components/HeaderBar';
 import './App.css';
 
 type GameState = 'home' | 'playing' | 'game-over';
@@ -77,7 +77,7 @@ function App() {
 
   return (
     <div className="app">
-      <LanguageSwitcher />
+      <HeaderBar />
       <div className="pokedex-device">
         <div className="container">
           {isLoading && <div className="loading">{t('game.loading')}</div>}

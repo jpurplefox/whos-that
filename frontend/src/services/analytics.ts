@@ -6,6 +6,8 @@ import type {
   HintPurchasedProperties,
   GameEndedProperties,
   PlayAgainClickedProperties,
+  LoginCompletedProperties,
+  LogoutProperties,
 } from '../types/analytics';
 
 const DEVICE_ID_KEY = 'whos_that_device_id';
@@ -65,4 +67,24 @@ export function trackGameEnded(properties: GameEndedProperties): void {
 export function trackPlayAgainClicked(properties: PlayAgainClickedProperties): void {
   if (!initialized) return;
   amplitude.track('Play Again Clicked', properties);
+}
+
+export function setUserId(userId: string): void {
+  if (!initialized) return;
+  amplitude.setUserId(userId);
+}
+
+export function resetUserId(): void {
+  if (!initialized) return;
+  amplitude.setUserId(undefined);
+}
+
+export function trackLoginCompleted(properties: LoginCompletedProperties): void {
+  if (!initialized) return;
+  amplitude.track('Login Completed', properties);
+}
+
+export function trackLogout(properties: LogoutProperties): void {
+  if (!initialized) return;
+  amplitude.track('Logout', properties);
 }
