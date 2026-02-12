@@ -119,7 +119,6 @@
     rgba(0, 0, 0, 0.15) 3px
   );
   pointer-events: none;
-  animation: scanlines 8s linear infinite;
   z-index: 1;
 }
 
@@ -341,5 +340,12 @@
   .resultScreen {
     min-height: 240px;
     padding: var(--spacing-xs);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title.won,
+  .title.lost {
+    animation: none;
   }
 }
