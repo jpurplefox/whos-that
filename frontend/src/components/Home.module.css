@@ -152,7 +152,6 @@
     rgba(0, 0, 0, 0.15) 3px
   );
   pointer-events: none;
-  animation: scanlines 8s linear infinite;
 }
 
 .screen::after {
@@ -361,5 +360,13 @@
 
   .subtitle {
     font-size: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledRed,
+  .ledYellow,
+  .ledGreen {
+    animation: none;
   }
 }

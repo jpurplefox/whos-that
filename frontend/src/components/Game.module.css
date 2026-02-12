@@ -11,10 +11,10 @@
 
 @keyframes scanLineMove {
   0% {
-    top: 0;
+    transform: translateY(0);
   }
   100% {
-    top: 100%;
+    transform: translateY(80px);
   }
 }
 
@@ -38,12 +38,10 @@
 
 @keyframes warningPulse {
   0%, 100% {
-    color: var(--screen-glow);
-    text-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+    opacity: 1;
   }
   50% {
-    color: var(--led-red);
-    text-shadow: 0 0 20px rgba(239, 68, 68, 0.9);
+    opacity: 0.5;
   }
 }
 
@@ -58,23 +56,19 @@
 
 @keyframes lowBatteryPulse {
   0%, 100% {
-    border-color: rgba(239, 68, 68, 0.6);
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    opacity: 0.6;
   }
   50% {
-    border-color: rgba(239, 68, 68, 1);
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+    opacity: 1;
   }
 }
 
 @keyframes criticalPulse {
   0%, 100% {
-    background: var(--led-red);
-    box-shadow: 0 0 8px var(--led-red);
+    opacity: 1;
   }
   50% {
-    background: rgba(239, 68, 68, 0.5);
-    box-shadow: 0 0 4px var(--led-red);
+    opacity: 0.5;
   }
 }
 
@@ -195,7 +189,6 @@
     rgba(0, 0, 0, 0.15) 3px
   );
   pointer-events: none;
-  animation: scanlines 8s linear infinite;
   z-index: 1;
 }
 
@@ -278,12 +271,9 @@
 @keyframes batteryPreviewPulse {
   0%, 100% {
     opacity: 0.6;
-    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
   }
   50% {
     opacity: 1;
-    box-shadow: 0 0 14px rgba(239, 68, 68, 0.8),
-                0 0 4px rgba(239, 68, 68, 1);
   }
 }
 
@@ -299,13 +289,11 @@
 
 .batteryWarning {
   background: var(--led-yellow);
-  box-shadow: 0 0 6px var(--led-yellow);
   animation: warningPulse 1.5s ease-in-out infinite;
 }
 
 .batteryCritical {
   background: var(--led-red);
-  box-shadow: 0 0 8px var(--led-red);
   animation: criticalPulse 0.8s ease-in-out infinite;
 }
 
@@ -422,12 +410,13 @@
 
 .scanLine {
   position: absolute;
+  top: 0;
   left: 0;
   right: 0;
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--screen-glow), transparent);
-  box-shadow: 0 0 10px var(--screen-glow);
   animation: scanLineMove 2s linear infinite;
+  will-change: transform;
 }
 
 .silhouetteImage {
@@ -812,7 +801,6 @@
 }
 
 .lowBattery {
-  opacity: 0.6;
   animation: lowBatteryPulse 1.5s ease-in-out infinite;
 }
 
@@ -907,5 +895,20 @@
   .scanningEffect {
     width: 50px;
     height: 50px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .led.blinking,
+  .batteryWarning,
+  .batteryCritical,
+  .batterySegmentPreview,
+  .batteryValue.warning,
+  .lowBattery,
+  .lastAttempt,
+  .scanningEffect,
+  .scanLine,
+  .silhouetteImage {
+    animation: none;
   }
 }
