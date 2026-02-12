@@ -49,6 +49,7 @@ services:
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/index.html:/app/index.html
+      - ./frontend/public:/app/public
     depends_on:
       - app
 
