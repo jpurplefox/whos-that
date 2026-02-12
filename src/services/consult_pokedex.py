@@ -1,6 +1,6 @@
 from enum import Enum
 
-from domain.exceptions import HintNotAvailable
+from domain.exceptions import GameAccessDenied, HintNotAvailable
 from domain.game import Game
 from domain.hint_factory import HintCreatorRegistry
 from domain.ports.random_generator import RandomGenerator
@@ -27,8 +27,10 @@ class ConsultPokedex:
         self.random_generator = random_generator
         self.hint_registry = hint_registry
 
-    async def execute(self, game_id: str, hint_type: HintType) -> Game:
+    async def execute(self, game_id: str, hint_type: HintType, user_id: str | None = None) -> Game:
         game = await self.game_repository.get(game_id)
+        if game.user_id is not None and user_id != game.user_id:
+            raise GameAccessDenied()
 
         cost: int | None = getattr(game.hint_costs, hint_type.value)
         if cost is None:

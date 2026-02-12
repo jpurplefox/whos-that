@@ -79,12 +79,16 @@ async def create_game(
 async def get_game(
     game_id: str,
     get_game_use_case: GetGame = Dependency(skip_validation=True),
+    optional_user: User | None = Dependency(skip_validation=True),
     hint_registry: HintCreatorRegistry = Dependency(skip_validation=True),
 ) -> GameResponse:
+    user_id = optional_user.id if optional_user else None
     try:
-        game = await get_game_use_case.execute(game_id)
+        game = await get_game_use_case.execute(game_id, user_id)
     except GameNotFound:
         raise HTTPException(status_code=404, detail="Game not found")
+    except GameAccessDenied:
+        raise HTTPException(status_code=403, detail="Access denied")
 
     return GameResponse.from_game(game, hint_registry)
 
@@ -111,6 +115,7 @@ def _convert_hint_type(hint_type: HintTypeRequest) -> HintType:
     "/games/{game_id:str}/consult",
     responses={
         400: ResponseSpec(data_container=None, description="Not enough battery or hint already revealed"),
+        403: ResponseSpec(data_container=None, description="Access denied"),
         404: ResponseSpec(data_container=None, description="Game not found"),
     },
 )
@@ -118,11 +123,13 @@ async def consult(
     game_id: str,
     data: ConsultRequest,
     consult_pokedex: ConsultPokedex = Dependency(skip_validation=True),
+    optional_user: User | None = Dependency(skip_validation=True),
     hint_registry: HintCreatorRegistry = Dependency(skip_validation=True),
 ) -> GameResponse:
+    user_id = optional_user.id if optional_user else None
     hint_type = _convert_hint_type(data.hint_type)
     try:
-        game = await consult_pokedex.execute(game_id, hint_type)
+        game = await consult_pokedex.execute(game_id, hint_type, user_id)
     except GameNotFound:
         raise HTTPException(status_code=404, detail="Game not found")
     except NotEnoughBattery:
@@ -131,6 +138,8 @@ async def consult(
         raise HTTPException(status_code=400, detail="Hint already revealed")
     except HintNotAvailable:
         raise HTTPException(status_code=400, detail="Hint not available")
+    except GameAccessDenied:
+        raise HTTPException(status_code=403, detail="Access denied")
     except GameOver:
         raise HTTPException(status_code=400, detail="Game is over")
 
