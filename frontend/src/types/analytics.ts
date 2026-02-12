@@ -56,3 +56,12 @@ export interface PlayAgainClickedProperties {
   previous_difficulty: Difficulty;
   games_played_this_session: number;
 }
+
+export interface LoginCompletedProperties {
+  provider: 'google';
+  user_id: string;
+}
+
+export interface LogoutProperties {
+  user_id: string;
+}

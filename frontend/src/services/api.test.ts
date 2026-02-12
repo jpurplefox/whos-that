@@ -2,6 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { api } from './api';
 import type { CreateGameRequest, GuessRequest, ConsultRequest, Pokemon, GameResponse } from '../types/api';
 
+vi.mock('./auth', () => ({
+  getToken: vi.fn(() => null),
+  clearSession: vi.fn(),
+}));
+
 describe('api', () => {
   beforeEach(() => {
     vi.resetAllMocks();
@@ -22,7 +27,9 @@ describe('api', () => {
 
       const result = await api.listPokemon();
 
-      expect(fetch).toHaveBeenCalledWith('/api/pokemon');
+      expect(fetch).toHaveBeenCalledWith('/api/pokemon', expect.objectContaining({
+        headers: expect.any(Headers),
+      }));
       expect(result).toEqual(mockPokemon);
     });
 
@@ -62,13 +69,12 @@ describe('api', () => {
 
       const result = await api.createGame(request);
 
-      expect(fetch).toHaveBeenCalledWith('/api/games', {
+      expect(fetch).toHaveBeenCalledWith('/api/games', expect.objectContaining({
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(request),
-      });
+      }));
+      const callHeaders = vi.mocked(fetch).mock.calls[0][1]?.headers as Headers;
+      expect(callHeaders.get('Content-Type')).toBe('application/json');
       expect(result).toEqual(mockResponse);
     });
 
@@ -108,7 +114,9 @@ describe('api', () => {
 
       const result = await api.getGame(gameId);
 
-      expect(fetch).toHaveBeenCalledWith(`/api/games/${gameId}`);
+      expect(fetch).toHaveBeenCalledWith(`/api/games/${gameId}`, expect.objectContaining({
+        headers: expect.any(Headers),
+      }));
       expect(result).toEqual(mockResponse);
     });
   });
@@ -140,13 +148,12 @@ describe('api', () => {
 
       const result = await api.makeGuess(gameId, request);
 
-      expect(fetch).toHaveBeenCalledWith(`/api/games/${gameId}/guess`, {
+      expect(fetch).toHaveBeenCalledWith(`/api/games/${gameId}/guess`, expect.objectContaining({
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(request),
-      });
+      }));
+      const callHeaders = vi.mocked(fetch).mock.calls[0][1]?.headers as Headers;
+      expect(callHeaders.get('Content-Type')).toBe('application/json');
       expect(result).toEqual(mockResponse);
     });
 
@@ -204,13 +211,12 @@ describe('api', () => {
 
       const result = await api.consultHint(gameId, request);
 
-      expect(fetch).toHaveBeenCalledWith(`/api/games/${gameId}/consult`, {
+      expect(fetch).toHaveBeenCalledWith(`/api/games/${gameId}/consult`, expect.objectContaining({
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(request),
-      });
+      }));
+      const callHeaders = vi.mocked(fetch).mock.calls[0][1]?.headers as Headers;
+      expect(callHeaders.get('Content-Type')).toBe('application/json');
       expect(result).toEqual(mockResponse);
     });
 
