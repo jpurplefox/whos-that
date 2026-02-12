@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { Difficulty, GameResponse } from './types/api';
 import { api } from './services/api';
 import { trackAppOpened, trackGameStarted, isReturningUser } from './services/analytics';
+import { useAuth } from './contexts/AuthContext';
 import { Home } from './components/Home';
 import { Game } from './components/Game';
 import { GameOver } from './components/GameOver';
@@ -13,6 +14,7 @@ type GameState = 'home' | 'playing' | 'game-over';
 
 function App() {
   const { t, i18n } = useTranslation();
+  const { user } = useAuth();
   const [gameState, setGameState] = useState<GameState>('home');
   const [currentGame, setCurrentGame] = useState<GameResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +29,15 @@ function App() {
       meta.setAttribute('content', t('pageDescription'));
     }
   }, [t, i18n.language]);
+
+  const prevUserRef = useRef(user);
+  useEffect(() => {
+    if (prevUserRef.current && !user && gameState === 'playing') {
+      setCurrentGame(null);
+      setGameState('home');
+    }
+    prevUserRef.current = user;
+  }, [user, gameState]);
 
   useEffect(() => {
     const referrer = document.referrer
