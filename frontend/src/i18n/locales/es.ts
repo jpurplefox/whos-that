@@ -73,6 +73,9 @@ const es = {
     'search.placeholder': 'Buscar Pokemon...',
     'search.loadError': 'Error al cargar la lista de Pokemon. Recarga la pagina.',
 
+    // Disclaimer
+    'home.disclaimer': 'Proyecto fan no oficial. Pokemon es marca registrada de Nintendo, The Pokemon Company y Game Freak.',
+
     // Auth
     'auth.signIn': 'Iniciar sesion',
     'auth.signOut': 'Cerrar sesion',

@@ -73,6 +73,9 @@ const en = {
     'search.placeholder': 'Search Pokemon...',
     'search.loadError': 'Failed to load Pokemon list. Please reload.',
 
+    // Disclaimer
+    'home.disclaimer': 'Unofficial fan project. Pokemon is a trademark of Nintendo, The Pokemon Company, and Game Freak.',
+
     // Auth
     'auth.signIn': 'Sign in',
     'auth.signOut': 'Sign out',

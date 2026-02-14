@@ -63,6 +63,10 @@ export function GameOver({ game, onPlayAgain, difficulty, gamesPlayedThisSession
               {t('gameOver.newScan')}
             </button>
           </div>
+
+          <a href="https://instagram.com/collado.jesica" target="_blank" rel="noopener noreferrer" className={styles.contactLink} aria-label="@collado.jesica on Instagram (opens in new tab)">
+            @collado.jesica
+          </a>
         </div>
       </div>
     </div>

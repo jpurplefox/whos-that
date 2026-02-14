@@ -50,6 +50,11 @@ export function Home({ onStartGame }: HomeProps) {
               </button>
             </div>
           </div>
+
+          <a href="https://instagram.com/collado.jesica" target="_blank" rel="noopener noreferrer" className={styles.contactLink} aria-label="@collado.jesica on Instagram (opens in new tab)">
+            @collado.jesica
+          </a>
+          <p className={styles.disclaimer}>{t('home.disclaimer')}</p>
         </div>
       </div>
     </div>
