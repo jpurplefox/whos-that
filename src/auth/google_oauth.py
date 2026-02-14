@@ -37,7 +37,7 @@ class GoogleOAuthService:
             "response_type": "code",
             "scope": "openid email profile",
             "access_type": "offline",
-            "prompt": "select_account",
+            "prompt": "consent select_account",
             "state": state,
         }
         return f"{self.AUTHORIZATION_URL}?{urlencode(params)}"
