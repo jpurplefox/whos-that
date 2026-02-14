@@ -85,3 +85,11 @@ docker compose run --rm app python -m pytest
 docker compose run --rm app python -m pytest --cov=src --cov-report=term-missing
 docker compose run --rm app python -m mypy src/
 ```
+
+## Disclaimer
+
+This is a fan-made project for educational and non-commercial purposes.
+All Pokemon-related content, including names, images, and data, is the property
+of Nintendo, The Pokemon Company, and Game Freak.
+Pokemon data is sourced from [PokeAPI](https://pokeapi.co/).
+This project is not affiliated with or endorsed by any of these companies.
