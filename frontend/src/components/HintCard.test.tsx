@@ -24,7 +24,7 @@ describe('HintCard', () => {
 
       render(<HintCard hint={hint} />);
 
-      expect(screen.getByText('hp')).toBeInTheDocument();
+      expect(screen.getByText('HP')).toBeInTheDocument();
       expect(screen.getByText('100')).toBeInTheDocument();
     });
 
@@ -37,7 +37,7 @@ describe('HintCard', () => {
 
       render(<HintCard hint={hint} />);
 
-      expect(screen.getByText('sp attack')).toBeInTheDocument();
+      expect(screen.getByText('Sp. Atk')).toBeInTheDocument();
       expect(screen.getByText('90')).toBeInTheDocument();
     });
   });
@@ -150,14 +150,14 @@ describe('HintCard', () => {
     it('renders effectiveness hint with relation and element', () => {
       const hint: EffectivenessHint = {
         type: 'effectiveness',
-        relation: 'strong against',
-        element: 'Water',
+        relation: 'weakness',
+        element: 'water',
         multiplier: 2.0,
       };
 
       render(<HintCard hint={hint} />);
 
-      expect(screen.getByText('strong against')).toBeInTheDocument();
+      expect(screen.getByText('Weak to')).toBeInTheDocument();
       expect(screen.getByText('Water')).toBeInTheDocument();
       expect(screen.getByText('×2')).toBeInTheDocument();
     });

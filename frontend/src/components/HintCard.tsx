@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import type { Hint, Stat, Comparison, StatHint, ComparisonHint, PrimaryTypeHint, SecondaryTypeHint, FullyEvolvedHint, EffectivenessHint, MoveHint } from '../types/api';
 import { findPokemonByName } from '../services/pokemonCache';
 import { getMoveName } from '../i18n/vocabulary/moves';
+import { getTypeName } from '../i18n/vocabulary/types';
 import styles from './HintCard.module.css';
 
 const STAT_ORDER: Stat[] = ['hp', 'attack', 'defense', 'sp_attack', 'sp_defense', 'speed'];
@@ -32,10 +33,11 @@ interface HintRendererProps<T extends Hint> {
 }
 
 function StatCard({ hint, isNew }: HintRendererProps<StatHint>) {
+  const { t } = useTranslation();
   return (
     <div className={`${styles.hintCard} ${styles.stat} ${isNew ? styles.newCard : ''}`}>
       <div className={styles.hintContent}>
-        <div className={styles.statName}>{hint.stat.replace('_', ' ')}</div>
+        <div className={styles.statName}>{t(STAT_LABEL_KEYS[hint.stat])}</div>
         <div className={styles.statValue}>{hint.value}</div>
       </div>
     </div>
@@ -72,25 +74,25 @@ function ComparisonCard({ hint, isNew }: HintRendererProps<ComparisonHint>) {
 }
 
 function PrimaryTypeCard({ hint, isNew }: HintRendererProps<PrimaryTypeHint>) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <div className={`${styles.hintCard} ${styles.type} ${isNew ? styles.newCard : ''}`}>
       <div className={styles.hintContent}>
         <div className={styles.statName}>{t('hintCard.primaryType')}</div>
-        <div className={styles.typeValue}>{hint.primary_type}</div>
+        <div className={styles.typeValue}>{getTypeName(hint.primary_type, i18n.language)}</div>
       </div>
     </div>
   );
 }
 
 function SecondaryTypeCard({ hint, isNew }: HintRendererProps<SecondaryTypeHint>) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <div className={`${styles.hintCard} ${styles.type} ${isNew ? styles.newCard : ''}`}>
       <div className={styles.hintContent}>
         <div className={styles.statName}>{t('hintCard.secondaryType')}</div>
         <div className={hint.secondary_type ? styles.typeValue : `${styles.typeValue} ${styles.none}`}>
-          {hint.secondary_type || t('hintCard.none')}
+          {hint.secondary_type ? getTypeName(hint.secondary_type, i18n.language) : t('hintCard.none')}
         </div>
       </div>
     </div>
@@ -111,7 +113,7 @@ function FullyEvolvedCard({ hint, isNew }: HintRendererProps<FullyEvolvedHint>) 
 }
 
 function EffectivenessCard({ hint, isNew }: HintRendererProps<EffectivenessHint>) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   // Handle completion hint (when all attributes revealed)
   if (hint.relation === 'completion') {
     return (
@@ -123,11 +125,13 @@ function EffectivenessCard({ hint, isNew }: HintRendererProps<EffectivenessHint>
     );
   }
 
+  const relationKey = `hintCard.${hint.relation}` as const;
+
   return (
     <div className={`${styles.hintCard} ${styles.effectiveness} ${isNew ? styles.newCard : ''}`}>
       <div className={styles.effectivenessContent}>
-        <div className={styles.effectivenessRelation}>{hint.relation}</div>
-        <div className={styles.effectivenessElement}>{hint.element}</div>
+        <div className={styles.effectivenessRelation}>{t(relationKey)}</div>
+        <div className={styles.effectivenessElement}>{getTypeName(hint.element!, i18n.language)}</div>
         {hint.multiplier !== null && (
           <div className={styles.effectivenessMultiplier}>&times;{hint.multiplier}</div>
         )}

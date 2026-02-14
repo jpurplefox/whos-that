@@ -51,6 +51,9 @@ const en = {
     'hintCard.fullyEvolved': 'Fully Evolved',
     'hintCard.notFullyEvolved': 'Not Fully Evolved',
     'hintCard.allRevealed': 'All weaknesses & resistances revealed!',
+    'hintCard.weakness': 'Weak to',
+    'hintCard.resistance': 'Resists',
+    'hintCard.immunity': 'Immune to',
     'hintCard.move': 'Move',
     'hintCard.allMovesRevealed': 'All moves revealed!',
 
