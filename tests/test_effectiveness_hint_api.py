@@ -149,13 +149,13 @@ class TestEffectivenessHintAPI:
         async with AsyncTestClient(app=app) as client:
             create_response = await client.post(
                 "/api/games",
-                json={"difficulty": "easy"},
+                json={"difficulty": "hard"},
             )
             game_id = create_response.json()["id"]
 
             consult1 = await client.post(
                 f"/api/games/{game_id}/consult",
-                json={"hint_type": "effectiveness"},
+                json={"hint_type": "primary_type"},
             )
             assert consult1.status_code == 201
 
