@@ -1,14 +1,14 @@
 @keyframes ledBreathing {
-  0%, 100% { opacity: 1; box-shadow: 0 0 4px rgba(16,185,129,0.6), 0 0 8px rgba(16,185,129,0.3); }
-  50% { opacity: 0.5; box-shadow: 0 0 2px rgba(16,185,129,0.3), 0 0 4px rgba(16,185,129,0.15); }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 @keyframes authScanSweep {
-  0% { left: -30%; }
-  100% { left: 100%; }
+  0% { transform: translateX(-130%); }
+  100% { transform: translateX(333%); }
 }
 @keyframes authPulse {
-  0%, 100% { opacity: 0.4; box-shadow: 0 0 4px rgba(16,185,129,0.2), 0 0 8px rgba(16,185,129,0.1); }
-  50% { opacity: 0.7; box-shadow: 0 0 6px rgba(16,185,129,0.4), 0 0 12px rgba(16,185,129,0.2); }
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
 }
 @keyframes dropdownReveal {
   from { opacity: 0; transform: translateY(-4px) scaleY(0.92); }
@@ -19,8 +19,8 @@
   to { opacity: 0; transform: translateY(-4px) scaleY(0.92); }
 }
 @keyframes textFadeIn {
-  from { opacity: 0; filter: blur(2px); }
-  to { opacity: 1; filter: blur(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Sign In Button */
@@ -125,11 +125,11 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  filter: saturate(0.85) brightness(0.95);
-  transition: filter 0.2s ease;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
 }
 .avatarButton:hover .avatarImage {
-  filter: saturate(1) brightness(1);
+  opacity: 1;
 }
 .connectedLed {
   position: absolute;
@@ -142,6 +142,7 @@
   border: 1.5px solid #27272a;
   box-shadow: 0 0 4px rgba(16,185,129,0.6), 0 0 8px rgba(16,185,129,0.3);
   animation: ledBreathing 3s ease-in-out infinite;
+  will-change: opacity;
   z-index: 2;
 }
 .userName {
@@ -192,6 +193,7 @@
   background: rgba(16,185,129,0.15);
   border: 1px solid rgba(16,185,129,0.25);
   animation: authPulse 1.8s ease-in-out infinite;
+  will-change: opacity;
   flex-shrink: 0;
 }
 .loadingText {
@@ -207,9 +209,11 @@
   position: absolute;
   top: 0;
   bottom: 0;
+  left: 0;
   width: 30%;
   background: linear-gradient(90deg, transparent, rgba(16,185,129,0.12) 40%, rgba(16,185,129,0.08) 60%, transparent);
   animation: authScanSweep 1.6s ease-in-out infinite;
+  will-change: transform;
   pointer-events: none;
 }
 
