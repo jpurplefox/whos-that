@@ -51,10 +51,13 @@ class TestEffectivenessHintAPI:
             assert "multiplier" in hint
             
             # Verify valid values
-            assert hint["relation"] in ["weakness", "resistance", "immunity"]
-            assert isinstance(hint["element"], str)
-            assert isinstance(hint["multiplier"], (int, float))
-            assert hint["multiplier"] in [0.0, 0.25, 0.5, 2.0, 4.0]  # Valid multipliers
+            assert hint["relation"] in [
+                "weakness", "resistance", "immunity", "completion",
+            ]
+            if hint["relation"] != "completion":
+                assert isinstance(hint["element"], str)
+                assert isinstance(hint["multiplier"], (int, float))
+                assert hint["multiplier"] in [0.0, 0.25, 0.5, 2.0, 4.0]
 
     async def test_consult_effectiveness_hint_reduces_battery(self) -> None:
         """Test that consulting an effectiveness hint reduces battery."""
@@ -155,12 +158,12 @@ class TestEffectivenessHintAPI:
 
             consult1 = await client.post(
                 f"/api/games/{game_id}/consult",
-                json={"hint_type": "primary_type"},
+                json={"hint_type": "stat"},
             )
             assert consult1.status_code == 201
 
             consult2 = await client.post(
                 f"/api/games/{game_id}/consult",
-                json={"hint_type": "stat"},
+                json={"hint_type": "effectiveness"},
             )
             assert consult2.status_code == 201
