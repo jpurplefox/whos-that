@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Difficulty } from '../types/api';
 import styles from './Home.module.css';
@@ -8,6 +9,13 @@ interface HomeProps {
 
 export function Home({ onStartGame }: HomeProps) {
   const { t } = useTranslation();
+  const [selected, setSelected] = useState<Difficulty | null>(null);
+
+  const handleSelect = (difficulty: Difficulty) => {
+    if (selected) return;
+    setSelected(difficulty);
+    setTimeout(() => onStartGame(difficulty), 150);
+  };
 
   return (
     <div className={styles.home}>
@@ -31,20 +39,23 @@ export function Home({ onStartGame }: HomeProps) {
             <h2>{t('home.chooseDifficulty')}</h2>
             <div className={styles.difficultyButtons}>
               <button
-                className={`${styles.difficultyButton} ${styles.easy}`}
-                onClick={() => onStartGame('easy')}
+                className={`${styles.difficultyButton} ${styles.easy} ${selected === 'easy' ? styles.selected : ''}`}
+                onClick={() => handleSelect('easy')}
+                disabled={selected !== null}
               >
                 {t('home.easy')}
               </button>
               <button
-                className={`${styles.difficultyButton} ${styles.medium}`}
-                onClick={() => onStartGame('medium')}
+                className={`${styles.difficultyButton} ${styles.medium} ${selected === 'medium' ? styles.selected : ''}`}
+                onClick={() => handleSelect('medium')}
+                disabled={selected !== null}
               >
                 {t('home.medium')}
               </button>
               <button
-                className={`${styles.difficultyButton} ${styles.hard}`}
-                onClick={() => onStartGame('hard')}
+                className={`${styles.difficultyButton} ${styles.hard} ${selected === 'hard' ? styles.selected : ''}`}
+                onClick={() => handleSelect('hard')}
+                disabled={selected !== null}
               >
                 {t('home.hard')}
               </button>

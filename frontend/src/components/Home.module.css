@@ -301,30 +301,36 @@
 
 /* Active: inset press */
 .difficultyButton:active:not(:disabled) {
-  transform: translateY(0);
+  transform: scale(0.95);
 }
 
-.easy:active:not(:disabled) {
+.easy:active:not(:disabled),
+.easy.selected {
   background: linear-gradient(180deg, #16a34a, #15803d);
   color: #ffffff;
+  transform: scale(0.95);
   box-shadow:
     inset 0 3px 6px rgba(0, 0, 0, 0.6),
     inset 0 -1px 2px rgba(34, 197, 94, 0.4),
     0 0 12px rgba(34, 197, 94, 0.4);
 }
 
-.medium:active:not(:disabled) {
+.medium:active:not(:disabled),
+.medium.selected {
   background: linear-gradient(180deg, #ca8a04, #a16207);
   color: #ffffff;
+  transform: scale(0.95);
   box-shadow:
     inset 0 3px 6px rgba(0, 0, 0, 0.6),
     inset 0 -1px 2px rgba(234, 179, 8, 0.4),
     0 0 12px rgba(234, 179, 8, 0.3);
 }
 
-.hard:active:not(:disabled) {
+.hard:active:not(:disabled),
+.hard.selected {
   background: linear-gradient(180deg, #dc2626, #b91c1c);
   color: #ffffff;
+  transform: scale(0.95);
   box-shadow:
     inset 0 3px 6px rgba(0, 0, 0, 0.6),
     inset 0 -1px 2px rgba(239, 68, 68, 0.4),
