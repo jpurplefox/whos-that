@@ -95,12 +95,6 @@ class TestMovesHintAPI:
             moves_hints_1 = [h for h in result1["hints"] if h["type"] == "moves"]
             hint1 = moves_hints_1[-1]
 
-            # Make a guess to advance the game
-            await client.post(
-                f"/api/games/{game_id}/guess",
-                json={"pokemon_name": "pikachu"},
-            )
-
             # Second consult
             consult2 = await client.post(
                 f"/api/games/{game_id}/consult",
