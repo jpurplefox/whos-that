@@ -62,10 +62,10 @@ class TestEffectivenessHintAPI:
     async def test_consult_effectiveness_hint_reduces_battery(self) -> None:
         """Test that consulting an effectiveness hint reduces battery."""
         async with AsyncTestClient(app=app) as client:
-            # Create a game
+            # Create a game (hard has at most 1 initial hint, avoids pre-revealed effectiveness)
             create_response = await client.post(
                 "/api/games",
-                json={"difficulty": "easy"},
+                json={"difficulty": "hard"},
             )
             game_data = create_response.json()
             game_id = game_data["id"]
