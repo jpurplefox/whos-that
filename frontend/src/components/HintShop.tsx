@@ -41,8 +41,8 @@ export function HintShop({ availableHints, battery, isLoading, onConsultHint, on
                 }`}
                 onClick={() => onConsultHint(availableHint.type)}
                 disabled={isDisabled}
-                onMouseEnter={() => !isDisabled && onHoverCost(availableHint.cost)}
-                onMouseLeave={() => onHoverCost(null)}
+                onPointerEnter={() => !isDisabled && onHoverCost(availableHint.cost)}
+                onPointerLeave={() => onHoverCost(null)}
               >
                 <span className={styles.hintIcon}>{metadata.icon}</span>
                 <span className={styles.hintLabel}>{t(metadata.labelKey)}</span>

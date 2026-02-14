@@ -9,6 +9,8 @@ interface PokemonSearchProps {
   disabled?: boolean;
 }
 
+const hasHover = () => window.matchMedia('(hover: hover)').matches;
+
 export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
@@ -25,7 +27,7 @@ export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
   }, []);
 
   useEffect(() => {
-    if (!disabled) {
+    if (!disabled && hasHover()) {
       inputRef.current?.focus();
     }
   }, [disabled]);
@@ -44,20 +46,22 @@ export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
   }, [query, pokemon]);
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: Event) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('pointerdown', handleClickOutside);
+    return () => document.removeEventListener('pointerdown', handleClickOutside);
   }, []);
 
   const selectPokemon = (name: string) => {
     setQuery('');
     setIsOpen(false);
     onSelect(name);
-    setTimeout(() => inputRef.current?.focus(), 0);
+    if (hasHover()) {
+      setTimeout(() => inputRef.current?.focus(), 0);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -92,7 +96,6 @@ export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
         onFocus={() => { if (filtered.length > 0) setIsOpen(true); }}
         placeholder={t('search.placeholder')}
         disabled={disabled}
-        autoFocus
       />
       {isOpen && (
         <ul className={styles.dropdown}>
@@ -100,10 +103,10 @@ export function PokemonSearch({ onSelect, disabled }: PokemonSearchProps) {
             <li
               key={p.id}
               className={`${styles.option} ${index === activeIndex ? styles.active : ''}`}
-              onMouseEnter={() => setActiveIndex(index)}
-              onMouseDown={() => selectPokemon(p.name)}
+              onPointerEnter={(e) => { if (e.pointerType === 'mouse') setActiveIndex(index); }}
+              onPointerDown={() => selectPokemon(p.name)}
             >
-              <img src={p.image_url} alt={p.name} className={styles.sprite} />
+              <img src={p.image_url} alt={p.name} className={styles.sprite} width={40} height={40} loading="lazy" />
               <span className={styles.name}>{p.name}</span>
               <span className={styles.number}>#{p.id.toString().padStart(3, '0')}</span>
             </li>

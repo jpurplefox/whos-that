@@ -34,7 +34,6 @@ export function Game({ initialGame, onGameOver, difficulty }: GameProps) {
       const updatedGame = await api.makeGuess(game.id!, {
         pokemon_name: pokemonName,
       });
-      setGame(updatedGame);
 
       const attemptNumber = updatedGame.attempts.length;
       const hintsUsedCount = updatedGame.hints.filter(h => h.type !== 'comparison').length;
@@ -69,7 +68,14 @@ export function Game({ initialGame, onGameOver, difficulty }: GameProps) {
           target_pokemon_name: updatedGame.pokemon?.name ?? '',
         });
 
-        setTimeout(() => onGameOver(updatedGame), 500);
+        if (updatedGame.is_won) {
+          onGameOver(updatedGame);
+        } else {
+          setGame(updatedGame);
+          setTimeout(() => onGameOver(updatedGame), 500);
+        }
+      } else {
+        setGame(updatedGame);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : t('game.errorGuess'));
@@ -189,9 +195,18 @@ export function Game({ initialGame, onGameOver, difficulty }: GameProps) {
 
         <div className={styles.inputScreen}>
           <div className={styles.inputWrapper}>
-            <h3 className={styles.inputTitle}>{t('game.submitGuess')}</h3>
-            <PokemonSearch onSelect={handleGuess} disabled={isLoading} />
-            {error && <div className="error">{error}</div>}
+            {isLoading ? (
+              <div className={styles.analyzingState}>
+                <div className={styles.analyzingScanline}></div>
+                <span className={styles.analyzingText}>{t('game.analyzing')}</span>
+              </div>
+            ) : (
+              <>
+                <h3 className={styles.inputTitle}>{t('game.submitGuess')}</h3>
+                <PokemonSearch onSelect={handleGuess} disabled={false} />
+                {error && <div className="error">{error}</div>}
+              </>
+            )}
           </div>
         </div>
       </div>

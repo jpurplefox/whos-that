@@ -17,6 +17,7 @@ const en = {
     'game.mysteryPokemon': 'MYSTERY POKEMON',
     'game.knownData': 'KNOWN DATA',
     'game.submitGuess': 'SUBMIT GUESS',
+    'game.analyzing': 'ANALYZING DATA...',
     'game.loading': 'Loading...',
     'game.errorStartGame': 'Failed to start game',
     'game.errorGuess': 'Failed to make guess',

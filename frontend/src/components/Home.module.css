@@ -266,29 +266,31 @@
 }
 
 /* Hover: subtle lift */
-.difficultyButton:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 3px 8px rgba(0, 0, 0, 0.4);
-}
+@media (hover: hover) {
+  .difficultyButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      0 3px 8px rgba(0, 0, 0, 0.4);
+  }
 
-.easy:hover:not(:disabled) {
-  background:
-    linear-gradient(180deg, rgba(34, 197, 94, 0.2), transparent),
-    var(--metal-gradient);
-}
+  .easy:hover:not(:disabled) {
+    background:
+      linear-gradient(180deg, rgba(34, 197, 94, 0.2), transparent),
+      var(--metal-gradient);
+  }
 
-.medium:hover:not(:disabled) {
-  background:
-    linear-gradient(180deg, rgba(234, 179, 8, 0.2), transparent),
-    var(--metal-gradient);
-}
+  .medium:hover:not(:disabled) {
+    background:
+      linear-gradient(180deg, rgba(234, 179, 8, 0.2), transparent),
+      var(--metal-gradient);
+  }
 
-.hard:hover:not(:disabled) {
-  background:
-    linear-gradient(180deg, rgba(239, 68, 68, 0.2), transparent),
-    var(--metal-gradient);
+  .hard:hover:not(:disabled) {
+    background:
+      linear-gradient(180deg, rgba(239, 68, 68, 0.2), transparent),
+      var(--metal-gradient);
+  }
 }
 
 .difficultyButton:focus-visible {

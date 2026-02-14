@@ -28,11 +28,13 @@
   min-width: 36px;
 }
 
-.option:hover:not(:disabled) {
-  transform: none;
-  box-shadow: none;
-  background: none;
-  color: #a1a1aa;
+@media (hover: hover) {
+  .option:hover:not(:disabled) {
+    transform: none;
+    box-shadow: none;
+    background: none;
+    color: #a1a1aa;
+  }
 }
 
 .option:active:not(:disabled) {

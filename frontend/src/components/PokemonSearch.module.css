@@ -9,6 +9,17 @@
   }
 }
 
+@keyframes dropdownSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .container {
   position: relative;
   flex: 1;
@@ -45,7 +56,12 @@
     0 0 16px rgba(16, 185, 129, 0.4),
     0 0 32px rgba(16, 185, 129, 0.15);
   text-shadow: 0 0 10px rgba(16, 185, 129, 0.7);
-  transform: translateY(-1px);
+}
+
+@media (hover: hover) {
+  .input:focus {
+    transform: translateY(-1px);
+  }
 }
 
 .input:disabled {
@@ -55,7 +71,7 @@
 
 .dropdown {
   position: absolute;
-  top: calc(100% + 0.5rem);
+  bottom: calc(100% + 0.5rem);
   left: 0;
   right: 0;
   margin: 0;
@@ -71,7 +87,7 @@
     0 8px 24px rgba(0, 0, 0, 0.6),
     0 0 20px rgba(16, 185, 129, 0.2),
     inset 0 1px 0 rgba(16, 185, 129, 0.1);
-  animation: dropdownSlideIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: dropdownSlideUp 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dropdown::-webkit-scrollbar {
@@ -106,18 +122,20 @@
   border: 1px solid transparent;
 }
 
-.option:hover {
-  background: rgba(16, 185, 129, 0.18);
-  border-color: rgba(16, 185, 129, 0.4);
-  transform: translateX(6px);
-  box-shadow:
-    0 4px 12px rgba(16, 185, 129, 0.25),
-    inset 0 0 12px rgba(16, 185, 129, 0.08);
-}
+@media (hover: hover) {
+  .option:hover {
+    background: rgba(16, 185, 129, 0.18);
+    border-color: rgba(16, 185, 129, 0.4);
+    transform: translateX(6px);
+    box-shadow:
+      0 4px 12px rgba(16, 185, 129, 0.25),
+      inset 0 0 12px rgba(16, 185, 129, 0.08);
+  }
 
-.option:hover .sprite {
-  border-color: rgba(16, 185, 129, 0.6);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  .option:hover .sprite {
+    border-color: rgba(16, 185, 129, 0.6);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  }
 }
 
 .option.active {
@@ -170,10 +188,21 @@
 
 @media (max-width: 768px) {
   .dropdown {
-    max-height: 250px;
+    max-height: min(250px, 40dvh);
+  }
+
+  .option {
+    padding: 10px 12px;
+    gap: 10px;
   }
 
   .name {
     font-size: 0.85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input:disabled {
+    animation: none;
   }
 }

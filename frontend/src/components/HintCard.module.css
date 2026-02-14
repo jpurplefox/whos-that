@@ -523,6 +523,10 @@
 }
 
 @media (max-width: 768px) {
+  .hintCard {
+    min-height: auto;
+  }
+
   .comparisonGrid {
     grid-template-columns: repeat(2, 1fr);
   }

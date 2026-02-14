@@ -17,6 +17,7 @@ const es = {
     'game.mysteryPokemon': 'POKEMON MISTERIOSO',
     'game.knownData': 'DATOS CONOCIDOS',
     'game.submitGuess': 'ENVIAR RESPUESTA',
+    'game.analyzing': 'ANALIZANDO DATOS...',
     'game.loading': 'Cargando...',
     'game.errorStartGame': 'Error al iniciar el juego',
     'game.errorGuess': 'Error al enviar respuesta',
