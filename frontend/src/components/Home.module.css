@@ -339,21 +339,40 @@
 
   .difficultyButtons {
     flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    padding: 0;
+    box-shadow: none;
   }
 
   .difficultyButton {
     border-right: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
-    border-radius: 0;
+    border-bottom: none;
+    border-radius: 8px;
+    padding: 14px 12px;
+    font-size: 0.85rem;
+    border: 2px solid rgba(255, 255, 255, 0.15);
   }
 
   .difficultyButton:first-child {
-    border-radius: 5px 5px 0 0;
+    border-radius: 8px;
   }
 
   .difficultyButton:last-child {
-    border-bottom: none;
-    border-radius: 0 0 5px 5px;
+    border-radius: 8px;
+  }
+
+  .easy {
+    border-color: rgba(34, 197, 94, 0.4);
+  }
+
+  .medium {
+    border-color: rgba(234, 179, 8, 0.4);
+  }
+
+  .hard {
+    border-color: rgba(239, 68, 68, 0.4);
   }
 
   .title {
