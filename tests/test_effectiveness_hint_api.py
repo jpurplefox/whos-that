@@ -16,13 +16,12 @@ class TestEffectivenessHintAPI:
             # Create a game
             create_response = await client.post(
                 "/api/games",
-                json={"difficulty": "easy"},
+                json={"difficulty": "hard"},
             )
             assert create_response.status_code == 201
             game_data = create_response.json()
             game_id = game_data["id"]
 
-            # Count initial effectiveness hints (may exist due to randomized initial hints)
             initial_effectiveness_count = len(
                 [h for h in game_data["hints"] if h["type"] == "effectiveness"]
             )
@@ -130,10 +129,9 @@ class TestEffectivenessHintAPI:
     async def test_available_hints_includes_effectiveness(self) -> None:
         """Test that available_hints includes effectiveness hint."""
         async with AsyncTestClient(app=app) as client:
-            # Create a game
             create_response = await client.post(
                 "/api/games",
-                json={"difficulty": "easy"},
+                json={"difficulty": "hard"},
             )
             game_data = create_response.json()
 
